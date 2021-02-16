@@ -16,7 +16,7 @@ author: jihyeon Ryu
 navbar-links:
   About Me: "aboutme"
   Resources:
-    - (1) segmentation paper: "_posts/2021-02-16-segmentation-paper1/"
+    - (1) segmentation paper: "https://jihyeonryu.github.io/2021-02-16-segmentation-paper1/"
 
 # --- Logo --- #
 
