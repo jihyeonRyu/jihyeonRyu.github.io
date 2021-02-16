@@ -17,7 +17,8 @@ comments: true
 Proceeding: NIPS 2020
 Authors: Yongqing Liang, Xin Li, Navid Jafari, Jim Chen
 ```
-[Source Code Link](https://github.com/xmlyqing00/AFB-URR)
+[Source Code Link](https://github.com/xmlyqing00/AFB-URR)  
+[Paper Link](https://proceedings.neurips.cc/paper/2020/file/234833147b97bb6aed53a8f4f1c7a7d8-Paper.pdf)
 
 ## Introduction
 VOS(Video Object Segmentation)의 semi-supervised setting에서 성능에 가장 영향을 주는 두 스텝은  
