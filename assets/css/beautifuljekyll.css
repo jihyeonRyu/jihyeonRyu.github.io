@@ -722,7 +722,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
   padding: 1.25rem 0;
   box-shadow: 0 0 0.3125rem #AAA;
 }
-/* Many phones are 320 or 360px, so make sure _images are a proper aspect ratio in those cases */
+/* Many phones are 320 or 360px, so make sure resource are a proper aspect ratio in those cases */
 .header-section.has-img .intro-header.no-img {
   display: none;
 }

@@ -44,7 +44,7 @@ weighted averageing과 least frequently used(LFU) index를 이용하여 구식�
 이는 segmentation의 모호함을 평가하는 새로운 confidence loss와 이 모호한 영역을 refine하기 위한 local fine-grained segmentation을 이용한다.  
 
 ## Approach
-![Figure 1](../assets/_images/segmentation/paper1/1.png)
+![Figure 1](../assets/resource/segmentation/paper1/1.png)
 
 ### Matching-based segmentation
 
@@ -68,18 +68,18 @@ key를 이용하여 matching을 수행하고 value는 풍부한 sementic 정보�
 
 #### Matcher
 query frame과 feature bank 간의 similarity는 object by object 간에 수행된다.
-![Figure2](../assets/_images/segmentation/paper1/2.png)  
-![Figure2-1](../assets/_images/segmentation/paper1/4.png)  
+![Figure2](../assets/resource/segmentation/paper1/2.png)  
+![Figure2-1](../assets/resource/segmentation/paper1/4.png)  
 i ∈ [1, L]  
 query value와 가장 비슷한 value map과 concatenate를 수행 한다.
-![Figure2-2](../assets/_images/segmentation/paper1/5.png)
+![Figure2-2](../assets/resource/segmentation/paper1/5.png)
 
 #### Decoder
 matching 결과인 y를 이용하여 각 object의 mask를 독립적으로 예측한다.  
 refinement module을 이용하여 feature map을 점진적으로 upscale한다.  
 각 stage에서 previous stage와 query encoder로부터 온 feature map간 skip connection을 이용한다.  
 최종적으로 object i에 대한 마스크인 Mi를 구한다.   
-![Figure3](../assets/_images/segmentation/paper1/3.png)
+![Figure3](../assets/resource/segmentation/paper1/3.png)
 
 ### Adaptive Feature Bank
 AFB의 주요 특징은 새로운 feature를 흡수하고 구식은 제거하는 것이다.  
@@ -88,21 +88,21 @@ AFB의 주요 특징은 새로운 feature를 흡수하고 구식은 제거하는
 대부분 최근의 프레임이 더 중요한 정보를 가지고 있지만 초기의 프레임도 필요한 정보를 담고 있을 수 있다.  
 그래서 초기 프레임을 단순히 무시하기 보다 이를 저장하고 weighted averageing을 이용하여 관리하는 방식을 취한다. 
 새로운 특징이 추출되고, 이전 특징과 충분히 가깝다면 이들을 merge 하므로써 중복된 정보를 저장하는 것을 피할 수 있다.   
-![Figure4](../assets/_images/segmentation/paper1/6.png)
+![Figure4](../assets/resource/segmentation/paper1/6.png)
 
 new feature embedding: a(i) = (Kp, Vp)  
 old feature embeddings: b(j) = (Kfb, Vfb)  
 Similarity Function:
-![Figure5](../assets/_images/segmentation/paper1/7.png)
+![Figure5](../assets/resource/segmentation/paper1/7.png)
 
 a(i)에 대해서 가장 비슷한 b(j`)을 구한 후 merging을 수행  
-![Figure6](../assets/_images/segmentation/paper1/8.png)  
+![Figure6](../assets/resource/segmentation/paper1/8.png)  
 비슷하지 않으면 feature bank에 추가한다.  
 
 #### Removing obsolete features
 cache 정책과 비슷하게 오래된 feature에 대해서 최근 사용된 빈도를 계산한다.(LFU)  
 만약 각 matching에서 similarity가 10^-4보다 크다면 count를 증가시킨다  
-![Figure7](../assets/_images/segmentation/paper1/9.png)  
+![Figure7](../assets/resource/segmentation/paper1/9.png)  
 feature bank의 크기가 정해진 크기를 초과하면 삭제를 진행한다. 
 
 ### Uncertain-region Refinement
@@ -110,18 +110,18 @@ feature bank의 크기가 정해진 크기를 초과하면 삭제를 진행한�
 decoding과 softmax normalization을 수행한 initial segmentation Mi는 [0, 1]의 값을 가지고  
 합은 1이다. 이는 해당 object에 대한 likelihood를 뜻한다.  
 pixel-wise uncertainity map U를 구하기 위해서 마스크에서 가장 큰 값과 두번 째로 가장 큰 값의 비율을 이용한다.  
-![Figure8](../assets/_images/segmentation/paper1/10.png)
+![Figure8](../assets/resource/segmentation/paper1/10.png)
 0에서 1의 값을 갖게 하기 위해 L2 norm을 수행한다.  
 
 #### Local Refinement mechanism
 이웃한 픽셀들을 이용하여 refinement를 수행한다.  
-![Figure9](../assets/_images/segmentation/paper1/11.png)
+![Figure9](../assets/resource/segmentation/paper1/11.png)
 residual network module f는 local similarity를 예측하도록 학습된다. 
 e: local refinement mask  
 c: confidence score  
 S: final segmentation   
-![Figure9](../assets/_images/segmentation/paper1/12.png)
-![Figure9](../assets/_images/segmentation/paper1/13.png)
-![Figure9](../assets/_images/segmentation/paper1/14.png)
-![Figure9](../assets/_images/segmentation/paper1/15.png)
+![Figure9](../assets/resource/segmentation/paper1/12.png)
+![Figure9](../assets/resource/segmentation/paper1/13.png)
+![Figure9](../assets/resource/segmentation/paper1/14.png)
+![Figure9](../assets/resource/segmentation/paper1/15.png)
 
