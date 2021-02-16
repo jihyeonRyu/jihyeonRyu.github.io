@@ -1,5 +1,13 @@
-# [Paper Review] Segmentation
-## Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement
+---
+layout: post
+title: [PR] Segmentation
+subtitle: Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement
+gh-repo: daattali/beautiful-jekyll
+gh-badge: [star, fork, follow]
+tags: [test]
+comments: true
+---
+
 ```
 Proceeding: NIPS 2020
 Authors: Yongqing Liang, Xin Li, Navid Jafari, Jim Chen
