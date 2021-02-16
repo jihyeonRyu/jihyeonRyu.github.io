@@ -16,9 +16,7 @@ author: jihyeon Ryu
 navbar-links:
   About Me: "aboutme"
   Resources:
-    - Beautiful Jekyll: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
+    - (1) segmentation paper: "_posts/2021-02-16-segmentation-paper1/"
 
 # --- Logo --- #
 
@@ -70,10 +68,10 @@ rss-description: This website is a virtual proof that I'm awesome
 
 # Select which social network share links to show in posts
 share-links-active:
-  twitter: false
-  facebook: false
+#  twitter: false
+#  facebook: false
   linkedin: true
-  vk: false
+#  vk: false
 
 # How to display the link to your website in the footer
 # Remove this if you don't want a link in the footer

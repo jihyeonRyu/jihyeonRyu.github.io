@@ -2,10 +2,10 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement  
-gh-repo: daattali/beautiful-jekyll  
+gh-repo: xmlyqing00/AFB-URR
 gh-badge: [star, fork, follow]  
-tags: [test]  
-comments: true  
+tags: [ai, ml, segmentation]  
+comments: true
 --- 
 
 이 논문에서는 Semi-supervised video object segmentation을 위한 새로운 Matching-based framework를 제안한다.  
