@@ -45,7 +45,7 @@ var BeautifulJekyllJS = {
   },
 
   initImgs : function() {
-    // If the page was large images to randomly select from, choose an image
+    // If the page was large _images to randomly select from, choose an image
     if ($("#header-big-imgs").length > 0) {
       BeautifulJekyllJS.bigImgEl = $("#header-big-imgs");
       BeautifulJekyllJS.numImgs = BeautifulJekyllJS.bigImgEl.attr("data-num-img");
@@ -83,7 +83,7 @@ var BeautifulJekyllJS = {
         }, 6000);
       };
 
-      // If there are multiple images, cycle through them
+      // If there are multiple _images, cycle through them
       if (BeautifulJekyllJS.numImgs > 1) {
         getNextImg();
       }
