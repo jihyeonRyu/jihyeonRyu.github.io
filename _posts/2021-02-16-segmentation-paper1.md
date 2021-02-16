@@ -74,6 +74,52 @@ i ∈ [1, L]
 query value와 가장 비슷한 value map과 concatenate를 수행 한다.
 ![Figure2-2](../assets/resource/segmentation/paper1/5.png)
 
+```python
+    def forward(self, feature_bank, q_in, q_out):
+
+        mem_out_list = []
+
+        for i in range(0, feature_bank.obj_n):
+            d_key, bank_n = feature_bank.keys[i].size()
+
+            try:
+                p = torch.matmul(feature_bank.keys[i].transpose(0, 1), q_in) / math.sqrt(d_key)  # THW, HW
+                p = NF.softmax(p, dim=1)  # bs, bank_n, HW
+                mem = torch.matmul(feature_bank.values[i], p)  # bs, D_o, HW
+            except RuntimeError as e:
+                device = feature_bank.keys[i].device
+                key_cpu = feature_bank.keys[i].cpu()
+                value_cpu = feature_bank.values[i].cpu()
+                q_in_cpu = q_in.cpu()
+
+                p = torch.matmul(key_cpu.transpose(0, 1), q_in_cpu) / math.sqrt(d_key)  # THW, HW
+                p = NF.softmax(p, dim=1)  # bs, bank_n, HW
+                mem = torch.matmul(value_cpu, p).to(device)  # bs, D_o, HW
+                p = p.to(device)
+                print('\tLine 158. GPU out of memory, use CPU', f'p size: {p.shape}')
+
+            mem_out_list.append(torch.cat([mem, q_out], dim=1))
+
+            if self.update_bank:
+                try:
+                    ones = torch.ones_like(p)
+                    zeros = torch.zeros_like(p)
+                    bank_cnt = torch.where(p > self.thres_valid, ones, zeros).sum(dim=2)[0]
+                except RuntimeError as e:
+                    device = p.device
+                    p = p.cpu()
+                    ones = torch.ones_like(p)
+                    zeros = torch.zeros_like(p)
+                    bank_cnt = torch.where(p > self.thres_valid, ones, zeros).sum(dim=2)[0].to(device)
+                    print('\tLine 170. GPU out of memory, use CPU', f'p size: {p.shape}')
+
+                feature_bank.info[i][:, 1] += torch.log(bank_cnt + 1)
+
+        mem_out_tensor = torch.stack(mem_out_list, dim=0).transpose(0, 1)  # bs, obj_n, dim, pixel_n
+
+        return mem_out_tensor
+```
+
 #### Decoder
 matching 결과인 y를 이용하여 각 object의 mask를 독립적으로 예측한다.  
 refinement module을 이용하여 feature map을 점진적으로 upscale한다.  
@@ -99,29 +145,165 @@ a(i)에 대해서 가장 비슷한 b(j`)을 구한 후 merging을 수행
 ![Figure6](../assets/resource/segmentation/paper1/8.png)  
 비슷하지 않으면 feature bank에 추가한다.  
 
+````python
+    def update(self, prev_key, prev_value, frame_idx):
+
+        for class_idx in range(self.obj_n):
+
+            d_key, bank_n = self.keys[class_idx].shape
+            d_val, _ = self.values[class_idx].shape
+
+            normed_keys = NF.normalize(self.keys[class_idx], dim=0)
+            normed_prev_key = NF.normalize(prev_key[class_idx], dim=0)
+            mag_keys = self.keys[class_idx].norm(p=2, dim=0)
+            corr = torch.mm(normed_keys.transpose(0, 1), normed_prev_key)  # bank_n, prev_n
+            related_bank_idx = corr.argmax(dim=0, keepdim=True)  # 1, HW
+            related_bank_corr = torch.gather(corr, 0, related_bank_idx)  # 1, HW
+
+            # greater than threshold, merge them
+            selected_idx = (related_bank_corr[0] > self.thres_close).nonzero()
+            class_related_bank_idx = related_bank_idx[0, selected_idx[:, 0]]  # selected_HW
+            unique_related_bank_idx, cnt = class_related_bank_idx.unique(dim=0, return_counts=True)  # selected_HW
+
+            # Update key
+            key_bank_update = torch.zeros((d_key, bank_n), dtype=torch.float, device=self.device)  # d_key, THW
+            key_bank_idx = class_related_bank_idx.unsqueeze(0).expand(d_key, -1)  # d_key, HW
+            scatter_mean(normed_prev_key[:, selected_idx[:, 0]], key_bank_idx, dim=1, out=key_bank_update)
+            # d_key, selected_HW
+
+            self.keys[class_idx][:, unique_related_bank_idx] = \
+                mag_keys[unique_related_bank_idx] * \
+                ((1 - self.update_rate) * normed_keys[:, unique_related_bank_idx] + \
+                 self.update_rate * key_bank_update[:, unique_related_bank_idx])
+
+            # Update value
+            normed_values = NF.normalize(self.values[class_idx], dim=0)
+            normed_prev_value = NF.normalize(prev_value[class_idx], dim=0)
+            mag_values = self.values[class_idx].norm(p=2, dim=0)
+            val_bank_update = torch.zeros((d_val, bank_n), dtype=torch.float, device=self.device)
+            val_bank_idx = class_related_bank_idx.unsqueeze(0).expand(d_val, -1)
+            scatter_mean(normed_prev_value[:, selected_idx[:, 0]], val_bank_idx, dim=1, out=val_bank_update)
+
+            self.values[class_idx][:, unique_related_bank_idx] = \
+                mag_values[unique_related_bank_idx] * \
+                ((1 - self.update_rate) * normed_values[:, unique_related_bank_idx] + \
+                 self.update_rate * val_bank_update[:, unique_related_bank_idx])
+
+            # less than the threshold, concat them
+            selected_idx = (related_bank_corr[0] <= self.thres_close).nonzero()
+
+            if self.class_budget < bank_n + selected_idx.shape[0]:
+                self.remove(class_idx, selected_idx.shape[0], frame_idx)
+
+            self.keys[class_idx] = torch.cat([self.keys[class_idx], prev_key[class_idx][:, selected_idx[:, 0]]], dim=1)
+            self.values[class_idx] = \
+                torch.cat([self.values[class_idx], prev_value[class_idx][:, selected_idx[:, 0]]], dim=1)
+
+            new_info = torch.zeros((selected_idx.shape[0], 2), device=self.device)
+            new_info[:, 0] = frame_idx
+            self.info[class_idx] = torch.cat([self.info[class_idx], new_info], dim=0)
+
+            self.peak_n[class_idx] = max(self.peak_n[class_idx], self.info[class_idx].shape[0])
+
+            self.info[class_idx][:, 1] = torch.clamp(self.info[class_idx][:, 1], 0, 1e5)  # Prevent inf
+````
+
 #### Removing obsolete features
 cache 정책과 비슷하게 오래된 feature에 대해서 최근 사용된 빈도를 계산한다.(LFU)  
 만약 각 matching에서 similarity가 10^-4보다 크다면 count를 증가시킨다  
 ![Figure7](../assets/resource/segmentation/paper1/9.png)  
 feature bank의 크기가 정해진 크기를 초과하면 삭제를 진행한다. 
 
+```python
+    def remove(self, class_idx, request_n, frame_idx):
+
+        old_size = self.keys[class_idx].shape[1]
+
+        LFU = frame_idx - self.info[class_idx][:, 0]  # time length
+        LFU = self.info[class_idx][:, 1] / LFU
+        thres_dynamic = int(LFU.min()) + 1
+        iter_cnt = 0
+
+        while True:
+            selected_idx = LFU > thres_dynamic
+            self.keys[class_idx] = self.keys[class_idx][:, selected_idx]
+            self.values[class_idx] = self.values[class_idx][:, selected_idx]
+            self.info[class_idx] = self.info[class_idx][selected_idx]
+            LFU = LFU[selected_idx]
+            iter_cnt += 1
+
+            balance = (self.class_budget - self.keys[class_idx].shape[1]) - request_n
+            if balance < 0:
+                thres_dynamic = int(LFU.min()) + 1
+            else:
+                break
+
+        new_size = self.keys[class_idx].shape[1]
+        self.replace_n[class_idx] += old_size - new_size
+
+        return balance
+```
+
 ### Uncertain-region Refinement
+
 #### Confidence loss
 decoding과 softmax normalization을 수행한 initial segmentation Mi는 [0, 1]의 값을 가지고  
 합은 1이다. 이는 해당 object에 대한 likelihood를 뜻한다.  
-pixel-wise uncertainity map U를 구하기 위해서 마스크에서 가장 큰 값과 두번 째로 가장 큰 값의 비율을 이용한다.  
-![Figure8](../assets/resource/segmentation/paper1/10.png)
-0에서 1의 값을 갖게 하기 위해 L2 norm을 수행한다.  
+pixel-wise uncertainity map U를 구하기 위해서 마스크에서 가장 큰 값과 두번 째로 가장 큰 값의 비율을 이용한다. 그리고 0에서 1의 값을 갖게 하기 위해 L2 norm을 수행한다.  
+![Figure8](../assets/resource/segmentation/paper1/10.png)  
+
+```python
+def calc_uncertainty(score):
+    # seg shape: bs, obj_n, h, w
+    score_top, _ = score.topk(k=2, dim=1)
+    uncertainty = score_top[:, 0] / (score_top[:, 1] + 1e-8)  # bs, h, w
+    uncertainty = torch.exp(1 - uncertainty).unsqueeze(1)  # bs, 1, h, w
+    return uncertainty
+```
 
 #### Local Refinement mechanism
-이웃한 픽셀들을 이용하여 refinement를 수행한다.  
-![Figure9](../assets/resource/segmentation/paper1/11.png)
-residual network module f는 local similarity를 예측하도록 학습된다. 
+
+![Figure9](../assets/resource/segmentation/paper1/11.png)    
+![Figure9](../assets/resource/segmentation/paper1/12.png)  
+![Figure9](../assets/resource/segmentation/paper1/13.png)  
+![Figure9](../assets/resource/segmentation/paper1/14.png)  
+![Figure9](../assets/resource/segmentation/paper1/15.png)  
 e: local refinement mask  
 c: confidence score  
 S: final segmentation   
-![Figure9](../assets/resource/segmentation/paper1/12.png)
-![Figure9](../assets/resource/segmentation/paper1/13.png)
-![Figure9](../assets/resource/segmentation/paper1/14.png)
-![Figure9](../assets/resource/segmentation/paper1/15.png)
 
+아래는 decoder 소스 코드의 일부이다.
+
+```python
+    def forward(self, patch_match, r3, r2, r1=None, feature_shape=None):
+
+        p = self.ResMM(self.convFM(patch_match))
+        p = self.RF3(r3, p)  # out: 1/8, 256
+        p = self.RF2(r2, p)  # out: 1/4, 256
+        p = self.pred2(NF.relu(p))
+        p = NF.interpolate(p, scale_factor=2, mode='bilinear', align_corners=False)
+        bs, obj_n, h, w = feature_shape
+        rough_seg = NF.softmax(p, dim=1)[:, 1]
+        rough_seg = rough_seg.view(bs, obj_n, h, w)
+        rough_seg = NF.softmax(rough_seg, dim=1)  # object-level normalization
+
+        # Local refinement
+        uncertainty = myutils.calc_uncertainty(rough_seg) 
+        uncertainty = uncertainty.expand(-1, obj_n, -1, -1).reshape(bs * obj_n, 1, h, w)
+
+        rough_seg = rough_seg.view(bs * obj_n, 1, h, w)  # bs*obj_n, 1, h, w
+        r1_weighted = r1 * rough_seg
+        r1_local = self.local_avg(r1_weighted)  # bs*obj_n, 64, h, w -> AveragePooling(same padding)을 수행
+        r1_local = r1_local / (self.local_avg(rough_seg) + 1e-8)  # neighborhood reference
+        r1_conf = self.local_max(rough_seg)  # bs*obj_n, 1, h, w 
+
+        local_match = torch.cat([r1, r1_local], dim=1)
+        q = self.local_ResMM(self.local_convFM(local_match)) # convolution 수
+        q = r1_conf * self.local_pred2(NF.relu(q))
+
+        p = p + uncertainty * q
+        p = NF.interpolate(p, scale_factor=2, mode='bilinear', align_corners=False)
+        p = NF.softmax(p, dim=1)[:, 1]  # no, h, w
+
+        return p
+```
