@@ -15,8 +15,9 @@ author: jihyeon Ryu
 
 navbar-links:
   About Me: "aboutme"
-  Resources:
-    - (1) segmentation paper: "https://jihyeonryu.github.io/2021-02-16-segmentation-paper1/"
+  Categorys:
+    - Robustness: "robustness"
+    - Segmentation: "segmentation"
 
 # --- Logo --- #
 
