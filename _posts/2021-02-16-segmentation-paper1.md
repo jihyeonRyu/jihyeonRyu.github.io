@@ -38,7 +38,7 @@ matching-based VOS의 근본적인 이슈는 어떻게 이전 프레임의 정�
 하지만 비디오가 점차 길어지면서 out-of-memory crash 문제를 일으키거나 key-frame을 샘플링 하지 못하는 문제를 발생시킨다.  
 
 저자는 이를 해결하기 위해 Adaptive Feature Bank(AFB)를 도입하였다.  
-weighted averageing과 least frequently used(LFU) index를 이용하여 구식의 feature를 무시하는 매커니즘을 사용한다.  
+weighted averaging과 least frequently used(LFU) index를 이용하여 구식의 feature를 무시하는 매커니즘을 사용한다.  
 이 방법으로 다양한 object의 특징을 기억할 수 있고, 긴 비디오에서도 적은 메모리 만으로 동시에 segmentation을 수행할 수 있다.  
 
 또한 uncertain-region refinement(URR)을 이용하여 segmentation의 퀄리티를 높였다. 
@@ -133,7 +133,7 @@ AFB의 주요 특징은 새로운 feature를 흡수하고 구식은 제거하는
 
 #### Absorbing new features
 대부분 최근의 프레임이 더 중요한 정보를 가지고 있지만 초기의 프레임도 필요한 정보를 담고 있을 수 있다.  
-그래서 초기 프레임을 단순히 무시하기 보다 이를 저장하고 weighted averageing을 이용하여 관리하는 방식을 취한다. 
+그래서 초기 프레임을 단순히 무시하기 보다 이를 저장하고 weighted averaging을 이용하여 관리하는 방식을 취한다. 
 새로운 특징이 추출되고, 이전 특징과 충분히 가깝다면 이들을 merge 하므로써 중복된 정보를 저장하는 것을 피할 수 있다.   
 ![Figure4](../assets/resource/segmentation/paper1/6.png)
 
