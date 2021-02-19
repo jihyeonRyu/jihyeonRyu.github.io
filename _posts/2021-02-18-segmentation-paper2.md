@@ -26,7 +26,8 @@ Authors: Song-Hai Zhanga, Xin Donga, Jia Lib, Ruilong Lia, Yong-Liang Yangc
 Semantic Segmentation은 dense prediction task로 분류할 수 있다. 각 픽셀이 어떤 클래스에 속할지 분류하는 것이 목표이기 때문이다.  
 최근에 CNN을 이용해서 semantic segmentation은 큰 진보가 있었지만, 일반적인 케이스와 달리 Portrait image는 몇가지 독특한 특징이 있다. 
 1. 적어도 한사람의 얼굴이 전체의 10% 이상을 차지한다. 
-2. 그 경계가 모호하면서 복잡한 illumination에 놓여 있기 쉽다. 
+2. 그 경계가 모호하면서 복잡한 illumination에 놓여 있기 쉽다.  
+
 모바일 디바이스에서 높은 정확도와 계산 효율성을 동시에 달성하기는 매우 도전적이다. 이전의 portrait segmentation 연구에서는 효율성보다 정확성에 더 집중해왔기 때문에, 
 실시간 segmentation에는 적합하지 않았다.   
 이 논문에서는 모바일 환경에서 real-time이 가능 새로운 PortraitNet를 제안한다. 
