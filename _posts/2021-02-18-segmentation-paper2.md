@@ -1,7 +1,7 @@
 ---
 layout: post  
 title: (Paper Review) Segmentation  
-subtitle: PortraitNet: Real-time Portrait Segmentation Network for Mobile Device  
+subtitle: (PortraitNet) Real-time Portrait Segmentation Network for Mobile Device  
 comments: true
 --- 
 
@@ -9,6 +9,7 @@ comments: true
 Proceeding: 2019
 Authors: Song-Hai Zhanga, Xin Donga, Jia Lib, Ruilong Lia, Yong-Liang Yangc
 ```
+
 비디오에서 배경을 변경하는 것과 같이 Real-time으로 portrait segmentation을 수행하는 것은 모바일 디바이스에서 필수적인 요소이다.
 이 논문에서는 PortraitNet이라 칭하는 모바일에서 효율적으로 동작하는 real-time portrait segmentation model을 제안한다.
 PortraitNet은 학습 단계에서 두 개의 auxiliary loss들을 가지고 있지만 테스트 단계에선 추가적인 비용이 없는 lightweight U-shape 구조이다.
