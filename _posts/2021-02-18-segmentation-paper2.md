@@ -2,13 +2,9 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: (PortraitNet) Real-time Portrait Segmentation Network for Mobile Device  
+tags: [ai, ml, segmentation]  
 comments: true
 --- 
-
-```
-Proceeding: 2019
-Authors: Song-Hai Zhanga, Xin Donga, Jia Lib, Ruilong Lia, Yong-Liang Yangc
-```
 
 비디오에서 배경을 변경하는 것과 같이 Real-time으로 portrait segmentation을 수행하는 것은 모바일 디바이스에서 필수적인 요소이다.
 이 논문에서는 PortraitNet이라 칭하는 모바일에서 효율적으로 동작하는 real-time portrait segmentation model을 제안한다.
@@ -16,6 +12,11 @@ PortraitNet은 학습 단계에서 두 개의 auxiliary loss들을 가지고 있
 두 auxiliary loss들은 boundary pixel의 정확도를 높이는 boundary loss와 조도의 변화에 강인하게 해주는 consistency constraint loss 이다. 
 EG1800과 Supervise-Portrait 데이터 셋이서 SOTA를 달성했으며, 더 sharp한 boundary와 illumination 조건에서 좋은 성능을 보였다.
 게다가 224x224 rgb 이미지를 iphone7에서 30fps 속도로 처리할 수 있다.  
+
+```
+Proceeding: 2019
+Authors: Song-Hai Zhanga, Xin Donga, Jia Lib, Ruilong Lia, Yong-Liang Yangc
+```
 
 [Paper Link](http://yongliangyang.net/docs/mobilePotrait_c&g19.pdf)  
 [Source Code Link](https://github.com/dong-x16/PortraitNet)

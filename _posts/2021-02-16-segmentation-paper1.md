@@ -2,8 +2,6 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement  
-gh-repo: xmlyqing00/AFB-URR
-gh-badge: [star, fork, follow]  
 tags: [ai, ml, segmentation]  
 comments: true
 --- 

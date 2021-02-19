@@ -2,6 +2,7 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: Real-time Hair Segmentation and Recoloring on Mobile GPUs  
+tags: [ai, ml, segmentation]  
 comments: true
 --- 
 
