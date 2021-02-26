@@ -86,14 +86,14 @@ inference time에서 모든 heatmap은 soft aggretation 방식을 이용해서 �
 
 현재의 embedding 벡터를 생성하기 위해 f8_t-1과 이전의 mask heatmap H_t-1을 concat한다. (X_t-1')
 이는 각각의 f(), g() 브랜치로 forward하고 c_tp X HW로 reshape 한다음 embedding matrix I를 생성한다.  
-![](./../assets/resource/segmentation/paper4/3.png)  
+![](./../assets/resource/segmentation/paper4/3.png)    
 I_ij는 j 채널 정보에 대한 i 채널의 view를 의미한다. X_t-1'는 H_t-1에 의해 대상 물체에서 멀리 떨어진 정보의 유입을 방해한다.  
 그래서 I_ij는 오직 타겟 물체의 안쪽 또는 근처의 픽셀만 고려한다. 이는 마치 global pooling과 region-based operation과 유사하다. 
 
 위 Figure3(a)에서 육각형은 이전 마스크를 이용해 target location을 예측한 것을 표현한다. f(X_t-1)과 g(X_t-1)은 HW plane을 따라 비교된다. 
 만약 두 channel이 비슷하다면, I의 값은 클것이고 반대면 작을 것이다. 
-마지막으로 long-term template TP_t는 I의 weighted average와 TP_t-1을 이용하여 업데이트 된다.
-![](./../assets/resource/segmentation/paper4/4.png)  
+마지막으로 long-term template TP_t는 I의 weighted average와 TP_t-1을 이용하여 업데이트 된다.  
+![](./../assets/resource/segmentation/paper4/4.png)    
 template attention module은 c_tp X H X W 사이즈의 similarity map을 생성한다. 
 query feature map q(X_t)는 c_tp X H X W 사이즈를 가진다.
 similarity는 TP의 각 행과 q(X_t)의 각 spatical feature간 similarity 계산을 통해 생선된다. 
@@ -107,11 +107,11 @@ depth-wise convolution이 더 계산 비용이 적지만 더 많은 그룹을 �
 이전 프레임이 잘못 예측할 경우 점진적으로 잘못된 tracking을 야기할 수 있다. 만약 모델이 잘못된 추정을 수정하는 방법에 대한 올바른 transition 정보를 얻는 경우 모델은 이런 오류 전파 문제를 해결할 수 있다.
 저자는 template attention module의 output feature map을 이용해 transition matrix(π_t')을 계산한다. 
 그래고 새로운 template consistency loss를 제안한다. 
-![](./../assets/resource/segmentation/paper4/6.png)  
-π의 range는 (-1, 1)이고 두 개의 channel로 구성되어 있다. 
-![](./../assets/resource/segmentation/paper4/7.png)  
-estimated previous mask를 사용하는 이유는 Figure4에서 알수 있듯이 false positive region을 효과적으로 지울 수 있기 때문이다. (Remove False Positive)  
-
-overall loss는 아래와 같고 lambda는 5로 설정하였다.  
-![](./../assets/resource/segmentation/paper4/8.png)  
+![](./../assets/resource/segmentation/paper4/6.png)    
+π의 range는 (-1, 1)이고 두 개의 channel로 구성되어 있다.   
+![](./../assets/resource/segmentation/paper4/7.png)    
+estimated previous mask를 사용하는 이유는 Figure4에서 알수 있듯이 false positive region을 효과적으로 지울 수 있기 때문이다.
+ (Remove False Positive)    
+overall loss는 아래와 같고 lambda는 5로 설정하였다.   
+![](./../assets/resource/segmentation/paper4/8.png)    
 
