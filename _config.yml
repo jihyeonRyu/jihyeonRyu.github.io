@@ -18,6 +18,7 @@ navbar-links:
   Categorys:
     - Robustness: "robustness"
     - Segmentation: "segmentation"
+    - GAN: "gan"
 
 # --- Logo --- #
 
