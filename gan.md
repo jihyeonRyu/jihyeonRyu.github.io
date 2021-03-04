@@ -5,6 +5,6 @@ tags: [ai, ml, generative adversarial network]
 comments: false  
 --- 
 
-#### []()
+#### [(PiiGAN) Generative Adversarial Networks for Pluralistic Image Inpainting](https://jihyeonryu.github.io/2021-03-02-gan-paper1/)
 
 
