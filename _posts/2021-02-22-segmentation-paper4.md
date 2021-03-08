@@ -2,7 +2,7 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: (TTVOS) Lightweight Video Object Segmentation with Adaptive Template Attention Module and Temporal Consistency Loss   
-tags: [ai, ml, segmentation]  
+tags: [ai, ml, video, segmentation]  
 comments: true
 --- 
 

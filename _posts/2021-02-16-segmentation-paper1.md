@@ -2,7 +2,7 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement  
-tags: [ai, ml, segmentation]  
+tags: [ai, ml, video, segmentation]  
 comments: true
 --- 
 

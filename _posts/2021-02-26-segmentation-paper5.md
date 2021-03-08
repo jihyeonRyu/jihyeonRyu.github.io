@@ -2,7 +2,7 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: (SINet) Extreme Lightweight Portrait Segmentation Networks with Spatial Squeeze Modules and Information Blocking Decoder   
-tags: [ai, ml, segmentation]  
+tags: [ai, ml, portrait, segmentation]  
 comments: true
 --- 
 

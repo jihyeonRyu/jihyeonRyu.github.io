@@ -2,7 +2,7 @@
 layout: post  
 title: (Paper Review) Segmentation  
 subtitle: (PortraitNet) Real-time Portrait Segmentation Network for Mobile Device  
-tags: [ai, ml, segmentation]  
+tags: [ai, ml, portrait, segmentation]  
 comments: true
 --- 
 
