@@ -16,9 +16,10 @@ author: jihyeon Ryu
 navbar-links:
   About Me: "aboutme"
   Categorys:
-    - Robustness: "robustness"
+    - Fundamental: "fundamental"
     - Segmentation: "segmentation"
     - GAN: "gan"
+    - Code Collection: "code"
 
 # --- Logo --- #
 
