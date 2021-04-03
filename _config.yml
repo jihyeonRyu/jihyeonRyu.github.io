@@ -19,7 +19,9 @@ navbar-links:
     - Fundamental: "fundamental"
     - Segmentation: "segmentation"
     - GAN: "gan"
+    - Survey: "survey"
     - Code Collection: "code"
+
 
 # --- Logo --- #
 
