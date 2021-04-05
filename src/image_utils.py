@@ -2,7 +2,7 @@ import imutils
 import os
 import cv2
 
-image_path = "../assets/resource/gan/paper1"
+image_path = "../assets/resource/survey/paper1"
 
 WIDTH = 500
 filenames = os.listdir(image_path)
@@ -13,7 +13,7 @@ for file in filenames:
     tmp_image = imutils.resize(image, width=WIDTH)
     cv2.imshow("test", tmp_image)
     k = cv2.waitKey(0)
-    if k == 121 or k == 89:
+    if k == 121 or k == 89: # key (Y, y)
         print("Resize Image")
         cv2.imwrite(full_path, tmp_image)
     else:
