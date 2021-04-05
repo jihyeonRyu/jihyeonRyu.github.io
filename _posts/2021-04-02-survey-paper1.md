@@ -23,7 +23,7 @@ Authors: Kai Han, Yunhe Wang, Hanting Chen, Xinghao Chen, Jianyuan Guo, Zhenhua 
 
 [Paper Link](https://arxiv.org/pdf/2012.12556.pdf)  
 
-## Introduction
+## 1. Introduction
 서로 다른 타입의 task에는 다른 타입의 network를 사용해왔다.
 예를들어 MLP나 FC는 고전적인 네트워크 구조이고, CNN은 이미지를 위한 네트워크 구조이고, RNN은 sequential하거나 time series data를 위한 네트워크 구조이다.
 Transformer는 새로운 타입의 네트워크이다.
@@ -41,13 +41,13 @@ CNN은 기본적인 요소로 고려되어 왔지만 transformer가 새로운 �
 Transformer의 주요 발전 마일스톤은 아래와 같다.  
 ![](./../assets/resource/survey/paper1/2.png)  
 
-## Formulation of Transformer
+## 2. Formulation of Transformer
 ![](./../assets/resource/survey/paper1/3.png)  
 Transformer는 같은 구조를 가진 몇개의 encoder/decoder 모듈로 이루어져 있다.
 Encoder는 self-attention layer와 feed-forward (각 위치의 단어마다 독립적으로 적용) NN으로 이루어져있고 decoder는 추가로 Encoder-Decoder Attention으로 이루어져있다.
 Transformer에 사용하기 전 sentence의 각 word를 512 dimension의 embedding vector로 변환한다. 
 
-### Self-Attention Layer
+### 2.1 Self-Attention Layer
 ![](./../assets/resource/survey/paper1/4.png)  
 input vector는 세 개의 서로 다른 vector로 변환한다.
 ```
@@ -84,7 +84,7 @@ inputs(nx512) = inputs(nx512) + positional_encoding(nx512)
 ```
 positional encoding을 사용하면 순서 정보가 보존되어 같은 단어라고 하더라도 문장 내의 위치에 따라서 트랜스포머의 입력으로 들어가는 임베딩 벡터의 값이 달라진다.
 
-### Multi-Head Attention
+### 2.2 Multi-Head Attention
 self-attention layer의 성능을 극대화 할 수 있는 방법이다.
 주어진 참조 단어에 대해서 우리는 몇 가지의 다른 단어들을 함 집중하기를 바란다. 
 하지만 single-head self attention layer는 하나 이상의 단어들에 대해서 equality하게 집중하는데 한계가 있다.
@@ -99,7 +99,7 @@ self-attention layer의 성능을 극대화 할 수 있는 방법이다.
 ![](./../assets/resource/survey/paper1/7.png)  
 MultiHead: ((n x (d/h)) x h) * (dxd)  = (n x d)   
 
-### Other Key Concepts in Transformer
+### 2.3 Other Key Concepts in Transformer
 
 #### Residual Connection in the Encoder and Decoder
 ![](./../assets/resource/survey/paper1/8.png)  
@@ -128,7 +128,7 @@ softmax layer을 통해서 다시 word로 출력한다.
 CNN이 Local한 특징만을 캡쳐하는데 비해, Transformer는 멀리 떨어진 특징을 캡쳐할 수 있고, 
 RNN이 sequential하게 계산해야하는데 반해, Transformer는 parallel 하게 계산할 수 있어 쉽게 가속할 수 있다..
 
-## Revisiting Transformers for NLP
+## 3. Revisiting Transformers for NLP
 Transformer가 개발되기 이전에,RNN(GRU, LSTM)은 attention과 함께 쓰여 SOTA model로 인식되어져 왔다.
 하지만 RNN은 이전 hidden state 부터 다음 step 까지 정보를 sequential하게 계산해야한다.
 이는 학습 중 가속과 병렬처리를 할 수 없게 만들고, 긴 sequence를 계산하기 어렵게 만들거나 더 큰 모델을 요구한다.
@@ -184,18 +184,106 @@ fine-tuning 없이 직접적으로 자연어 처리 downstream task에 바로 �
 
 ![](./../assets/resource/survey/paper1/11.png)  
 
-## Visual Transformer
+## 4. Visual Transformer
 
-### Backbone for Image Classification
+### 4.1 Backbone for Image Classification
 
 Transformer는 image classification의 backbone으로 활용할 수 있다.
-[Wu et al.](https://arxiv.org/pdf/2006.03677v4.pdf)은 ResNet을 베이스 라인으로 사용하고 마지막 stage의 Conv를 transformer로 교체하였다.
-![](./../assets/resource/survey/paper1/13.png)  
-Conv layer들을 통해서 low-level feature를 추출고나서 이를 visual transformer로 보낸다.
+[Wu et al.](https://arxiv.org/pdf/2006.03677v4.pdf) 은 ResNet을 베이스 라인으로 사용하고 마지막 stage의 Conv를 transformer로 교체하였다.
+![](./../assets/resource/survey/paper1/13.png)    
+(1) Conv layer network는 밀집된 분포와 low-level 패턴을 학습  
+(2) Transformer network는 떨어진 분포와 고차원의 의미 개념을 학습  
+(3) Output Token을 그대로 image-level prediction(classification)에 사용하거나, projector을 이용해서 pixel-level prediction(semantic segmentation)에 사용    
+
 Transformer로 보내기 전에, Tokenizer를 사용하여 pixel을 Semantic하게 그룹지어 적은 수의 visual token으로 만든다. 각 visual token은 image의 semantic concept을 표현한다.
-이 visual Token을 transformer에 적용시켜서 token간의 관계를 학습한다.
-output Token을 그대로 image classification에 사용하거나, feature map에 다시 projection 시켜서 semantic segmentation에 사용한다.
+
+* Tokenizer
+    * input feature map (X) : HxWxC
+    * visual token (T): LxC (L: number of tokens << HW)
+    * Filter-based Tokenizer
+      ![](./../assets/resource/survey/paper1/14.png)  
+        * W_A : CxL (X를 semantic group으로 변환하는 convolution filter)  
+        * A^T X : L개의 visual token을 만드는 X 픽셀에 대한 weighted average
+        * 하지만 고차원의 semantic concept은 sparse하고 각각은 오직 이미지에 적게 나타난다.
+        그래서 고정된 Weight으로 고차원 컨셉을 한번에 학습하는 것은 매우 비효율적이다.  
+        ![](./../assets/resource/survey/paper1/15.png)  
+    * Recurrent Tokenizer
+        * filter-based tokenizer의 단점을 보완하기 위한 방법
+        * 이전 layer의 visual token이 현재 layer의 새로운 token 생성을 가이드 해주는 역할을 해주며 점진적으로 정제된 visual token set을 얻게 해준다.  
+        ![](./../assets/resource/survey/paper1/16.png)  
+        ![](./../assets/resource/survey/paper1/17.png)  
+* Projector
+    * Visual Token은 pixel-level 디테일을 잃은 후 이기 때문에 feature map을 이용해서 정제하는 작업이 필요하다.
+    ![](./../assets/resource/survey/paper1/18.png)  
+        * X_in, X_out : HW x C (input, output feature map)
+        * W_q, W_k : C x C (feature map의 Query weight, Token의 Key weight)
+        * 위의 key-query product는 인코딩된 visual token을 원래의 feature map에 어떻게 다시 투영시킬지를 결정 
+        
 
 #### iGPT
 image를 위한 generative pre-training 방법은 오래전부터 존재해왔다.
-[Chen et al.](http://proceedings.mlr.press/v119/chen20s/chen20s.pdf)은 이를 self-supervised 방법과 결합하여 다시 실험하였다.
+[Chen et al.](http://proceedings.mlr.press/v119/chen20s/chen20s.pdf) 은 이를 self-supervised 방법과 결합하여 다시 실험하였다.
+* GPT-2 구조를 이용한다. 
+* text data처럼 이미지 픽셀을 1D로 만들어 Sequence Transformer을 학습하고 
+다음 픽셀을 예측하거나(auto-regressive), 마스킹된 픽셀 부분의 값을 찾도록 (BERT) 하는 구조이다.
+* 이런 generative pre-training은 low-resolution 데이터에 좋은 성능을 보인다.
+* 이미지의 2D spatial structure을 인코딩 하지 않음에도 불구하고 CNN 모델들과 성능이 거의 유사하거나 오히려 뛰어난 실험도 존재한다.
+
+![](./../assets/resource/survey/paper1/19.png)  
+1. 먼저 raw image를 low-resolution으로 resize 후 1D sequence로 Reshape
+2. 두 Objective 중 선택하여 Pre-training
+    (a) Auto-regressive: 이전 픽셀들을 이용하여 다음 픽셀을 예측  
+    ![](./../assets/resource/survey/paper1/20.png)  
+    ![](./../assets/resource/survey/paper1/21.png)  
+        * attention logit nxn matrix에 표준 upper triangular mask를 사용  
+    (b) BERT: 픽셀을 랜덤하게 마스킹 하고 마스킹된 픽셀을 예측  
+    ![](./../assets/resource/survey/paper1/22.png)  
+    
+3. Linear probes나 fine-tuning을 이용해 model evaluation 
+    * fine-tuning
+        * Sequence에 average pooling을 수행하여 d-dimensional vector 추출  
+        * class logit으로 투영시키기 위해 Cross Entropy Loss 사용하여 학습   
+        L = L_ce + {L_ar, L_bert}
+
+#### ViT
+[Dosovitskiy et al.](https://arxiv.org/pdf/2010.11929.pdf) 는 최근에 Vision Transformer (ViT)를 제안한다.  
+![](./../assets/resource/survey/paper1/23.png)  
+
+2D 이미지를 처리하기 위해서 flattend 2d patch 들을 시퀀스로 reshape 한다. 
+* Patch: N x (PxPxC)
+* L: length of sequence (HW/PP)
+* 위치 정보를 전달하기 위해 path embedding 에 positional embedding을 더한다. 
+* BERT 처럼 embedded patch 시퀀스의 앞에 학습 가능한 [CLASS] 토큰을 사용하여 classification task에 사용한다.  
+* 2D-aware positional embedding 을 사용해도 큰 성능상의 이점이 없어서 표준적인 1D-positional embedding 을 사용하였다. 
+![](./../assets/resource/survey/paper1/24.png)    
+
+* ViT는 large dataset으로 pre-training한 후에 작은 downstream task에 fine-tune 한다.
+* Pre-training 시에도 classification head를 사용하여 supervised learning 한다. 
+* fine-tuning에서는 pre-trained prediction head를 제거하고 D x K feed-forward layer를 초기화해서 붙인다.
+    * K: downstream task의 class 수
+    * pre-training resolution 보다 고차원을 사용하는 것이 더 효과적이다. 
+        * 이를 위해서 pre-trained position embeddings에 2d-interpolation 을 수행한다.
+        * 2D 구조에 대한 편향은 오직 해상도 변경이나 patch 추출 과정에서만 주입된다.
+        
+* Transformer은 translation equivariance와 locality와 같은 CNN 고유의 유도 바이어스가 없기 때문에 불충분한 양의 데이터에 대해 학습할 때에는 일반화가 잘 되지 않는다.
+* 그럼에도 대규모 데이터 세트에 대한 훈련이 이런 편향을 능가한다는 것을 발견 했다.
+* 하지만, ViT와 NLP transformer의 구조가 비슷하다는 점을 감안할 때, 패치간, 패치내의 상관관계를 명시적으로 식별하는 방법이 문제가 된다. 
+비록 path 간의 사이즈는 동일하지만 그 복잡성을 다르다. 그래서 이 특징이 아직 완전히 사용되지는 못하고 있다. 
+
+
+#### DeiT
+[Touvron et al.](https://arxiv.org/pdf/2012.12877.pdf) 는 오직 ImageNet 데이터에만 학습시킨 경쟁력있는 convolution-free transformer를 제안한다.  
+DeiT-B는 ViT-B와 같은 구조를 가지고 있다. 
+단, 추가적 데이터셋 없이 ImageNet에 대한 강한 data augmentation 으로 83%의 Top-1 accuracy를 이루었다.
+추가적으로 저자는 CNN을 teacher 모델로 사용하면 성능상의 이점을 얻을 수 있음을 발견했다. (Token-based distillation)  
+![](./../assets/resource/survey/paper1/25.png)  
+* Distillation Token을 추가하고 teacher model의 prediction 결과를 distillation의 label로 사용
+
+### 4.2 High/Mid-level Vision
+
+
+
+
+   
+
+

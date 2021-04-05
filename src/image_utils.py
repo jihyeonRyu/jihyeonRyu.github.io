@@ -18,4 +18,4 @@ for file in filenames:
         cv2.imwrite(full_path, tmp_image)
     else:
         print("Not Resize Image")
-        continue
+        continuey
