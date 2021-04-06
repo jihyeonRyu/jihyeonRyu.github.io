@@ -42,6 +42,9 @@ Transformer의 주요 발전 마일스톤은 아래와 같다.
 ![](./../assets/resource/survey/paper1/2.png)  
 
 ## 2. Formulation of Transformer
+
+[참조하기 좋은 페이지](https://wikidocs.net/31379)  
+
 ![](./../assets/resource/survey/paper1/3.png)  
 Transformer는 같은 구조를 가진 몇개의 encoder/decoder 모듈로 이루어져 있다.
 Encoder는 self-attention layer와 feed-forward (각 위치의 단어마다 독립적으로 적용) NN으로 이루어져있고 decoder는 추가로 Encoder-Decoder Attention으로 이루어져있다.
@@ -50,14 +53,16 @@ Transformer에 사용하기 전 sentence의 각 word를 512 dimension의 embeddi
 ### 2.1 Self-Attention Layer
 ![](./../assets/resource/survey/paper1/4.png)  
 input vector는 세 개의 서로 다른 vector로 변환한다.
+
 ```
-* q: query vector (1xd) = input(1x512)*W_q(512xd)
-* k: key vector (1xd) = input(1x512)*W_k(512xd)
-* v: value vector (1xd) = input(1x512)*W_v(512xd)
+n = # of words  
+* Q: query vector (nxn_q) = input(nx512)*W_q(512xn_q)
+* K: key vector (nxn_k) = input(nx512)*W_k(512xn_k)
+* V: value vector (nxn_v) = input(nx512)*W_v(512xn_v)
 ```
-inputs(n개의 단어로 이루어진 문장)으로 부터 만든 q, k, v를 Q, K, V로 pack 한다. (nxd)  
-Key와 Query로 단어 간의 attention score를 계산한다. (nxn) 
-Attention Score와 Value를 곱해서 최종 결과를 얻는다. (nxd)  
+inputs(n개의 단어로 이루어진 문장)을 각 weights와 곱해 Q, K, P를 만든다. O(nx512xn_k + nx512xn_q + nx512xn_v)     
+Key와 Query로 단어 간의 attention score를 계산한다. (nxn) O(n_kxn_qxn)
+Attention Score와 Value를 곱해서 최종 결과를 얻는다. (nxn_v) O(nxnxn_v)
 ![](./../assets/resource/survey/paper1/5.png)  
 
 Decoder module에 있는 encoder-decoder attention layer는 encoder module에 있는 self-attention layer와 유사하다.
@@ -316,16 +321,20 @@ FFN(Feed-forward network)를 통해 최종적으로 bounding box coordinates와 
     * L_box는 L1 loss 만 사용하지 않고 scale-invariant한 gIOU loss를 함께 사용한다.  
     ![](./../assets/resource/survey/paper1/32.png)  
 
-DETR은 training schedule이 더 길게 걸리고, small object에 대한 성능이 좋지 않은 등 몇가지 challenge 들이 있다.
+DETR의 가장 큰 문제는 두가지가 있다. 
+* DETR은 training schedule이 김  
+    * 시간 복잡도가 quadratic complexity로 증가하기 때문  
+    * feature map에 있는 픽셀 모두가 query와 key가 됨. Encoder의 시간 복잡도는 O(H^2xW^2xC) 로 quadratic complexity를 가짐.  
+    * query와 key가 많기 때문에 초기 attention score는 1/n_k 로 매우 작은 값을 가져셔 ambiguous gradient 문제가 생김 
+* Small object에 대한 성능이 좋지 않음  
+    * Multi Scale Feature를 활용할 수 없기 때문에 
+
 이런 문제를 해결하기 위해 [Zhu et al.](https://arxiv.org/pdf/2010.04159.pdf) 는 detection 성능을 크게 향상시킨 Deformable DETR를 제안한다.
 ![](./../assets/resource/survey/paper1/33.png)  
 image feature map의 전체 spatial location을 보는 것이 아니라 reference point에서 작은 key point 만을 attention module에 사용한다. 
 이 방법은 계산 복잡도를 크게 줄이고 빠른 수렴을 하게 도와준다.
 더 중요한 것은, deformable attention module은 쉽게 multi-scale feature과 섞을 수 있다.
-Deformable DETR은 DETR에 비ㅐ서 10배 이상 학습 비용이 낮으면서 1.6배 이상 빠르고 더 좋은 성능을 내었다.
+Deformable DETR은 DETR에 비해서 10배 이상 학습 비용이 낮으면서 1.6배 이상 빠르고 더 좋은 성능을 내었다.
 그리고 iterative boundinb box refinement 방식과 two stage scheme를 사용함으로써 성능을 더 올릴 수 있었다.
-
-
-
 
 
