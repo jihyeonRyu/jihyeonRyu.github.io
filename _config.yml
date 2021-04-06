@@ -16,12 +16,8 @@ author: jihyeon Ryu
 navbar-links:
   About Me: "aboutme"
   Categorys:
-    - Fundamental: "fundamental"
-    - Segmentation: "segmentation"
-    - GAN: "gan"
-    - Survey: "survey"
-    - Code Collection: "code"
-
+    - AI Papers: "ai_paper"
+    - AI Surveys: "ai_survey"
 
 # --- Logo --- #
 

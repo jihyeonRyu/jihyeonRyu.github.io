@@ -1,7 +1,7 @@
 ---
 layout: post  
-title: (Paper Review) Survey    
-subtitle: A Survey on Visual Transformer       
+title: A Survey on Visual Transformer    
+subtitle: AI Survey     
 tags: [ai, ml, computer vision, transformer, self-attention]  
 comments: true
 ---  
@@ -280,10 +280,52 @@ DeiT-B는 ViT-B와 같은 구조를 가지고 있다.
 * Distillation Token을 추가하고 teacher model의 prediction 결과를 distillation의 label로 사용
 
 ### 4.2 High/Mid-level Vision
+#### Generic Object Detection
+Transformer based 방식은 두 가지 카테고리로 분류할 수 있다.
+* Transformer-based set prediction
+* Transformer-based backbone methods  
+![](./../assets/resource/survey/paper1/26.png)  
+
+##### Transformer-based Set Prediction for Detection
+[Carion et al.](https://arxiv.org/pdf/2005.12872.pdf) 는 object detection framework를 제 디자인한 Detection Transformer (DETR)를 제안하였다. 
+DETER은 object detection을 직관적인 set prediction 문제로 보고 anchor 생성과 NMS(Non-maximum suppression) 후처리와 같은 수작업을 제거한
+간단하고 fully end-to-end object detection 모델이다. 
+![](./../assets/resource/survey/paper1/27.png)  
+
+DETR은 CNN 백본으로 시작하여 input image에서 feature를 추출한다.  
+위치 정보를 보충하기 위해 Encoder는 flattened된 image feature에 fixed positional encoding을 추가하여 사용한다. 
+또한 Decoder는 N개의 learned positional encoding(object-query)와 함께 encoder의 embedding을 사용하고, N개의 output embedding을 생성한다.
+* 두 종류의 positional encoding을 사용한다.
+    * Spatial Positional Encoding for Encoder
+    * Output Positional Encoding(object queries) for Decoder : 처음엔 0으로 초기화,
+
+Decoder을 통해 고정된 사이즈인 N개의 output을 예측한다. (N > #of object in an image) 
+모든 object 들을 하나의 set으로 여겨 예측의 중복이 없다. 
+FFN(Feed-forward network)를 통해 최종적으로 bounding box coordinates와 class label을 예측한다.
+* Bipartite Matching Loss
+    * 예측한 N개의 object set의 순열(permutation)중 ground-truth object set과 L_match가 가장 작은 순열을 찾는다.
+    ![](./../assets/resource/survey/paper1/29.png)  
+        * 단 GT set은 N 사이즈가 되도록 pad (no object)를 채워넣는다.
+    * L_match는 각 쌍의 class와 box에 대한 pair-wise matching cost이다.  
+    ![](./../assets/resource/survey/paper1/30.png)  
+        * object가 있는 gt와 그에 해당하는 쌍과의 matching cost
+        * matching cost는 anchor와 같은 역할을 함
+        * anchor 사용 시 duplicate 될 수 있지만, 위와 같은 방법은 one-to-one 매칭으로 중복을 방지한다.
+    * 가장 작은 matching cost를 가진 output set 순열을 찾으면, Hungraian loss를 계산한다.
+    ![](./../assets/resource/survey/paper1/31.png)  
+    * L_box는 L1 loss 만 사용하지 않고 scale-invariant한 gIOU loss를 함께 사용한다.  
+    ![](./../assets/resource/survey/paper1/32.png)  
+
+DETR은 training schedule이 더 길게 걸리고, small object에 대한 성능이 좋지 않은 등 몇가지 challenge 들이 있다.
+이런 문제를 해결하기 위해 [Zhu et al.](https://arxiv.org/pdf/2010.04159.pdf) 는 detection 성능을 크게 향상시킨 Deformable DETR를 제안한다.
+![](./../assets/resource/survey/paper1/33.png)  
+image feature map의 전체 spatial location을 보는 것이 아니라 reference point에서 작은 key point 만을 attention module에 사용한다. 
+이 방법은 계산 복잡도를 크게 줄이고 빠른 수렴을 하게 도와준다.
+더 중요한 것은, deformable attention module은 쉽게 multi-scale feature과 섞을 수 있다.
+Deformable DETR은 DETR에 비ㅐ서 10배 이상 학습 비용이 낮으면서 1.6배 이상 빠르고 더 좋은 성능을 내었다.
+그리고 iterative boundinb box refinement 방식과 two stage scheme를 사용함으로써 성능을 더 올릴 수 있었다.
 
 
 
-
-   
 
 
