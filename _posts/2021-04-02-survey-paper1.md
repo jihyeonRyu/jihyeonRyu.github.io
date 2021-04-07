@@ -52,25 +52,22 @@ Transformer에 사용하기 전 sentence의 각 word를 512 dimension의 embeddi
 
 ### 2.1 Self-Attention Layer
 ![](./../assets/resource/survey/paper1/4.png)  
-input vector는 세 개의 서로 다른 vector로 변환한다.
 
-```
-n = # of words  
-* Q: query vector (nxn_q) = input(nx512)*W_q(512xn_q)
-* K: key vector (nxn_k) = input(nx512)*W_k(512xn_k)
-* V: value vector (nxn_v) = input(nx512)*W_v(512xn_v)
-```
-inputs(n개의 단어로 이루어진 문장)을 각 weights와 곱해 Q, K, P를 만든다. O(nx512xn_k + nx512xn_q + nx512xn_v)     
-Key와 Query로 단어 간의 attention score를 계산한다. (nxn) O(n_kxn_qxn)
-Attention Score와 Value를 곱해서 최종 결과를 얻는다. (nxn_v) O(nxnxn_v)
+input vector는 세 개의 서로 다른 key, query, value vector로 변환한다.  
+
+![](./../assets/resource/survey/paper1/4_1.png)  
+
+
 ![](./../assets/resource/survey/paper1/5.png)  
 
-Decoder module에 있는 encoder-decoder attention layer는 encoder module에 있는 self-attention layer와 유사하다.
-단 key matrix K와 value matrix V는 encoder 모듈로부터 온다.
+Decoder module에 있는 encoder-decoder attention layer는 encoder module에 있는 self-attention layer와 유사한 구조이지만 
+단, key matrix K와 value matrix V는 encoder 모듈로부터 온다.
 그리고 query matrix Q는 Decoder의 이전 layer로부터 구한다.
 
-앞의 과정은 각 단어의 위치와는 무관하다. 즉, self-attention layer은 문장에서 단어의 위치 정보를 캡쳐하는 기능이 부족하다.
-그래서 이 문제를 해결하고 최종 입력 벡터를 얻기 위해, d 차원의 positional embedding이 original input embedding에 더해진다.  
+* Positional Encoding  
+RNN이 자연어 처리에 유용했던 이유는 단어의 위치에 따라서 단어를 순차적으로 입력 받아 처리했기 때문에 단어의 위치 정보를 가지고 처리할 수 있었기 때문이다. 
+하지만 앞의 Self-Attention은 단어의 위치 정보와는 무관하게 단어간 상관 관계만을 캡쳐하므로 위치 정보를 활용하지 못한다.  
+그래서 이 문제를 해결하고 최종 입력 벡터를 얻기 위해, d 차원(input word embedding과 같은 512 차원)의 positional embedding을 original input embedding에 더한다.    
 
 그런데 이 positional encoding은 아래와 같은 조건을 충족해야 한다.     
 ```
@@ -82,27 +79,31 @@ Decoder module에 있는 encoder-decoder attention layer는 encoder module에 �
 위의 조건을 충족하는 positional encoding 방법은 아래와 같다.  
 ![](./../assets/resource/survey/paper1/6.png)  
 * *pos* : 문장에서 단어의 위치 (row)
-* i: 임베딩 벡터 내의 차원의 인덱스 (col)
+* i: 임베딩 벡터 내의 차원의 인덱스 (col)    
+* 각 차원의 인덱스가 짝수인 경우는 sin, 홀수인 경우는 cos 함수를 사용한다. 
+![](./../assets/resource/survey/paper1/6_1.png)  [그림 참조](https://wikidocs.net/31379)    
 
 ```
 inputs(nx512) = inputs(nx512) + positional_encoding(nx512) 
 ```
+
 positional encoding을 사용하면 순서 정보가 보존되어 같은 단어라고 하더라도 문장 내의 위치에 따라서 트랜스포머의 입력으로 들어가는 임베딩 벡터의 값이 달라진다.
 
 ### 2.2 Multi-Head Attention
 self-attention layer의 성능을 극대화 할 수 있는 방법이다.
 주어진 참조 단어에 대해서 우리는 몇 가지의 다른 단어들을 함 집중하기를 바란다. 
-하지만 single-head self attention layer는 하나 이상의 단어들에 대해서 equality하게 집중하는데 한계가 있다.
+하지만 single-head self attention layer는 하나 이상의 단어들에 대해서 equality하게 집중하는데 한계가 있다. (Softmax Function을 생각해보면 0-1까지 확률을 나눠 가짐)  
 
 이는 attention layer에 다른 representation subspace를 제공함으로써 해결할 수 있다.
-서로 다른 query, key, value matrices가 서로 다른 head에 사용된다.
-이 matrices는 input vector을 서로 다른 representation subspace에 투영한다.
+서로 다른 query, key, value Weights가 서로 다른 head에 사용된다. 
+이 weights는 input vector을 서로 다른 representation subspace에 투영함으로써, 병렬로 수행하면서 서로 다른 시각으로 정보를 수집한다.  
 
-먼저 input vector를 query group, key group, value group 으로 변환한다.
+먼저 input vector를 query group, key group, value group 으로 변환한다.  
+![](./../assets/resource/survey/paper1/7_1.png)  
 각 group은 header 수 __h__ 개의 vector를 가지고 있고, 각 dimension은 __d/h__ 이다.
 
-![](./../assets/resource/survey/paper1/7.png)  
-MultiHead: ((n x (d/h)) x h) * (dxd)  = (n x d)   
+![](./../assets/resource/survey/paper1/7.png)    
+![](./../assets/resource/survey/paper1/7_2.png)    
 
 ### 2.3 Other Key Concepts in Transformer
 
@@ -110,15 +111,17 @@ MultiHead: ((n x (d/h)) x h) * (dxd)  = (n x d)
 ![](./../assets/resource/survey/paper1/8.png)  
 
 encoder과 decoder의 sub-layer 사이사이에 residual connection이 추가된다.
-이는 더 높은 성능을 내기 위해서 정보의 흐름을 강화시키는 역할을 한다.
+이는 더 높은 성능을 내기 위해서 정보의 흐름을 강화시키는 역할을 한다.  
+* input embedding과 attention의 embedding dimension이 동일해야함 (d=c=512)    
+
 layer-normalization은 residual connection 뒤에 위치한다.
 
 ```
 LayerNorm(X + Attention(X))
 ```
-BatchNorm이 채널 별로 정규화하는 반해 LayerNorm은 데이터별로 정규화를 수행한다.
-그래서 BN은 시퀀스의 길이를 변경할 수 없지만, LN은 시퀀스의 길이를 자유롭게 변경할 수 있다.
-그래서 Recurrent Network 구조에서는 LN을 사용한다.
+* BatchNorm이 채널 별로 정규화(batch size 고정)하는 반해 LayerNorm은 데이터별로 정규화(batch size 유동적 변화 가능)를 수행한다.
+* 그래서 BN은 시퀀스의 길이를 변경할 수 없지만, LN은 시퀀스의 길이를 자유롭게 변경할 수 있다.
+* 그래서 Recurrent Network 구조에서는 LN을 사용한다.
 
 #### Feed-Forward Network
 self-attention layer 다음에 위치한다. 
@@ -127,24 +130,25 @@ self-attention layer 다음에 위치한다.
 W_1, W_2는 linear transformation layers를 뜻하고, σ는 nonlinear activation function을 의미한다.
 
 #### Final Layer in the Decoder
-softmax layer을 통해서 다시 word로 출력한다.
+softmax layer을 통해서 다시 word embedding로 출력한다.
 
 #### Others
 CNN이 Local한 특징만을 캡쳐하는데 비해, Transformer는 멀리 떨어진 특징을 캡쳐할 수 있고, 
 RNN이 sequential하게 계산해야하는데 반해, Transformer는 parallel 하게 계산할 수 있어 쉽게 가속할 수 있다..
 
 ## 3. Revisiting Transformers for NLP
-Transformer가 개발되기 이전에,RNN(GRU, LSTM)은 attention과 함께 쓰여 SOTA model로 인식되어져 왔다.
+Transformer가 개발되기 이전에 RNN(GRU, LSTM)은 attention과 함께 쓰여 SOTA model로 인식되어져 왔다.
 하지만 RNN은 이전 hidden state 부터 다음 step 까지 정보를 sequential하게 계산해야한다.
 이는 학습 중 가속과 병렬처리를 할 수 없게 만들고, 긴 sequence를 계산하기 어렵게 만들거나 더 큰 모델을 요구한다.
 
-2017년 글로벌 의존성을 획득하고 seq-to-seq natural language task를 해결하기 위한 목적으로 multi-head self-attention과 feed-forward network로 이루어진 Transformer가 
+2017년 글로벌 의존성을 획득하고 seq-to-seq natural language task를 해결하기 위한 목적으로 
+multi-head self-attention과 feed-forward network로 이루어진 Transformer가 
 개발되었다. 이로써 Attention 매커니즘 자체가 attentive RNN에 비해 큰 성능을 낼 수 있음을 증명하였다.
 나아가 Transformer 구조는 병렬 컴퓨팅으로 더 큰 데이터셋을 학습할 수 있게 만들었다.
 이는 대규모 pre-trained models(PTMs)의 급증을 불러 일으켰다.
 
 BERT와 그의 변형 모델들(SpanBERT, RoBERT)은 multi-layer transformer Encoder 구조의 pre-trained model들의 시리즈이다.
-BERT는 BookCorpus와 English Wikipedia dataset으로 아래와 같은 task를 수행한다. 
+BERT는 BookCorpus와 English Wikipedia dataset으로 아래와 같은 방법으로 pre-training 하였다.   
 
 - NLP task에서는 pre-trained된 language model을 사용하는 것이 매우 효율적이다.
 - 특정 task에 대한 parameter를 최소화하기 위해 범용적인 pre-trained model을 학습하고 특정 task에 대해서 fine-tuning을 진행한다.
@@ -302,7 +306,7 @@ DETR은 CNN 백본으로 시작하여 input image에서 feature를 추출한다.
 또한 Decoder는 N개의 learned positional encoding(object-query)와 함께 encoder의 embedding을 사용하고, N개의 output embedding을 생성한다.
 * 두 종류의 positional encoding을 사용한다.
     * Spatial Positional Encoding for Encoder
-    * Output Positional Encoding(object queries) for Decoder : 처음엔 0으로 초기화,
+    * Output Positional Encoding(object queries) for Decoder : randomly initialized variable, No Built-in geometric prior,    
 
 Decoder을 통해 고정된 사이즈인 N개의 output을 예측한다. (N > #of object in an image) 
 모든 object 들을 하나의 set으로 여겨 예측의 중복이 없다. 
@@ -322,19 +326,92 @@ FFN(Feed-forward network)를 통해 최종적으로 bounding box coordinates와 
     ![](./../assets/resource/survey/paper1/32.png)  
 
 DETR의 가장 큰 문제는 두가지가 있다. 
-* DETR은 training schedule이 김  
-    * 시간 복잡도가 quadratic complexity로 증가하기 때문  
-    * feature map에 있는 픽셀 모두가 query와 key가 됨. Encoder의 시간 복잡도는 O(H^2xW^2xC) 로 quadratic complexity를 가짐.  
-    * query와 key가 많기 때문에 초기 attention score는 1/n_k 로 매우 작은 값을 가져셔 ambiguous gradient 문제가 생김 
+* DETR은 training schedule이 길다  
+    * feature map에 있는 픽셀 모두가 query와 key가 됨. Feature map 크기 증가에 따라 quadratic complexity를 가짐.  
+    ![](./../assets/resource/survey/paper1/34.png)  
+    * query와 key의 갯수가 많기 때문에 초기 attention score는 1/(HW)^2 로 매우 작은 값을 가져셔 ambiguous gradient 문제가 생김 
 * Small object에 대한 성능이 좋지 않음  
     * Multi Scale Feature를 활용할 수 없기 때문에 
 
 이런 문제를 해결하기 위해 [Zhu et al.](https://arxiv.org/pdf/2010.04159.pdf) 는 detection 성능을 크게 향상시킨 Deformable DETR를 제안한다.
 ![](./../assets/resource/survey/paper1/33.png)  
+![](./../assets/resource/survey/paper1/35.png)  
+
+* 각 query에서 고정된 수의 key를 추출
+* input feature map: CxHxW
+* q: query index
+* z_q: content feature
+* p_q: 2-d reference point (P_qx, P_qy)
+* m: attention head의 index
+* K: total sampled key (K << HW)
+* A_mqk: scalar attention weight [0-1], z_q를 linear projection 하여 구함  
+* ∆p_mqk: 2-d 실수 (unconstrained range), z_q를 linear projection 하여 구함 
+* N_q: query element의 수
+![](./../assets/resource/survey/paper1/36.png)  
+
 image feature map의 전체 spatial location을 보는 것이 아니라 reference point에서 작은 key point 만을 attention module에 사용한다. 
 이 방법은 계산 복잡도를 크게 줄이고 빠른 수렴을 하게 도와준다.
-더 중요한 것은, deformable attention module은 쉽게 multi-scale feature과 섞을 수 있다.
+더 중요한 것은, deformable attention module은 쉽게 multi-scale feature과 섞을 수 있어 작은 object detection에도 효과적이다. 
+
 Deformable DETR은 DETR에 비해서 10배 이상 학습 비용이 낮으면서 1.6배 이상 빠르고 더 좋은 성능을 내었다.
 그리고 iterative boundinb box refinement 방식과 two stage scheme를 사용함으로써 성능을 더 올릴 수 있었다.
 
+[Zheng et al.](https://arxiv.org/pdf/2011.09315.pdf) 은 사전 학습된 DETR을 추가적인 학습 없이 계산 비용을 줄이는 Adaptive Clustering Transformer(ACT)를 고안하였다. 
+Adaptive하게 locality sensitivity hashing(LSH) 알고리즘을 이용하여 query feature을 cluster하고 attention output을 선택한 프로토타입으로 표현한 query에 broadcast 한다.  
+![](./../assets/resource/survey/paper1/37.png)  
+ACT는 pre-trained DETR 모델의 self-attention 모듈을 재 학습 시킬 필요 없이 교체하는데 사용한다.
+이런 접근 방법은 정확도를 아주 조금만 감소시키면서 계산 비용은 크게 줄일 수 있는 방법이다.
+정확도 감소는 multi-task knowledge distillation(MTKD) 방법을 이용하여 줄일 수 있다.
 
+
+[Sun et al.](https://arxiv.org/pdf/2011.10881.pdf) 은 DETR 모델이 늦게 수렴하는 원인을 decoder의 cross-attention 모듈에 있음을 찾았다.
+이 문제를 해결하기 위해 DETR의 encoder-only 버전을 제안한다. 이 모델은 detection 정확도와 training 수렴에 향상을 가져왔다.  
+게다가 학습의 안전성과 빠른 수렴을 위해서 새로운 bipartite 매칭 scheme를 디자인하고, 
+새로운 transformer-based set prediction model인 TSP-FCOS와 TSP-RCNN을 제안하였다. 
+이는 encoder-only DETR에 feature pyramid를 사용한 모델이다.  
+![](./../assets/resource/survey/paper1/38.png)  
+
+[Dai et al.](https://arxiv.org/pdf/2011.09094.pdf) 은 NLP의 pre-training transformer에 영감을 받아 object detection을 위한 unsupervised pre-training 기법인 UP-DETR을 제안하였다.
+새로운 DETR 모델을 pre-train 하기 위해 unsupervised pretext task인 random query path detection을 제안하였다.
+UP-DETR은 상대적으로 작은 데이터 셋만으로도 정확도를 크게 향상시켰다.
+![](./../assets/resource/survey/paper1/39.png)  
+먼저 visual representation을 추출하기 위해서 CNN backbone을 frozen 하고 CxHxW의 feature map을 추출하고 positional embedding과 더한후 
+multi-layer transformer encoder에 통과시킨다.
+랜덤하게 크롭한 query patch를 얻기 위해서 random patch를 CNN backbone를 통해 patch feature를 얻고 Global Average Pooling을 통해서 query patch를 구한다. (C)
+이를 position embedding을 의미하는 object query와 함께 Decoder에 통과시킨다.
+CNN 파라미터는 전체 모델에서 공유된다.
+
+Pre-training 과정에서 Decoder는 image에서 random query patch의 bounding box를 예측한다.
+모델의 fixed prediction set의 갯수가 N이고 random patch의 갯수가 M이라면 N>M 이여야 한다.
+그리고 각 query patch들은 N/M개의 object query에 더해진다. 
+또한 query patch는 특정한 object query에 포함되는 그룹이 아니기 때문에 query shuffle을 해야한다.
+
+
+##### Transformer-based Backbone for Detection
+[Beal et al.](https://arxiv.org/pdf/2012.09958.pdf) 은 transformer를 Faster R-CNN과 같은 공통적인 detection framework의 백본으로 utilize한 ViT-FRCNN을 제안하였다.  
+![](./../assets/resource/survey/paper1/40.png)  
+input 이미지를 여러 patch들로 나눈 뒤 positional embedding과 함께 vision transformer를 통과 시킨다.
+output embedding feature는 detection head에 보내기 전에 spatial information에 따라서 feature map 처럼 해석한다. 
+   
+    
+위와 같이 Transformer-based 방식은 CNN-based detector과 비교하여 정확도와 속도 측면에서 강한 성능을 보여줬다.
+
+##### Other Detection Tasks
+* Pedestrian Detection
+    * Object의 분포가 일반적 task에 비해서 crowd하고 occlusion이 많기 때문에 추가적인 분석이나 Adaptation이 필요하다.
+    * [Lin et al.](https://arxiv.org/pdf/2012.06785.pdf) 은 DETR과 Deformable DETR의 몇가지 특징이 성능상의 하락을 가져옴을 발견했다.
+        * GT의 분포는 locally dense 함에 반면 query set은 uniformly sparse distribution을 가진다.
+        * Decoder의 약한 attention field
+    * 이를 해결하기 위해 Pedestrian End-toEnd Detector(PED)을 제안한다
+    * 이는 Dense Queries and Rectified Attention Field(DQRF) 라는 새로운 Decoder를 제안한다
+    * 또한 V-Match를 통해 추가적인 성능 향상을 이루었다.
+* Lane Detection
+    * [Liu et al.](https://arxiv.org/pdf/2011.04233.pdf) 은 PolyLaneNet에 기반한 LSTR 네트워크를 제안하였다.
+    * Lane을 polynomial로 fitting한다.
+    * Global context를 캡쳐하기 위해 transformer network를 이용하였다.
+    
+    
+##### Segmentation
+
+
+ 

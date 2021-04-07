@@ -18,6 +18,7 @@ navbar-links:
   Categorys:
     - AI Papers: "ai_paper"
     - AI Surveys: "ai_survey"
+    - Programming: "programming"
 
 # --- Logo --- #
 
