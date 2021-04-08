@@ -8,7 +8,7 @@ comments: true
 기본적으로 알고 있어야하는 __*Basic*__ 한 내용만을 다룹니다.  
 아래 글은 Kocw의 [공개 강의 자료](http://www.kocw.net/home/search/kemView.do?kemId=1123313) 를 참조하여 만들었습니다.
 
-##1. 컴퓨터의 기본 구조
+## 1. 컴퓨터의 기본 구조
 * Hardware  
 * Software 
     * application software
