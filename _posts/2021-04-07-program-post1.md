@@ -56,7 +56,7 @@ comments: true
     * 2진수를 사용하는 이유?  
     : 전기적 신호를 전달할 수 있는 가장 간단한 방법이다. 1bit는 신호 on/off를 의미할 수 있다. 
 
-####SI(국제 단위 규격)
+#### SI(국제 단위 규격)
 * 1 Byte = 8 bit = 2^8  
 
 |  <center>단위</center> |  <center>byte</center> |
