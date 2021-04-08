@@ -1,6 +1,6 @@
 ---
 layout: post  
-title: [컴퓨터공학과 전공 기초 시리즈] 컴퓨터 구조      
+title: (컴퓨터공학과 전공 기초 시리즈) 컴퓨터 구조      
 subtitle: Programming     
 tags: [computer architecture, computer science, basic knowledge]    
 comments: true  
