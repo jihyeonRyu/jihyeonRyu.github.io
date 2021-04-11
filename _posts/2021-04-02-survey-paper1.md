@@ -396,7 +396,7 @@ output embedding feature는 detection head에 보내기 전에 spatial informati
     
 위와 같이 Transformer-based 방식은 CNN-based detector과 비교하여 정확도와 속도 측면에서 강한 성능을 보여줬다.
 
-##### Other Detection Tasks
+#### Other Detection Tasks
 * Pedestrian Detection
     * Object의 분포가 일반적 task에 비해서 crowd하고 occlusion이 많기 때문에 추가적인 분석이나 Adaptation이 필요하다.
     * [Lin et al.](https://arxiv.org/pdf/2012.06785.pdf) 은 DETR과 Deformable DETR의 몇가지 특징이 성능상의 하락을 가져옴을 발견했다.
@@ -410,8 +410,61 @@ output embedding feature는 detection head에 보내기 전에 spatial informati
     * Lane을 polynomial로 fitting한다.
     * Global context를 캡쳐하기 위해 transformer network를 이용하였다.
     
-    
-##### Segmentation
+#### Segmentation
+DETR의 decoder에 mask head를 붙여서 segmentation task에서도 경쟁률 있는 성과를 달성할 수 있다.
+[Wang et al.](https://arxiv.org/pdf/2012.00759.pdf) 은 mask transformer를 사용한 Max-DeepLab을 제안하였다.
+DETR과 비슷하게, end-to-end 형식이고 직접적으로 label에 해당하는 overlapping 되지 않는 mask 집합을 예측한다. 
+Model 학습은 panoptic quality(PQ) style loss을 사용한다.
+> Panoptic Quality(PQ) = Recognition Quality(RQ) * Segmentation Quality(SQ)   
+> RQ = Pred_prob(class)   
+> SQ = DiceCoefficient(m, gt_m)    
 
+![](./../assets/resource/survey/paper1/42.png)  
+![](./../assets/resource/survey/paper1/43.png)  
 
+DETR가 CNN 백본에 Transformer를 쌓은 것과 다르게, CNN과 Transformer의 결합 효율성을
+극대화 시키기 위해서 dual-path framework를 사용하였다.  
+![](./../assets/resource/survey/paper1/41.png)  
+transformer를 backbone의 어떠한 resolution에도 적용 가능하다.
+
+[Wang et al.](https://arxiv.org/pdf/2011.14503.pdf) 은 transformer 기반의 video instance segmentation인 
+VisTR을 제안한다. 
+각 instance로부터 mask squence를 얻기 위해 여러 프레임으로부터 구한 mask feature를 누적하고 3D CNN으로 segment 한다. 
+![](./../assets/resource/survey/paper1/44.png)  
+
+[Zheng et al.](https://arxiv.org/pdf/2012.15840.pdf) 은 transformer 기반의 Semantic segmentation network(SETR)를 제안한다.
+ViT와 유사한 방식으로 encoding 한다. 그리고 multi-level feature aggregation 모듈을 이용해서 pixel-wise segmentation을 수행한다.
+![](./../assets/resource/survey/paper1/45.png)  
+
+### 4.3 Low-Level Vision
+Image super-resolution이나 generation과 같은 low-level vision task에도 transformer를 활용한 사례가 조금 있다.
+
+[Parmar et al.](https://arxiv.org/pdf/1802.05751.pdf) 은 처음으로 transformer를 image translation and generation task에 적용한 방법을 고안하였다.
+
+Image transformer는 image representation을 추출하는 encoder와 Pixel을 생성하는 decoder로 이루어졌다.  
+input embedding은 [h, w, 3, d] 을 가진다. d는 image value인 256 dim을 의미하고 3은 color space를 의미한다.  
+이를 1x3 window size와 1x3 stride를 가지는 convolution을 이용해서 픽셀당 3 channel을 합쳐서 [h, w, d]로 변환한다. 
+여기에 다른 transformer 모델과 마찬가지로 positional embedding 을 추가하여 학습한다. 
+2차원의 좌표가 필요하기 때문에 2/d dim은 row 표현으로, 2/d dim은 col 표현으로 encode 한다.  
+
+인코더는 pixel-channel 별 이미지 상황에 맞는 표현을 생성하고 디코더는 회귀적으로 각 단계에서 팍셀 당 한 채널씩 픽셀 강도의 출력 이미지를 생성한다.
+![](./../assets/resource/survey/paper1/47.png)  
+픽셀 q에 대해서 이전에 생성한 픽셀들 m1, m2, ... 을 이용해서 q'를 생성한다.
+decoder의 input은 이전에 생성된 픽셀들이 들어가므로 (특히 고화질 이미지 생성 task에서는 계산 비용이 크게 들어감 ), local self-attention sheme를 사용한다.
+local self-attention 이후에 position-wise feed forward nn을 수행하는 데 이때, 모든 포지션에 대해서 파라미터는 동일하다. 
+
+많은 현재의 연구들은 transformer 모델에서 각 pixel을 input으로 사용하는 것을 피하고 patch를 사용한다. 
+[Yang et al.](https://arxiv.org/pdf/2006.04139.pdf) 은 Image Super-Resolution을 위한 Texture Transformer Network(TTSR)를 제안한다. 
+reference-based image super-resolution에 transformer architecture를 사용한다. 
+![](./../assets/resource/survey/paper1/48.png)  
+이는 reference 이미지로부터 관련있는 texture를 low-resolution 이미지로 transfer 할 수 있음을 보인다. 
+* V: reference image
+* K: down-sampled -> up-sampled reference image
+* Q: up-sampled low resolution target image  
+K와 Q간의 relevance를 구하고 이를 이용해서 hard-attention과 soft-attention을 계산한다.
+```
+hard attention map = argmax(relevance)  
+soft attention map = max(relevance)  
+```
+* T = Value와 hard attention map으로 구하며 high-resolution texture image로부터 transferred한 특징  
  
