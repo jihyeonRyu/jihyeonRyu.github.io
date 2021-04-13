@@ -467,4 +467,23 @@ hard attention map = argmax(relevance)
 soft attention map = max(relevance)  
 ```
 * T = Value와 hard attention map으로 구하며 high-resolution texture image로부터 transferred한 특징  
- 
+```
+F_out = F + Conv(Concat(F, T)) * S
+```
+
+[Chen et al.](https://arxiv.org/pdf/2012.00364.pdf) 은 transformer가 large pre-training dataset을 사용할 수 있다는 장점을 활용할 수 있는 Image Processing Transformer(IPT)를 제안한다.
+이 모델은 super-resolution, denoising, derainig 등과 같은 task에서 SOTA를 달성하였다. 
+![](./../assets/resource/survey/paper1/49.png)  
+위 그림에서 알 수 있듯이 IPT는 각 task 마다 서로 다른 head를 가지고 있고 공유하는 encoder, decoder와 task 마다 서로 다른 tail을 가지고 있다. 
+head를 통해 구한 feature는 patch로 나누어지고, encoder-decoder 네트워크에 들어간다.
+output은 다시 feature의 원래 사이즈와 같게 reshape 한다. 
+transformer를 imageNet 데이터셋으로 pre-training 하는 방법은 아래와 같다.
+1. 원본 이미지를 노이즈를 더하거나, rain, downsampling 등의 효과를 주어 corrupted 이미지를 생성한다.
+2. 원본 이미지를 output의 최종 타겟으로 삼는다.  
+이런 self-supervised 방식은 IPT 모델의 일반화 성능을 강화시킬 수 있고, 학습 후에는 각 task 마다, 해당하는 head, tail을 가지고 fin-tune만 시키면 된다.
+
+[Wang et al.](https://arxiv.org/pdf/2012.09793.pdf) 은 3D indoor image generation을 위한 SceneFormer를 제안한다.
+scene을 object의 sequence 처럼 처리함으로써 decoder는 object와 location, category, size를 predict 한다. 
+
+
+### 4.4 Video Processing

@@ -8,7 +8,7 @@ comments: true
 기본적으로 알고 있어야하는 __*Basic*__ 한 내용만을 다룹니다.  
 아래 글은 Kocw의 [공개 강의 자료](http://www.kocw.net/home/search/kemView.do?kemId=1123313) 를 참조하여 만들었습니다.
 
-## 1. 컴퓨터의 기본 구조
+## 컴퓨터의 기본 구조
 * Hardware  
 * Software 
     * application software
@@ -26,7 +26,7 @@ comments: true
         * 레지스터 (Register): 한 비트를 저장하는 flip FLOP의 모임, CPU 내의 소규모 임시 기억 장소, 메모리 중 속도가 가장 빠름
         * CPU 내부 버스: ALU와 레지스터들 간의 데이터 이동을 위한 데이터 버스와 CU로부터 발생하는 신호들을 전달하는 제어 버스로 구성된 내부 버스 
             * 외부 시스템 버스들과 직접 연결되어 있지 않으며, 반드시 버퍼 레지스터들 또는 시스템 버스 인터페이스 회로를 통하여 시스템 버스와 접속   
-![](./../assets/resource/programming/post1/1.png)  
+![](../assets/resource/programming/computer_architecture/1.png)  
     
 * 기억장치 (Memory)
     * 주기억장치: RAM, ROM
@@ -110,7 +110,7 @@ addr(2): 111 10110 -> 데이터
 addr(3): 001 10000 -> 데이터  
 ```
 
-## 2. CPU의 구조와 기능
+## CPU의 구조와 기능
 
 ### CPU 기능
 * 명령어 인출
@@ -148,15 +148,15 @@ CPU가 일정 속도로 동작하기 위해서는 일정한 간격의 전기적 
     * 기억장치에 쓰여질 데이터 혹은 기억장치로부터 읽혀진 데이터를 일시적으로 저장하는 버퍼 레지스터  
    
 ### 명령어 인출 사이클
-![](./../assets/resource/programming/post1/2.png)  
+![](../assets/resource/programming/computer_architecture/2.png)  
 PC에 있는 명령어 주소를 통해서 기억 장치에 있는 명령어를 읽어와 IR에 저장 
 
 ### 명령어 실행 사이클
 * 명령어를 해독 하고 그에 따라 필요한 연산을 수행 (데이터 인출, 데이터 처리, 데이터 쓰기) 
-![](./../assets/resource/programming/post1/3.png) 
+![](../assets/resource/programming/computer_architecture/3.png) 
 
 #### LOAD 명령어 예시
-![](./../assets/resource/programming/post1/4.png)  
+![](../assets/resource/programming/computer_architecture/4.png)  
 ```
 LOAD Addr // 주소에 있는 데이터를 AC에 로드    
 ```
@@ -165,7 +165,7 @@ LOAD Addr // 주소에 있는 데이터를 AC에 로드
 3. 다음 명령어 실행을 위해 PC=PC+1
 
 #### ADD 명령어 예시
-![](./../assets/resource/programming/post1/5.png)  
+![](../assets/resource/programming/computer_architecture/5.png)  
 ```
 ADD Addr // Addr에 있는 데이터와 AC에 있는 데이터를 더해 AC에 로드 
 ```
@@ -176,7 +176,7 @@ ADD Addr // Addr에 있는 데이터와 AC에 있는 데이터를 더해 AC에 �
 5. 다음 명령어 실행을 위헤 PC=PC+1
 
 #### STA 명령어 예시
-![](./../assets/resource/programming/post1/6.png)  
+![](../assets/resource/programming/computer_architecture/6.png)  
 ```
 STA Addr// AC에 있는 데이터를 Addr에 저장 
 ```
@@ -185,7 +185,7 @@ STA Addr// AC에 있는 데이터를 Addr에 저장
 4. 다음 명령어 실행을 위해 PC=PC+1
 
 #### JUMP 명령어 예시
-![](./../assets/resource/programming/post1/7.png)  
+![](../assets/resource/programming/computer_architecture/7.png)  
 ```
 JUMP Addr // Addr가 가리키는 명령어로 분기 
 ```
@@ -198,23 +198,23 @@ JUMP Addr // Addr가 가리키는 명령어로 분기
 * 다중 인터럽트 발생시
 1. 인터럽트 루틴을 처리 하는 중 새로운 인터럽트 요구가 들어와도 CPU가 이를 수행하지 않도록 방지 (interrupt flag)  
 2. 인터럽트의 우선순위를 지정하여 우선 순위가 더 높은 인터럽트가 들어오면 현재 루틴을 중지하고 처리  
-![](./../assets/resource/programming/post1/8.png)  
+![](../assets/resource/programming/computer_architecture/8.png)  
 
 ### 간접 사이클
-![](./../assets/resource/programming/post1/9.png)  
+![](../assets/resource/programming/computer_architecture/9.png)  
 IR(addr) -> MAR -> 기억장치[addr] -> 기억장치[기억장치[addr]] -> MBR -> IR(addr)
 
 ### 명령어 파이프라이닝
 * CPU 의 프로그램 처리 속도를 높이기 위헤 CPU의 내부 하드웨어를 여러 단계로 나누어 동시에 처리하는 기술
 #### 2단계 명령어 파이프라인
 * 인출 단계와 실행 단계의 두 개의 독립적인 파이프라인 모듈로 분리
-![](./../assets/resource/programming/post1/10.png)  
+![](../assets/resource/programming/computer_architecture/10.png)  
 * 명령어 처리 속도가 2배 증가하지만 두 단계의 처리 시간이 동일하지 않으면 두 배 향상 효과를 얻지 못함
 * 그래서 파이프라인의 단계 수를 증가시켜 각 단계의 처리 시간을 같게 함.
 
 #### 4단계 명령어 파이프라인
 * 명령어 인출(IF), 명령어 해독(ID), 오퍼랜드 인출(OF), 실행(EX) 단계
-![](./../assets/resource/programming/post1/11.png)  
+![](../assets/resource/programming/computer_architecture/11.png)  
 
 * 단, 파이프라인 단계가 많아져도 무조건 효율이 증가하는 것은 아니다.
     * 모든 명령어들이 파이프라인 단계들을 모두 거치는 것이 아니다. 하지만 파이프라인 하드웨어 단순화를 위해 모든 명령어를 4단계를 거치게 해야한다.
@@ -222,36 +222,13 @@ IR(addr) -> MAR -> 기억장치[addr] -> 기억장치[기억장치[addr]] -> MBR
     * 조건 분기 명령어가 실행되면 미리 인출 되어 처리하였던 명령어들이 무효화 된다 
 * 이를 해결하기 위한 다양한 방법들이 있다 (생략)
 
-
 ### 듀얼코어 및 멀티코어
 * CPU 코어: 명령어 실행에 필요한 CPU 내부 핵심 하드웨어 모듈
 * 멀티-코어 프로세서: 여러개의 CPU 코어들을 하나의 칩에 포함
 * 각 코어는 별도의 하드웨어 모듈로 이루어지며, 시스템 버퍼와 캐시만을 공유한다. (독립성)
 
-## 3. 명령어의 구조와 주소 지정 방식
-### 명령어 세트
-* 명령어 세트 설계를 위해 결정할 사항 
-    * 연산의 종류
-    * 데이터 형태
-    * 명렁어 형식
-    * 주소 지정 방식
-#### 연산의 종류
-* 데이터 전송: 레지스터-레지스터, 레지스터-기억장치, 기억장치-기억장치  
-* 산술 연산: +,-,x,/  
-* 논리 연산: AND, OR, NOT, XOR  
-* 입출력 : CPU와 외부 장치들간의 데이터 이동을 위한 동작들  
-* 프로그램 제어: 명령어의 실행 순서를 변경하는 연산 (분기, 서브루틴) 
+## ALU의 구성 요소와 수의 표현
+### ALU의 구성 요소
+![](./../assets/resource/programming/computer_architecture/12.png)  
 
-##### 서브루틴 호출을 위한 명령어 
-* CALL 명령어: 현재의 Program Counter를 스택에 저장하고 서브루틴의 시작 주소로 분기 
-```
-CALL X  
-PC -> MBR  
-SP -> MAR
-MBR -> M[MAR]   
-X -> PC  
-SP -> SP -1
-```
-* RET 명령어: CPU가 원래 실행하던 프로그램으로 복귀 시키는 명령어  
-
-
+### 부호화 크기 표현
