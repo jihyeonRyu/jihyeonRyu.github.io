@@ -170,3 +170,61 @@ FL은 분산 ML에 비해 독특한 특징을 가진다.
 3) Privacy and Security Concerns
 
 ## 3. Communication Cost
+high dimensionality의 업데이트로 인해 많은 통신 비용이 발생하고 학습의 bottleneck이 생길 수 있다. 
+또한 이 bottleneck이 더 심해지는 이유는 참가 device의 불안정한 네트워크 상태와 업로드 속도가 다운로드 속도보다 빠른 속도 불균형에 있다.
+그래서 통신 효율성을 증가시키는게 필요하다. 아래와 같은 접근 방식으로 통신 비용을 줄이는 것이 고려되고 있다. 
+* __Edge and End Computation__: FL 셋업에서 종종 통신 바용이 계산 비용을 뛰어 넘을 때가 있다. 왜냐하면 디바이스 내의 데이터셋은 상대적으로 작고 점점 참가자들의 모바일 디바이스의 프로세서는 빨라지고 있기 때문이다.
+반면에 참가자들은 모델 학습을 오직 Wi-Fi에 연결되어 있을 때만 수행하길 원한다. 
+따라서 모델 학습에 필요한 통신 라운드 수를 줄이기 위해 각 global aggregation 전에 edge node 또는 최종 디바이스에서 더 많은 계산을 수행할 수 있다. 
+또한 알고리즘의 빠른 수렴이 보장되면 edge server 및 최종 장치에서 더 많은 계산을 수행하는 대신 관련된 라운드 수를 줄일 수 있다. 
+* __Model Compression__: 분산 학습에 공통적으로 쓰이는 기법이다. 모델 또는 gradient 압축은 업데이트 관련 통신을 간결하게 할 수 있다. 
+완전한 업데이트 통신 보다는 sparsification, quantization, subsampling 등으로 압축하여 업데이트한다. 
+하지만 이런 압축으로 인해 노이즈가 발생할 수 있으므로 각 라운드 동안 전송되는 업데이트의 사이즈를 줄이면서도 학습 모델의 품질을 유지하는 것이 목표이다. 
+* __Importance-based Updating__: 각 라운드에서 오직 중요하거나 관련 있는 업데이트만을 선택하여 통신하는 전략이다. 실제로 통신 비용을 절약하는 것 이외에도 참가자 일부 업데이트를 생략하면 global 모델의 성능을 향상시킬 수도 있다. 
+
+### Edge and End Computation
+![](./../assets/resource/survey/paper2/6.png)  
+global aggregation을 수행하기 전에 참가자의 end device에서 더 많은 computation을 수행하여야 communication round의 수를 줄일 수 있다.
+참가자 디바이스의 계산량을 증가시키는 방법은 두가지 이다.  
+(1) 각 라운드마다 참가자 수를 늘려 병렬화를 늘린다.  
+(2) 각 참가차가 global aggregation을 위한 업데이트 전에 더 많은 계산을 수행한다.   
+FederatedSGD 알고리즘과 FedAvg 알고리즘으로 이 두가지를 비교한다. 
+FedSGD 알고리즘은 모든 참가자가 참여를 하며, 각 트레이닝 라운드마다 오직 하나의 pass만을 수행한다. 이는 마치 minibatch 사이즈가 각 참가자의 데이터셋크기와 같은 것을 의미한다.
+이것은 centeralized DL에서 full-batch 학습과 비슷하다.
+FedAvg 알고리즘을 위해서는 참가자가 더 많은 로컬 계산을 수행하도록 hyperparameter가 조정된다. 예를들어 각 참가자들은 각 통신 라운드에서 dataset epoch를 늘리거나 minibatch 사이즈를 더 작게 해서 훈련하게끔 한다. 
+시뮬레이션 결과에서 (1)과 같은 병렬화는 특정한 threshold를 도달하는 데까지의 통신 비용을 줄이는데 효과가 없음을 보여줬다.
+(2)처럼 선택된 참가자의 수를 유지하면서 참가자의 계산을 늘리는 것이 더 효과적이었다.
+Federated Stochastic Block Coordinate Descent(FedBCD) 알고리즘은 각 참가자들은 global aggregation을 위한 통신 전에 multiple한 local update를 수행한다.
+게다가 각 통신마다 approximate 보정이 적용되면서 convergence가 보증한다. 
+
+또다른 통신 비용을 줄이는 방법은 수렴 속도를 증가시키게끔 학습 알고리즘을 바꾸는 것이다.
+transfer learning과 domain adaptation에서 공통적으로 사용하는 two-stream 모델을 사용한다. 
+각 학습 라운드에서 참가자는 global model을 수신하고 훈련 과정에서 참조하기 위해 이를 고정한다. 그리고 학습 중에 참가자는 이 고정된 global model을 참조하여 자기 자신의 local data 뿐만 아니라 다른 참가자들도 고려하여 학습할 수 있다. 
+이는 Maxmimum Mean Discrepancy(MMD)를 loss function에 사용함으로써 달성할 수 있다.
+MMD는 두 데이터의 분포 평균 차이를 알려준다. 로컬 모델과 글로벌 모델간의 MMD loss를 최소화함으로써, 참가자들은 더욱 global model로부터 일반화된 특징을 추출할 수 있고
+결국 수렴 속도를 가속화 함으로써 통신 비용을 줄일 수 있다. 
+
+edge server와 참여자 간의 전파 지연시간이 더 짧고 edge 서버는 중간 매개 변수 집계자의 역할을 할 수 있기 때문에 Cloud와 참여자간의 통신 비용을 줄일 수 있는 방법으로 고안되었다. 
+HierachicalFL(HierFaVG) 알고리즘은 edge server가 local model의 파라미터들을 집계한다. 
+미리 정의된 수의 edge server 집계 수가 만족되면 ede server는 cloud와 통신하여 global model aggregation을 수행한다.
+따라서 참가자와 클라우드간의 통신은 여러 로컬 업데이트 간격 후에 한번만 발생한다. 
+edge aggregation을 더 많이 사용할 수록 통신 비용을 더 줄일 수 있다. 
+하지만 non-IID 데이터에 대해서는 edge와 cloud간의 차이가 커서 수렴이 더 잘 안될 수 있다. 하지만 여전히 통신 비용을 줄일 수 있고, remote cloud의 부담을 줄일 수 있기 때문에
+좋은 접근 방법이다.
+
+### Model Compression
+참가자가 FL 서버로 보내는 모델 업데이트의 사이즈를 줄이기 위해 사용되는 방법이다.
+구조화된 업데이트는 참가자 업데이트가 미리 지정된 구조를 갖도록 제한한다. 
+low-rank 구조의 경우 각 업데이트는 두 행렬의 곱으로 표현되는 low-rank 행렬이되도록 적용됩니다.(W = W1 * W2 => nxn = nx1 * 1xn) 
+여기서 하나의 행렬(W1)은 무작위로 생성되고 각 통신 라운드 동안 일정하게 유지되는 반면 다른 하나(W2)는 최적화됩니다. 
+따라서 최적화 된 매트릭스(W2) 만 서버로 보내면됩니다.
+random mask 구조에서는 각 라운드마다 독립적으로 설정한 sparsity pattern 
+
+
+### Importance-Based Updating
+
+
+ ## 4. Resource Allocation
+ 
+
+
