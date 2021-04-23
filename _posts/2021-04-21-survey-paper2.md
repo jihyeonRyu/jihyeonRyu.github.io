@@ -11,7 +11,7 @@ Proceeding: 2020
 Authors: Wei Yang Bryan Lim, Nguyen Cong Luong, Dinh Thai Hoang, Yutao Jiao, Ying-Chang Liang, Qiang Yang, Dusit Niyato, Chunyan Miao     
 ```
 
-[Paper Link](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9060868)  
+[Paper Link](https://arxiv.org/pdf/1909.11875.pdf)  
 
 ## 1. Introduction
 요새는 7억만의 IoT 디바이스와 3억만의 스마트폰이 존재한다. 
@@ -218,7 +218,13 @@ edge aggregation을 더 많이 사용할 수록 통신 비용을 더 줄일 수 
 low-rank 구조의 경우 각 업데이트는 두 행렬의 곱으로 표현되는 low-rank 행렬이되도록 적용됩니다.(W = W1 * W2 => nxn = nx1 * 1xn) 
 여기서 하나의 행렬(W1)은 무작위로 생성되고 각 통신 라운드 동안 일정하게 유지되는 반면 다른 하나(W2)는 최적화됩니다. 
 따라서 최적화 된 매트릭스(W2) 만 서버로 보내면됩니다.
-random mask 구조에서는 각 라운드마다 독립적으로 설정한 sparsity pattern 
+random mask 구조에서는 각 라운드마다 독립적으로 설정한 sparsity pattern 만을 업데이트 한다. 그래서 0이 아닌 entry만 서버에 보내진다.
+반면에 sketched update는 디바이스에서 업데이트 하기전에 압축된 형태로 encode하고 server에서는 aggregation 하기 전에 decode를 수행한다. 
+sketched update의 한 예시는 디바이스에서 오직 업데이트할 matrix의 random subset 만을 통신하고, 서버에서 실제 평균에서 편향되지 않는 결과를 얻기 위해 subsampled update들을 평균하여 사용한다. 
+또 다른 sketched update는 확률적 quantization 기법이다. 업데이트할 matrix는 벡터화 되고 각 scalar에 대해서 quantize를 수행한다. 
+quantization으로 인한 오차를 줄이기 위해, Walsh-Hadamard 행렬과 이진 대각 행렬의 곱의 구조화 된 임의 회전을 양자화 전에 적용 할 수 있습니다.
+시뮬레이션 결과에서는 low-rank보다 random mask가 더 좋은 정확도를 보였고, 뿐만 아니라 sketched 알고리즘 보다도 더 좋은 성능을 보였다. 
+하지만 세 가지의 (subsampling, quantization, rotation) sketching tool 모두를 함께 사용하는 것이 모델의 빠른 수렴과 압축률을 보여줬다. 
 
 
 ### Importance-Based Updating
