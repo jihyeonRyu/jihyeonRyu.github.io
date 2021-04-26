@@ -228,7 +228,7 @@ quantization으로 인한 오차를 줄이기 위해, Walsh-Hadamard 행렬과 �
 
 
 ### Importance-Based Updating
-
+딥러닝 모델의 파라미터는 대부분 희박하게 분포되어 있고 0에 가까운 것이 많다. 
 
  ## 4. Resource Allocation
  
