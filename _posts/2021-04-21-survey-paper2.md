@@ -229,8 +229,160 @@ quantization으로 인한 오차를 줄이기 위해, Walsh-Hadamard 행렬과 �
 
 ### Importance-Based Updating
 딥러닝 모델의 파라미터는 대부분 희박하게 분포되어 있고 0에 가까운 것이 많다. 
+edge Stochastic Gradient Descent(eSGD) 알고리즘은 오직 중요한 gradient의 일부만을 각 통신 라운드에서 모델 업데이트를 위해 FL 서버와 통신한다. 
+이 알고리즘은 오직 연속되는 두 개의 iteration 만을 추적한다. 만약 현재의 iteration의 loss가 이전 iteration 보다 작을 경우, 현재의 training gradient와 모델 파라미터가 training loss minimalization에 중요하다는 것을 의미한다. 
+만약 loss가 이전에 비해 증가한다면 업데이트를 위해서 다른 weight가 선택된다. 
+일반적으로 더 큰 은닉 가중치 값을 가진 매개 변수는 훈련 중 여러번 중요하다고 레이블이 지정 되었기 때문에 선택될 가능성이 더 높다.
+무시되고 완전히 업데이트 되지 않아 수렴을 지연시킬 수 있는 작은 gradient는 잔차로 누적된다.
+누적된 잔차가 threshold에 도달하면, 중요한 gradient로 선택되고 업데이트 될 수 있다.
+50%의 drop 확률을 가진 eSGD는 thresholdSGD에 비해 월등한 성능을 보여주었다. 
+eSGD는 통신할 gradient의 사이즈를 크게 줄일 수 있다는 장점도 있다.
+하지만 여전히 eSGD는 standard SGD에 비해 성능이 떨어진다. 게다가 확률적인 task 일수록 성능이 더 크게 악화된다. 또한 hyperparameter 셋팅에 따라서 수렴 속도와 정확도가 변동이 생긴다. 
+때문에 통신 비용과 학습 performance 간의 tradeoff 밸런스를 맞추기 위해 더 많은 연구가 수행되어야 한다. 
+
+Communication-Mitigated Federated Learning(CMFL) 알고리즘은 global convergence를 보장하면서 통신 비용을 줄이기 위해 오직 관련있는 local model 만 업데이트를 수행한다. 
+각 iteration에서, 관련있는 것인지 확인하기 위해 local update와 global update를 비교한다. 
+local update와 global update간 동일한 기호를 가진 파라미터의 퍼센트가 관련성 점수로 계산 된다. 
+사실 global update는 누정되기 전까지는 알 수 없다. 
+따라서, global update는 previous interation에서 구한 것을 사용한다. 실험적으로 normalize된 두 연속적인 global update간의 차이가 0.05 보다 작은것이 99%를 차지 한다는 것을 밝혔기 때문이다.
+CMFL 알고리즘은 통신 라운드 수를 크게 줄일 수 있었고, 불필요한 outlier에 대한 업데이트를 반영하지 않기 때문에 정확도도 조금 높일 수 있었다. 
+
+![](./../assets/resource/survey/paper2/7.png)  
+
+### Summary and Lessons Learned
+* 통신 비용은 FL을 적용하기 전에 풀어야할 메인 이슈이다. DL의 SOTA 모델은 높은 정확도를가지고 있지만, 많은 파라미터로 복잡도가 증가한다. 모바일 디바이스의 느린 업로드 속도는 효율적인 FL 적용을 방해할 수 있다.
+* 위에서 살펴본 통신 비용을 낮추는 방법들은 정확도를 낮추거나, 높은 계산 비용을 불러일으킬 수 있다. 예를 들어 통신 라운드 별 많은 local 업데이트는 통신 비용은 줄일 수 있지만 수렴 속도는 느려질 수 있다. 
+* 촤근들어 이런 tradeoff는 이론적이고 실험적으로 최적화하는 방법을 찾고 있다. 예를 들어 학습완료 시간과 에너지 소비간의 tradeoff를 최적화 하기 위해서 completion time과 energy consumption 간의 weighted sum을 하여
+iterative 알고리즘을 이용하여 최소화를 수행한다. delay-sensitive 시나리오에서는 weight가 소요시간보다 에너지가 더 소비되도록 조정된다.
+* 전달되는 모델의 크기를 직접 줄이기 위해 노력하는 것 외에도 FL에 대한 연구는 MEC 패러다임의 응용 프로그램과 접근 방식에서 영감을 얻을 수 있습니다. 예를 들어 base station을 중간의 model aggregation에 이용하여 device-cloud 간의 통신 비용을 줄일 수 있다. 
+하지만 불행히도, 많은 edge server나 mobile device를 둘수록 수렴 이슈가 발생한다. 이는 non-IID 분산을 가질수록 이 문제는 커진다. 
+이 문제는 multi-task learning에 영감을 받아서 해결할 수 있다. 
+* 모바일 디바이스 간의 계산 능력에 대한 불일치성은 종종 고려되지 않는다. 예를들어, 통신 비용을 줄이는 방법은 때때로 각 라운드별 더 많은 local update로 edge device의 계산 비용을 늘릴 수 있다. 이 접근 방식은 처리 능력이 약한 장치에서는 실행 가능하지 않을 수 있으며, 지연 효과로 이어질 수 있다. 
+따라서 resource allocation도 중요한 이슈이다. 
 
  ## 4. Resource Allocation
- 
+ 각 참가자들의 다른 device들은 다른 퀄리티의 dataset, 계산 능력, 통신 bandwidth, 에너지 상태, 참가 의지를 가지고 있다.
+ 주어진 디바이스의 이질성과 리소스 제약은 학습 과정의 효율성을 위해 최적화 되어야 한다. 
+* __Participant Selection__: 서버에 의해서 램덤하게 참가자들이 선택되고, 각 라운드에서 서버는 모델들의 평균을 구하기 전에 모든 참가 디바이스의 파라미터를 누적한다. 따라서, FL은 가장 느린 참가 디바이스에 의해서 학습이 지연될 수 있다.
+그러므로, FL의 training 병목 현상을 해결하기 위해 새로운 참가자 선택 프로토콜이 조사되어야 한다.
+* __Joint Radio and Computation Resource Management__: 모바일 디바이스의 계산 능력이 빠르게 증가하고 있음에도 불구하고, 많은 디바이스들은 여전히 radio 자원이 부족하다. 주어진 local model의 전달은 FL의 중요한 부분으로써, 많은 연구들이
+ 효율적인 FL을 위해서 새로은 wireless communication 기술을 개발하고 있다.
+* __Adaptive Aggregation__: 전통적인 접근 방식은 global aggregation은 모든 참가자들이 특정한 local computation을 마치면 고정된 interval로 수행되었다.
+하지만 adaptive calibrations의 주기는 리소스 제한에서 학습 효율을 높일 수 있는 방향으로 조사되었다. 
+* __Incentive Mechanism__: 참가자들은 학습에 리소스가 소비되는데 적절한 보상 없이는 학습에 참여하고 싶지 않을 것이다. 게다가, 서버와 참가자간에는 정보의 비대칭성이 존재한다. 
+그래서 인센티브 매커니즘은 정보의 비대칭에 대한 부정적인 영향을 줄이면서 참가를 늘릴 수 있게 조심스럽게 디자인되어야 한다.
 
+### Participant Selection
+![](./../assets/resource/survey/paper2/8.png)  
 
+학습의 bottleneck을 피하기 위해 FedCS 프로토콜이 개발되었다.
+FL 서버는 선택된 랜덤한 참가자의 subset에 무선 channel 상태와 계산 능력에 대한 정보를 모으기 위해서 Resource Request를 보낸다. 
+이 정보에 기반하여 MEC operator는 특정한 deadline까지 학습을 끝마칠 수 있는 가능한 참가자의 최대를 선택한다. 
+각 라운드마다 최대 가능한 참가자를 선택함으로써 정확도와 효율성을 보존될 수 있다. 
+최대화 문제를 해결하기 위해 greedy 알고리즘을 사용한다. 모델 업로드 및 업데이트에 가장 적은 시간이 걸리는 참가자를 반복적으로 선택한다. 
+시뮬레이션에서 FedCS는 일반 FL에 비해서 각 라운드마다 더 많은 참가자를 포함할 수 있기 때문에 더 높은 정확도를 달성할 수 있다. 
+하지만 FedCS는 오직 간단한 DNN 모델에만 테스트 되었다. 그래서 복잡한 모델에서는 얼마나 많은 참가자를 선택해야할 지 예측하기 어렵다. 
+예를들어 복잡한 모델의 경우 더 많은 라운드를 필요로 하며, 너무 작은 참가자를 선택할 경우 성능이 크게 악화될 수 있다. 게다가 좋은 계산 능력을 가진 디바이스를 기준으로 참가자를 선택하는 것은 data distribution에 편향을 줄 수 있다.
+
+FedCS 프로토콜을 참가자들의 data distribution까지 고려한 Hybrid-FL 프로토콜로 확장 하였다. 
+참가자들이 가진 데이터셋은 non-IID하다. non-IID 데이터셋은 FedAvg 알고리즘의 성능을 매우 크게 악화시킨다. 
+이 non-IID 데이터 특성을 해결하기 위해 제안된 조치 중 하나는 공개적으로 사용 가능한 데이터를 참가자들에게 배포하여 device의 데이터 셋과 population 간의 EMD를 줄이는 것이다.
+하지만 이런 데이터셋은 항상 존재하지 않고, 참가자들은 보안적인 이유로 이런 데이터셋을 다운 받지 않을 것이다. 
+그래서 대체 솔루션은 프라이버시에 민감하지 않는 제한된 참가자들의 input을 이용하여 근접 IID 데이터셋을 만드는 것이다.
+Hybrid-FL 프로토콜은 Resource Request Step에서 MEC operator는 random한 참가자에게 그들의 데이터를 업로드하는 것을 허가할 것인지 묻는다.
+참가자 선택 phase에서 계산 능력과는 별개로 업로드 데이터가 IID dataset에 근사할 수 있는 지를 기준으로 참가자를 선택한다.
+서버는 모아진 IID dataset으로 학습을 하고 이 모델을 각 참가자들에게 학습된 global model과 합친다. 
+시뮬레이션에서 참가자 데이터 중 1% 만을 공유하였을 때에, FedCS에 비해 크게 정확도가 상승될 수 있음을 보였다.
+하지만 추천하는 프로토콜은 FL 서버가 악의적을 경우 사용자의 프라이버시와 보안 이슈를 헤칠수 있다. 
+만약 참가자가 악의적일 경우 데이터는 업로드 전에 거절할 수 있다.
+게다가 제안된 방법은 비디오와 이미지 같은 경우에 매우 비용이 많이 들 수 있다.
+따라서 참가자가 다른 자원 봉사자의 노력에 무임 승차를 할 수있을 때 데이터 업로드에 자원 할 가능성은 거의 없습니다.
+신뢰할만한 참가자들만 그들의 데이터를 업로드 하는 것이 실행 가능하게 하기 위해, 잘 디자인된 인센티브와 평판 매커니즘이 필요하다. 
+
+일반적으로 모바일 edge network 환경은 다이나믹하고 많은 제약사항 때문에 불확실하다.
+그래서 이는 학습의 bottleneck으로 작용한다.
+이를 위해 Deep Q-Learning(DQL)이 리소스의 최적화를 위해 사용된다.
+시스템 모델은 Mobile Crowd Machine Learning(MCML) 셋팅으로, 모바일 crowd network의 참가자들이 DNN 모델을 합동적으로 학습가능하다.
+참가하는 모바일 디바이스는 에너지, cpu, wireless bandwidth에 따라서 제약된다.
+그래서 서버는 학습 에너지와 시간을 줄이기 위해 적합한 양의 데이터, 에너지, cpu 사용량을 결정해야한다. 
+모바일 환경의 불확실성에서, 확률적인 최적화 문제가 공식화 된다.
+이 문제에서, 서버는 agent이고 cpu, 에너지 상태는 state space, 데이터 수와 에너지는 action space이다. 
+목표를 달성하기 위해 reward function은 데이터, 에너지 소비, 학습 지연시간의 누적 식으로 정의된다.
+서버의 큰 state, action space 이슈를 해결하기 위해, DQL 테크닉은 Double Deep Q-Network(DDQN)을 사용한다.
+이 방법으로 랜덤한 방식 대비해서 학습 시간이 55%나 감소할 수 있었고 에너지 소비도 31%나 감소하였다. 
+하지만 이 방법은 오직 극소수의 모바일 디바이스에만 적용가능하다.
+
+앞서 언급한 리소스 할당 접근 방식은 FL 학습의 효율성 향상에 중점을 둔다.
+그러나 이로 인해 일부 FL 참가자들은 제한된 컴퓨팅 또는 통신 리소스를 가진 자이기 때문에 학습 집계단계에서 제외될 수 있다. 
+이른 불공정한 자원 할당의 결과는 일반적으로 탐구되는 주제이다.
+예를들어 큰 컴퓨팅 능력을 가지고 있는 디바이스는 많은 라운드에서 높은 확률로 선택이 되고 데이터 분포의 대부부을 차지 하게 될 것이다.
+그래서 이런 공정성도 고려하는 것이 추가적인 FL의 목적이 되었다.
+공정성은 참가자들간의 FL 모델의 성능 차이로 정의된다. 만약 테스트 정확도의 차이가 클경우, 이는 많은 편향과 공정성 부족을 의미한다. 그래서 학습된 모델은 특정 참가자에겐 높은 정확도를 보이고 나머지에겐 낮은 정확도를 보일 것이다.
+q-Fair FL(q-FFL) 알고리즘은 FedAvg 알고리즘에서 더 큰 loss를 가진 디바이스에는 더 큰 weight를 주는 방식을 채택하였다.
+q-FFL은 testing 정확도의 차이가 작고, AFL 대비 수렴이 빠름을 보였다. 하지만, 학습 과정의 지연자 때문에 수렴이 때때로 느려질 수 있다.
+따라서, 비동기 집계 접근 방식을 q-FFL과 사용하는 것이 고려되고 있다. 
+
+이와 반대로 FL의 로걸 모델 참가자를 학습과정에 제외시키는 접근 방식도 제안되었다.
+global FL 모델에 큰 영향을 주는 사용자에게 base station의 자원 블록을 할당한다. 선택된 사용자는 base station과 계속 연결된다.
+이 사용자의 모델 파라미터는 feedforward nn의 input으로 사용되어 사용자의 모델 파라미터를 예측하는데 사용되고 training iteration에서는 제외된다.
+이를 통해 base station은 더 로컬에서 훈련된 FL 모델 매개변수를 global aggregation의 각 반복에 통합할 수 있으므로 FL의 수렴 속도가 향상된다. 
+
+### Joint Radio and Computation Resource Management
+![](./../assets/resource/survey/paper2/9.png)  
+
+이전까지 대부분의 FL 연구는 직교적 접근 방식인 Orthogonal Frequency-division Multiple Access(OFDMA) 방식이었지만,
+통신 지연 시간을 줄이기 위해서 muti-access Broadband Analog Aggregation(BAA)이 제안되었다. 
+```
+* OFDMA
+    - 한 사용자가 모든 유효한 부반송파를 독점하는 것이 아니라, 여러 사용자가 유효한 부반송파의 부분집합을 서로 다르게 분할 할당받아, 
+      시간 구간별로 서로 다른 부반송파 집합을 사용자별로 사용하는 방식
+    - 사용자별 채널 상황과 전송속도에 따라 적응적으로 각 사용자에게 좋은 주파수 대역과 비트수를 결정 
+* Broadband
+    - 주파수 분할 다중화 기법을 이용해 하나의 전송매체에 여러 개의 데이터 채널을 제공
+    - 하나의 단일 링크를 통해 복수의 전송 채널을 전송할 수 있는 기술로, 각 채널은 서로 다른 주파수로 이뤄지기 때문에 다른 네트워크의 통신을 방해하지 않는다. 
+```
+서버에서 통신과 계산을 분리하여 global aggregation을 수행하는 대신, BAA 방식의 다중 채널 접속 특징을 이용하여 계산과 통신을 통합하기 위해 over-the-air computation 개념을 세웠다.
+BBA는 대역폭 전체를 재사용하는 반면 OFDMA는 직교적으로 대역폭을 할당하여 사용하기 때문에, 직교 접근 방식에서는 통신 지연이 참가자의 수에 따라 직접적인 비율로 증가하게 된다.
+반면  multi-access 스케마에서는 지연시간은 참가자 수와 독립적이다.
+BAA 통신 중 signal-to-nosie ratio(SNR, 노이즈 전력 대비 신호 전력의 세기)의 bottleneck은 주어진 디바이스 중 가장 먼 propagation distance를 가진 것이다.  
+SNR을 증가시키기 위해서, 참가자 중 긴 propagation distance를 가진 디바이스는 dropout 한다.
+하지만 이것은 모델 파라미터의 잘림을 초례할 수 있다.
+따라서 SNR-truncation trade-off를 해결하기 위해 세가지 scheduling schemes가 고려된다.  
+1) Cell-interior scheduling: threshold 이상의 거리에 있는 참가자는 스케쥴링하지 않음   
+2) All-inclusive scheduling: 모든 참가자를 고려  
+3) Alternating scheduling: edge server가 앞선 두가지 방식을 번갈아 사용    
+
+BBA와 OFDMA를 테스트하였을때 정확도는 비슷하였지만 지연 시간은 10배에서 1000배 정도 줄어들었다. 
+세 스케줄링 방법 비교에서는 사용자들의 위치가 빠르게 바뀌는 환경에서 cell-interior 방식이 all-inclusive에 비해 월등히 높은 정확도를 보였다. 
+사용자의 위치가 거의 바뀌지 않는 환경에서는 alternating이 cell-interior에 비해 뛰어난 결과를 보였다. 
+over-the-air computation을 위해서 error accumulation과 gradient sparsification을 도입하였다. 
+이전에는 전력 제약 문제가 있는 gradient vector는 전송되지 않고 완전히 삭제되었다.
+모델 정확도를 향상시키기 위해서는, 전송되지 않은 gradient vector는 처음 error accumulation vector에 저장되어야 한다.
+그리고 다음 라운드에서 error vector를 이용해서 local gradient 예측을 수정한다.
+게다가 대역폭 제한이 있을 때, 참가 디바이스에 gradient sparsification을 적용하여 가장 큰 진폭을 가진 element만 전송된다. 전송되지 않은 element는 error accumulation vector에 순차적으로 더해지고 다음 
+라운드에서 local gradient 수정 예측에 사용된다.
+이런 error accumulation이나 gradient sparsification이 있는 경우 gradient를 올바르게 수정하고 대역폭을 효율적으로 쓸 수 있기 때문에 테스트 정확도가 더 높았다. 
+
+또한 over-the-air computation동안에 신호의 distortion이 발생하여 aggregation error가 발생할 경우 모델의 정확도가 떨어질 수 있다.
+따라서, 신호의 distortion이 있어도 threshold 이하만 발생할 수 있도록 training을 위한 참가자 수를 최대화 하여 통계적 학습 성능을 최대화 시키는 참가자 선택 알고리즘이 제안되었다. 
+평균 제곱 오차 (MSE) 제약의 비 볼록성과 최적화 문제의 다루기 어렵 기 때문에, 최대화 문제를 해결하기 위해 볼록 함수 차 (DC) 알고리즘이 제안되었습니다.
+제안된 DC 알고리즘은 global optimization이 exponential time complexity를 가져 non-scalable함에 비해 Scalable하고 near-optimal 성능을 낼 수 있다. 
+
+### Adaptive Aggregation
+![](./../assets/resource/survey/paper2/10.png)  
+FedAvg 알고리즘은 파라미터 누적을 동기적으로 진행하기 때문에 각 학습 라운드는 가장 느린 디바이스의 속도와 같다.
+게다가 모델은 학습 라운드가 이미 진행 중일 때 중간에 참가할 수 있는 참가자를 고려하지 않는다. 
+비동기적인 FL을 위해서, 서버는 로컬 업데이트를 수신할때 마다 global model을 업데인트한다. 
+이런 비동기적 방식은 훈련 라운드 중간에 참여하는 참가자와의 연합이 서로 다른 처리 능력을 가진 디바이스들을 포함할 때 강력한 방식이라는 것을 발견했다. 
+하지만 data가 non-IID 하고 unbalanced 할때 모델 수렴이 매우 느려지는 것을 발견했다.
+아를 해결하기 위해 FedAsync 알고리즘이 제안되었다.
+예를 들어 이전 학습 라운드에서 받았어야할 늦은 업데이트에 대한 weight는 작게 설정한다. 
+여젼히 비동기 FL은 다양한 디바이스의 제약속에서 일반화 하기는 어려움이 있는 동기적 FL 접근 방식이 아직도 많이 사용되고 있다, 
+다이나믹한 리소스 제약을 더 잘 관리하기 위해서 adaptive global aggregation scheme가 제안되었다.
+이는 global aggregation의 주기를 다양화하여 사용 가능한 리소스를 효율적으로 사용하면서 모델 성능을 원하는 데로 올리는 것을 추구한다,
+저자는 edge server aggregation의 총 수와 local 업데이트와 global aggregation의 interval 차이에 따라 training loss에 어떤 영향을 주는 지 조사하였다.
+만약 global aggregation이 너무 시간을 많이 잡아먹으면, edge aggregation의 수를 늘린다. 
+시뮬레이션을 통해서 똑같은 time budget에서 adaptive aggregation이 성능상의 큰 차이를 가져 올 수 있음을 확인하였다.
+하지만 수렴에 대한 보증은 오직 convex loss에만 유효하다는 단점이 있다.
+
+### Incentive Mechanism 
