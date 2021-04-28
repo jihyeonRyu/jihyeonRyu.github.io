@@ -179,74 +179,74 @@ FL 참가자의 규모에 따라 장치 연결을 관리하려면 속도 조정�
                     * 각 클라이언트에서 독립적으로, 병렬로, 로컬 데이터 배치 스트림에 모델 코드가 반복적으로 호출되어 새로운 로컬 모델 매개변수 세트와 로컬 메트릭 세트를 생성 
                     * 분산 집계 프로토콜을 실행하여 모델 매개변수와 시스템 전체에서 로컬로 내보낸 메트릭을 누적하고 집계, Model의 federated_output_computation에서 TFF의 자체 계산언어를 사용
     * FL API 사용 예시
-    ```python
-    import collections
-    import tensorflow as tf
-    import tensorflow_federated as tff
+```python
+import collections
+import tensorflow as tf
+import tensorflow_federated as tff
+
+NUM_CLINET = 10
+NUM_EPOCHS = 5
+BATCH_SIZE = 20  
+SHUFFLE_BUFFER = 100
+PREFETCH_BUFFER = 10
+NUM_ROUND = 10
+def preprocess(dataset):
     
-    NUM_CLINET = 10
-    NUM_EPOCHS = 5
-    BATCH_SIZE = 20  
-    SHUFFLE_BUFFER = 100
-    PREFETCH_BUFFER = 10
-    NUM_ROUND = 10
-    def preprocess(dataset):
-        
-        # 28x28 image to 784 list
-        def batch_format_fn(element):
-            return collections.OrderedDict(
-                x=tf.reshape(element['pixels'], [-1, 784]),
-                y=tf.reshape(element['label'], [-1, 1])
-            )
-        return dataset.repeat(NUM_EPOCHS).shuffle(SHUFFLE_BUFFER).batch(BATCH_SIZE).map(batch_format_fn).prefetch(PREFETCH_BUFFER)
-    
-    def make_federated_data(client_data, client_ids):
-        return [
-            preprocess(client_data.create_tf_dataset_for_clinet(x)) for x in client_ids # tf.data.Dataset 으로 변경 
-        ]
-    
-    emnist_train, emnist_test = tff.simulation.datasets.emnist.load_data() # 시뮬레이션 용 non-IID 데이터셋, 잘못 라벨링 되거나 노이즈가 많이 껴있음
-    sample_client_ids = emnist_train.client_ids[0:NUM_CLINET] # 일반적으로 무작위 샘플링
-    federated_train_data = make_federated_data(emnist_train, sample_client_ids)
-    
-    # input spec을 만들기 위해서 데이터셋 예시를 만듦 
-    example_dataset = emnist_train.create_tf_dataset_for_client(emnist_train.client_ids[0])
-    preprocessed_example_dataset = preprocess(example_dataset)
-    
-    def create_keras_model():
-      return tf.keras.models.Sequential([
-          tf.keras.layers.Input(shape=(784,)),
-          tf.keras.layers.Dense(10, kernel_initializer='zeros'),
-          tf.keras.layers.Softmax(),
-      ])
-    
-    def model_fn():
-        # We _must_ create a new model here, and _not_ capture it from an external
-        # scope. TFF will call this within different graph contexts.
-        keras_model = create_keras_model()
-        # tff.learning.Model 인터페이스의 인스턴스로 모델을 래핑, but keras 모델이 있는 경우 아래와 같이 쉽게 쓸 수 있음 
-        return tff.learning.from_keras_model(
-          keras_model,
-          input_spec=collections.OrderedDict(
-                      x=tf.TensorSpec(shape=[None, 784], dtype=tf.float32),
-                      y=tf.TensorSpec(shape=[None, 1], dtype=tf.int64)),
-          loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-          metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
-    
-    # 일반적인 Federated Averaging 알고리즘 사용 
-    iterative_process = tff.learning.build_federated_averaging_process(
-        model_fn, # 이미 생성된 인스턴스가 아니라 생성자로 모델 생성은 TFF에 의해 제어되는 컨텍스트에서 발생할 수 있음 
-        client_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=0.02),
-        server_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=1.0))
-    
-    # 서버 상태를 구성
-    state = iterative_process.initialize()
-    # 서버 상태를 클라이언트에 푸쉬
-    # 서버에서 실행되는 함수가 아니라 전체 분산 계산의 선언적 함수 표현 (로컬 업데이트) 
-    for _ in range(NUM_ROUND):
-        state, metrics = iterative_process.next(state, sample_client_ids) # 빠른 수렴을 위해 동일한 데이터셋 활용 
-    
-    ```
+    # 28x28 image to 784 list
+    def batch_format_fn(element):
+        return collections.OrderedDict(
+            x=tf.reshape(element['pixels'], [-1, 784]),
+            y=tf.reshape(element['label'], [-1, 1])
+        )
+    return dataset.repeat(NUM_EPOCHS).shuffle(SHUFFLE_BUFFER).batch(BATCH_SIZE).map(batch_format_fn).prefetch(PREFETCH_BUFFER)
+
+def make_federated_data(client_data, client_ids):
+    return [
+        preprocess(client_data.create_tf_dataset_for_clinet(x)) for x in client_ids # tf.data.Dataset 으로 변경 
+    ]
+
+emnist_train, emnist_test = tff.simulation.datasets.emnist.load_data() # 시뮬레이션 용 non-IID 데이터셋, 잘못 라벨링 되거나 노이즈가 많이 껴있음
+sample_client_ids = emnist_train.client_ids[0:NUM_CLINET] # 일반적으로 무작위 샘플링
+federated_train_data = make_federated_data(emnist_train, sample_client_ids)
+
+# input spec을 만들기 위해서 데이터셋 예시를 만듦 
+example_dataset = emnist_train.create_tf_dataset_for_client(emnist_train.client_ids[0])
+preprocessed_example_dataset = preprocess(example_dataset)
+
+def create_keras_model():
+  return tf.keras.models.Sequential([
+      tf.keras.layers.Input(shape=(784,)),
+      tf.keras.layers.Dense(10, kernel_initializer='zeros'),
+      tf.keras.layers.Softmax(),
+  ])
+
+def model_fn():
+    # We _must_ create a new model here, and _not_ capture it from an external
+    # scope. TFF will call this within different graph contexts.
+    keras_model = create_keras_model()
+    # tff.learning.Model 인터페이스의 인스턴스로 모델을 래핑, but keras 모델이 있는 경우 아래와 같이 쉽게 쓸 수 있음 
+    return tff.learning.from_keras_model(
+      keras_model,
+      input_spec=collections.OrderedDict(
+                  x=tf.TensorSpec(shape=[None, 784], dtype=tf.float32),
+                  y=tf.TensorSpec(shape=[None, 1], dtype=tf.int64)),
+      loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+      metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+
+# 일반적인 Federated Averaging 알고리즘 사용 
+iterative_process = tff.learning.build_federated_averaging_process(
+    model_fn, # 이미 생성된 인스턴스가 아니라 생성자로 모델 생성은 TFF에 의해 제어되는 컨텍스트에서 발생할 수 있음 
+    client_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=0.02),
+    server_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=1.0))
+
+# 서버 상태를 구성
+state = iterative_process.initialize()
+# 서버 상태를 클라이언트에 푸쉬
+# 서버에서 실행되는 함수가 아니라 전체 분산 계산의 선언적 함수 표현 (로컬 업데이트) 
+for _ in range(NUM_ROUND):
+    state, metrics = iterative_process.next(state, sample_client_ids) # 빠른 수렴을 위해 동일한 데이터셋 활용 
+
+```
   
 
 * __PySyft__: PyTorch 프레임워크에 기반하여서 암호화되고 프라이버시가 보존되는 DL을 수행할 수 있게 한다. 
