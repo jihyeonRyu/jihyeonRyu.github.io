@@ -152,8 +152,103 @@ FL 참가자의 규모에 따라 장치 연결을 관리하려면 속도 조정�
 
 최근의 몇몇 open-source 프레임워크를 통해 FL을 배포할 수 있다. 
 * __Tensorflow Federated(TFF)__: TFF는 두 가지 layer로 구성되어 있다. 
-    * FL: 존재하는 tf model에 FL 알고리즘을 개인적으로 추가할 필요 없이 FL을 적용할 수 있게 해주는 high-level interface
-    * Federated Core(FC): TF layer와 통신 operator를 통해 결합하여, 사용자가 커스텀화 되고 새로 디자인된 FL 알고리즘을 사용할 수 있게 한다. 
+    * FL API: 존재하는 tf model에 FL 알고리즘을 개인적으로 추가할 필요 없이 FL을 적용할 수 있게 해주는 high-level interface
+    * Federated Core(FC) API: TF layer와 통신 operator를 통해 결합하여, 사용자가 커스텀화 되고 새로 디자인된 FL 알고리즘을 사용할 수 있게 한다.
+    * 특징: 
+        * 고성능 단일 및 다중 머신 런타임을 제공하는 데 많은 투자를 함
+        * 압축 모델링 및 업데이트로 통신비용을 줄임
+        * 차등 프라이버시가 있는 모델을 위한 새로운 알고리즘 연구(DP-FedAvg)
+        * 악의적 공격에 대응하는 알고리즘 구현 가능
+        * GAN도 FL 가능(DP-FedAvg-GAN)
+        * 개인화 모델 개발 가능 (다른 사용자에게 다른 추론 모델을 제공)
+    * Interface의 주요 구성 요소 
+        * Model: 기존 모델을 래핑하여 tff에서 사용할 수 있도록 도와주는 클래스 및 함수. tff.learning.from_keras_model을 호출하거나 tf.learning.Model 인터페이스의 서브 클래스를 정의 
+        * federation computation builder: 훈련 또는 평가를 위한 함수 
+        * dataset: 시뮬레이션을 위해 미리 준비된 데이터 모음. 원래는 중앙 서버에서 분산 데이터를 다운로드하여 사용할 수 없어야 하지만, 쉬운 사용을 위해 로컬에서 다운로드하여 조작할 수 있도록 함 
+    * Model ([Example](https://github.com/tensorflow/federated/blob/master/tensorflow_federated/python/learning/model_examples.py))
+        * 직렬화: 모델 코드를 Tensorflow 그래프로 직렬화 할 수 있어야 한다. (TF 1.0 패턴을 따르며, 모든 코드는 TFF가 제어하는 tf.Graph 내에 구성되어야 함)
+        * 집계: keras 사용하는 것이 좋음. FL에는 로컬 기기내 집계와 federation 집계라는 최소한 두 개의 집계 레이어가 있다.
+            * 로컬 집계: 개별 클라이언트가 소유한 예제의 여러 배치에 대한 집계. 모델이 로컬에서 훈련됨에 따라 순차적으로 계속 진화하는 모델 매개 변수와 메트릭 통계 
+                * 구조:
+                    * tf.Variable에 배치수, 배치 사이즈, 배치당 손실의 합 등과 같은 집계를 보유
+                    * 클라이언트의 후속 배치에 대해 순차적으로 Model에서 forward_pass 메서드를 여러번 호출하여 다양한 집계 변수를 업데이트
+                    * Model에서 report_local_outputs 메서드를 호출하여 수집한 모든 요약 통계를 클라이언트가 내보낼 수 있는 간단한 메트릭 세트로 컴파일 
+            * federation 집계: 시스템의 여러 클라이언트에 대한 집계. 클라이언트 전체에서 평균화되는 모델 매개변수와 로컬 집계의 결과로서 모델이 내보낸 매트릭에 모두 적용
+                * 구조:
+                    * 초기 모델 및 훈련에 필요한 모든 매개변수는 서버에서 훈련과 평가 라운드에 참여할 클라이언트에 배포 
+                    * 각 클라이언트에서 독립적으로, 병렬로, 로컬 데이터 배치 스트림에 모델 코드가 반복적으로 호출되어 새로운 로컬 모델 매개변수 세트와 로컬 메트릭 세트를 생성 
+                    * 분산 집계 프로토콜을 실행하여 모델 매개변수와 시스템 전체에서 로컬로 내보낸 메트릭을 누적하고 집계, Model의 federated_output_computation에서 TFF의 자체 계산언어를 사용
+    * FL API 사용 예시
+    ```python
+    import collections
+    import tensorflow as tf
+    import tensorflow_federated as tff
+    
+    NUM_CLINET = 10
+    NUM_EPOCHS = 5
+    BATCH_SIZE = 20  
+    SHUFFLE_BUFFER = 100
+    PREFETCH_BUFFER = 10
+    NUM_ROUND = 10
+    def preprocess(dataset):
+        
+        # 28x28 image to 784 list
+        def batch_format_fn(element):
+            return collections.OrderedDict(
+                x=tf.reshape(element['pixels'], [-1, 784]),
+                y=tf.reshape(element['label'], [-1, 1])
+            )
+        return dataset.repeat(NUM_EPOCHS).shuffle(SHUFFLE_BUFFER).batch(BATCH_SIZE).map(batch_format_fn).prefetch(PREFETCH_BUFFER)
+    
+    def make_federated_data(client_data, client_ids):
+        return [
+            preprocess(client_data.create_tf_dataset_for_clinet(x)) for x in client_ids # tf.data.Dataset 으로 변경 
+        ]
+    
+    emnist_train, emnist_test = tff.simulation.datasets.emnist.load_data() # 시뮬레이션 용 non-IID 데이터셋, 잘못 라벨링 되거나 노이즈가 많이 껴있음
+    sample_client_ids = emnist_train.client_ids[0:NUM_CLINET] # 일반적으로 무작위 샘플링
+    federated_train_data = make_federated_data(emnist_train, sample_client_ids)
+    
+    # input spec을 만들기 위해서 데이터셋 예시를 만듦 
+    example_dataset = emnist_train.create_tf_dataset_for_client(emnist_train.client_ids[0])
+    preprocessed_example_dataset = preprocess(example_dataset)
+    
+    def create_keras_model():
+      return tf.keras.models.Sequential([
+          tf.keras.layers.Input(shape=(784,)),
+          tf.keras.layers.Dense(10, kernel_initializer='zeros'),
+          tf.keras.layers.Softmax(),
+      ])
+    
+    def model_fn():
+        # We _must_ create a new model here, and _not_ capture it from an external
+        # scope. TFF will call this within different graph contexts.
+        keras_model = create_keras_model()
+        # tff.learning.Model 인터페이스의 인스턴스로 모델을 래핑, but keras 모델이 있는 경우 아래와 같이 쉽게 쓸 수 있음 
+        return tff.learning.from_keras_model(
+          keras_model,
+          input_spec=collections.OrderedDict(
+                      x=tf.TensorSpec(shape=[None, 784], dtype=tf.float32),
+                      y=tf.TensorSpec(shape=[None, 1], dtype=tf.int64)),
+          loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+          metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+    
+    # 일반적인 Federated Averaging 알고리즘 사용 
+    iterative_process = tff.learning.build_federated_averaging_process(
+        model_fn, # 이미 생성된 인스턴스가 아니라 생성자로 모델 생성은 TFF에 의해 제어되는 컨텍스트에서 발생할 수 있음 
+        client_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=0.02),
+        server_optimizer_fn=lambda: tf.keras.optimizers.SGD(learning_rate=1.0))
+    
+    # 서버 상태를 구성
+    state = iterative_process.initialize()
+    # 서버 상태를 클라이언트에 푸쉬
+    # 서버에서 실행되는 함수가 아니라 전체 분산 계산의 선언적 함수 표현 (로컬 업데이트) 
+    for _ in range(NUM_ROUND):
+        state, metrics = iterative_process.next(state, sample_client_ids) # 빠른 수렴을 위해 동일한 데이터셋 활용 
+    
+    ```
+  
+
 * __PySyft__: PyTorch 프레임워크에 기반하여서 암호화되고 프라이버시가 보존되는 DL을 수행할 수 있게 한다. 
 PySyft는 native Torch interface를 유지하도록 개발되었다. 즉. 모든 텐서 작업을 실행하는 방법은 PyTorch의 방법과 변경되지 않는다. 
 SyftTensor가 생성되면 LocalTensor는 자동적으로 생성되어 기본 PyTorch 텐서에도 입력 명령을 적용한다. 
@@ -386,3 +481,12 @@ FedAvg 알고리즘은 파라미터 누적을 동기적으로 진행하기 때�
 하지만 수렴에 대한 보증은 오직 convex loss에만 유효하다는 단점이 있다.
 
 ### Incentive Mechanism 
+training 서비스 제공자 역할을 하는 참여자에게 서비스 가격 책정 체계를 제안한다.
+또한 모델 업데이트 전송에 대한 에너지 비효율성을 극복하기 위해, 모델 업데이터 전송 및 거래를 지원하는 협력 중계 네트워크를 제안한다.
+모델 소유자는 buyer이고 참가자는 seller의 역할을 하는 Stackerberg game과 같이 모델링 한다.
+Stackerberg game은 합리적인 참여자가 비협조적으로 자신의 이익을 극대화하는 가격을 결정한다. 
+lower-level subgame에서 모델 소유자는 모델 정확도와 학습 데이터 크기 간의 오목한 관계 증가를 고려하여 수익을 극대화하기 위해 학습 데이터의 크기를 결정한다.
+upper-level subgame에서 참가자는 개인의 이익을 극대화하기 위해 data unit의 가격을 결정한다. 
+나아가 여기에 DRL 기반의 접근 방식을 추가하였다. 
+FL 서버는 참여 수준과 edge node의 지불 내역에 반응하여 incentive 소비를 최소화 하는 방향으로 지불을 결정하는 대리인 역할을 한다. 
+edge node는 지불 policy에 반응하여 최적의 참여 수준을 결정한다. 
