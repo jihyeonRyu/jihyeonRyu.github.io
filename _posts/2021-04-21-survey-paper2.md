@@ -264,7 +264,8 @@ $ pip install syft
 * Duet은 데이터 소유자가 데이터를 비공개로 노출 할 수있는 연구 친화적 API를 제공하는 PySyft 내의 P2P 도구이며 데이터 과학자는 Zero 지식 액세스 제어 메커니즘을 통해 소유자 측의 데이터에 액세스하거나 조작 할 수 있습니다.
     * 연구를 위해 전체 PyGrid 배포를 관리할 필요 없이 PySyft 사용을 시작할 수 있음
 * [OpenMinded Blog](https://blog.openmined.org/tag/pysyft/)
-* Example
+* Example  
+
 ```python
 import tensorflow as tf
 import syft
