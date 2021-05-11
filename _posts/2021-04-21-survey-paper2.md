@@ -150,7 +150,7 @@ FL 참가자의 규모에 따라 장치 연결을 관리하려면 속도 조정�
 또한 비밀 공유 매커니즘으로 인증된 암호화를 사용하여 local update를 전송하는데 사용한다. 
 * Differential Privacy: FL 서버가 local update의 owner의 신원 정보를 파악하는 것을 받지한다. 이를 위해 original local update에 모델 정확도를 해치지 않는 수준의 일정한 noise를 추가한다. 
 
-최근의 몇몇 open-source 프레임워크를 통해 FL을 배포할 수 있다. 
+최근의 몇몇 open-source 프레임워크를 통해 FL을 연구하거나 배포할 수 있다. 
 #### Tensorflow Federated(TFF)
 * 현재 릴리스는 시뮬레이션을 사용하여 새로운 연합 알고리즘을 표현하거나 자체 데이터 세트로 FL을 *실험하는 용도*로 고안되어 있으므로 배포는 불가능
 * TFF는 두 가지 layer로 구성되어 있다. 
@@ -243,28 +243,89 @@ eval = tff.learning.build_federated_evaluation(model_fn)
 metrics = eval(state.model, emnist_test)
 ```
 #### PySyft
-* [Source Code](https://github.com/OpenMined/PySyft)
+* OpenMinded에서 공개한 FL 오픈소스
+* 아직 베타 버전으로 안정성을 보장할 수는 없음  
 * 안전한 private 딥러닝을 위한 python library로 객체, 추상화 및 알고리즘을 정의 하는 라이브러리 
-* PyTorch 및 Tensorflow 같은 주요 딥러닝 프레임워크 내에서 FL, Differential Privacy 및 Encrypted Computation을 사용하여 개인 데이터를 분리하여 모델 학습
-* PyPI와 Conda를 이용해 설치 가능
-* [PyGrid](https://github.com/OpenMined/PyGrid) 라이브러리는 대규모 PySyft의 관리 및 배포를 위한 API 역할을 수행
+* __PyTorch__ 및 __Tensorflow__ 같은 주요 딥러닝 프레임워크 내에서 FL, Differential Privacy 및 Encrypted Computation을 사용하여 개인 데이터를 분리하여 모델 학습
+* PyPI와 Conda를 이용해 간단하게 설치 가능
+```shell script
+$ pip install syft
+```
+* Linux, Windows, MacOS 지원  
 * 웹, 모바일 및 에지 장치에서 PySyft를 확장하여 FL에 사용할 수 있는 라이브러리  
     * [KotlinSyft(Android)](https://github.com/OpenMined/KotlinSyft)
     * [SwiftSyft(iOS)](https://github.com/OpenMined/SwiftSyft)
     * [Syft.js(Javascript)](https://github.com/OpenMined/syft.js)
+    * [PySyft](https://github.com/OpenMined/PySyft)
+    * 하지만 위 라이브러리는 각 언어에서 일관화된 직렬화/역직렬화, 핵심 추상화 및 알고리즘 설계/실행에만 중점을 두기 때문에, 라이브러리 만으로 현실 세계의 데이터와 연결되지는 않음. 
+* [PyGrid](https://github.com/OpenMined/PyGrid) 라이브러리는 실제 시스템 실행과 관련하여 관리 및 배포를 위한 API 역할을 수행
+* [PyGrid Admin](https://github.com/OpenMined/pygrid-admin) 라이브러리는 데이터 소유자가 PyGrid 배포를 관리할 수 있는 UI 제공  
 * PySyft는 native Torch interface를 유지하도록 개발되었다. 즉. 모든 텐서 작업을 실행하는 방법은 PyTorch의 방법과 변경되지 않는다. 
 * Duet은 데이터 소유자가 데이터를 비공개로 노출 할 수있는 연구 친화적 API를 제공하는 PySyft 내의 P2P 도구이며 데이터 과학자는 Zero 지식 액세스 제어 메커니즘을 통해 소유자 측의 데이터에 액세스하거나 조작 할 수 있습니다.
-    * 전체 PyGrid 배포를 관리할 필요 없이 PySyft 사용을 시작할 수 있음
-* PySyft 사용 예시: [Example Link](https://github.com/OpenMined/PySyft/tree/master/examples)
-* Use Case
+    * 연구를 위해 전체 PyGrid 배포를 관리할 필요 없이 PySyft 사용을 시작할 수 있음
+* [OpenMinded Blog](https://blog.openmined.org/tag/pysyft/)
+* Example
+```python
+import tensorflow as tf
+import syft
 
+hook = syft.TensorFlowHook(tf)
+
+# worker, alice, owns the MNIST dataset
+alice = syft.VirtualWorker(hook, "alice") 
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Converting the data from numpy to tf.Tensor in order to have PySyft functionalities.
+x_train, y_train = tf.convert_to_tensor(x_train), tf.convert_to_tensor(y_train)
+x_test, y_test = tf.convert_to_tensor(x_test), tf.convert_to_tensor(y_test)
+
+# Send data to Alice (for demonstration purposes)
+x_train_ptr = x_train.send(alice)
+y_train_ptr = y_train.send(alice)
+
+# Server define Model 
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10, activation='softmax')
+])
+
+# Compile with optimizer, loss and metrics
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Sending a model to alice
+model_ptr = model.send(alice)
+print(model_ptr)
+
+# you can train the model remotely by passing the dataset pointers to the Keras
+model_ptr.fit(x_train_ptr, y_train_ptr, epochs=2)
+
+```
   
 #### LEAF
-* FL에서 벤치마크로 사용할 수 있는 오픈소스 프레임워크의 데이터셋 이다. 예를들어 Federated Extended MNIST는 작성자를 기준으로 분할된 데이터세트를 만든다.
-각 데이터세트의 작성자는 FL의 참여자로 간주되며 데이터는 로컬 데이터로 간주 된다. 이런 데이터 세트에 새로 설계된 알고리즘을 구현하면 연구간 신뢰할 수 있는 비교가 가능하다. 
-  
+* [Source Code](https://github.com/TalwalkarLab/leaf)
+* 통합 설정에서 Federated learning, multi-task learning, meta-learning, on-device learning을 하기 위한 벤치마킹 프레임워크 데이터 셋트 
+* 종류
+    * FEMNIST: Classification 
+    * Shakespear: Next Character Prediction
+    * Twitter: Sentiment Analysus
+    * Celeba: Classification
+    * Synthetic Dataset: Classification
+    * Reddit: Language Modeling
+
 #### FATE
-* Federated AI Technology Enabler의 줄임말로 WeBank에서 개발한 오픈소스 프레임워크이다. 
+* [Source Code](https://github.com/FederatedAI/FATE)
+* FATE(Federated AI Technology Enabler)는 WeBank의 AI 부서가 FL 제공을 위해 시작한 오픈소스 프로젝트
+* 동형 암호화 및 다자간 계산(MPC)를 기반으로 보안 계산 프로토콜을 구현 
+* FL 아키텍처와 로지스틱 회귀, 트리 기반 알고리즘, 딥러닝 및 전이 학습을 포함한 다양한 ML 알고리즘의 안전한 계산을 지원
+* Linux, MacOS 지원
+
 
 ### Unique Characteristics and Issue of FL
 FL은 분산 ML에 비해 독특한 특징을 가진다. 
