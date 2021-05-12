@@ -148,7 +148,7 @@ FL 참가자의 규모에 따라 장치 연결을 관리하려면 속도 조정�
 통신 효율과는 별개로 local update가 일어날때 통신 안정성도 또 다른 해결해야할 문제이다. 여기에는 주로 두가지 관점이 있다. 
 * Secure Aggregation: 로컬 업데이트가 추적되고 FL 참가자의 신원을 추론하는데 사용되지 않게 하기 위해 신뢰 가능한 third party server가 local model aggregation을 위해 배포된다. 
 또한 비밀 공유 매커니즘으로 인증된 암호화를 사용하여 local update를 전송하는데 사용한다. 
-* Differential Privacy: FL 서버가 local update의 owner의 신원 정보를 파악하는 것을 받지한다. 이를 위해 original local update에 모델 정확도를 해치지 않는 수준의 일정한 noise를 추가한다. 
+* Differential Privacy: FL 서버가 local update의 owner의 신원 정보를 파악하는 것을 방지한다. 이를 위해 original local update에 모델 정확도를 해치지 않는 수준의 일정한 noise를 추가한다. 
 
 최근의 몇몇 open-source 프레임워크를 통해 FL을 연구하거나 배포할 수 있다. 
 #### Tensorflow Federated(TFF)
@@ -259,7 +259,14 @@ $ pip install syft
     * [PySyft](https://github.com/OpenMined/PySyft)
     * 하지만 위 라이브러리는 각 언어에서 일관화된 직렬화/역직렬화, 핵심 추상화 및 알고리즘 설계/실행에만 중점을 두기 때문에, 라이브러리 만으로 현실 세계의 데이터와 연결되지는 않음. 
 * [PyGrid](https://github.com/OpenMined/PyGrid) 라이브러리는 실제 시스템 실행과 관련하여 관리 및 배포를 위한 API 역할을 수행
-* [PyGrid Admin](https://github.com/OpenMined/pygrid-admin) 라이브러리는 데이터 소유자가 PyGrid 배포를 관리할 수 있는 UI 제공  
+    * Components 
+        * Network: Flask-based app으로 관리, 모니터, 컨트롤, 다양한 PyGrid 도메인에 대한 라우팅 지침
+        * Domain: Flask-based app으로 개인 데이터, 모델을 저장하고, 다양한 PyGrid 작업자에게 지침을 발행 
+        * Worker: 데이터 계산에 사용되는 PyGrid Domain에서 관리하는 임시 인스턴스 
+    * Use Cases
+        * Model-centric: 데이터는 사용자 디바이스에서 노출되지 않고 오직 모델만을 전송하며 학습
+        * Data-centric: 모델 대신 데이터를 사용자 디바이스에서 서버에 전송하지만, 데이터를 보호하며 전송, 데이터 사이언티스트가 데이터를 요청할 수 있음. 
+[PyGrid Admin](https://github.com/OpenMined/pygrid-admin) 라이브러리는 데이터 소유자가 PyGrid 배포를 관리할 수 있는 UI 제공  
 * PySyft는 native Torch interface를 유지하도록 개발되었다. 즉. 모든 텐서 작업을 실행하는 방법은 PyTorch의 방법과 변경되지 않는다. 
 * Duet은 데이터 소유자가 데이터를 비공개로 노출 할 수있는 연구 친화적 API를 제공하는 PySyft 내의 P2P 도구이며 데이터 과학자는 Zero 지식 액세스 제어 메커니즘을 통해 소유자 측의 데이터에 액세스하거나 조작 할 수 있습니다.
     * 연구를 위해 전체 PyGrid 배포를 관리할 필요 없이 PySyft 사용을 시작할 수 있음
@@ -326,7 +333,8 @@ model_ptr.fit(x_train_ptr, y_train_ptr, epochs=2)
 * 동형 암호화 및 다자간 계산(MPC)를 기반으로 보안 계산 프로토콜을 구현 
 * FL 아키텍처와 로지스틱 회귀, 트리 기반 알고리즘, 딥러닝 및 전이 학습을 포함한 다양한 ML 알고리즘의 안전한 계산을 지원
 * Linux, MacOS 지원
-
+* Cluster deploy, Docker-compose deploy, Kubernetes deploy
+* Release Version 이 나옴 (2021/5/11  기준 v1.6.0)
 
 ### Unique Characteristics and Issue of FL
 FL은 분산 ML에 비해 독특한 특징을 가진다. 
