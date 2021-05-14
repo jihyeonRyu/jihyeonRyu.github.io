@@ -13,6 +13,7 @@ Authors: Wei Yang Bryan Lim, Nguyen Cong Luong, Dinh Thai Hoang, Yutao Jiao, Yin
 
 [Paper Link](https://arxiv.org/pdf/1909.11875.pdf)  
 
+
 ## 1. Introduction
 요새는 7억만의 IoT 디바이스와 3억만의 스마트폰이 존재한다. 
 이런 디바이스들은 진화된 센서와 컴퓨팅, 그리고 소통 능력을 가지고 있다. 
@@ -85,6 +86,14 @@ FL 학습 과정은 다음과 같은 세 단계를 거친다.
 이때 서버도 모델의 global loss function을 원하는 만큼 minizie 하거나 원하는 정확도에 도달할때 까지 이를 반복한다.
 classical한 누적 방식은 Algorithm1 처럼 FedAvg 방식이었다.   
 ![](./../assets/resource/survey/paper2/4.png)  
+  
+### Categorization
+참가자에게 있는 데이터들이 __feature__ 과 __sample space__ 에서 어떻게 분포하냐에 따하 아래와 같이 세가지로 분류할 수 있다.
+* Horizontal FL(HFL): 각 참가자가 동일한 feature space를 공유하지만, 서로 다른 sample을 가지고 있는 경우  
+* Vertical FL(VFL): 데이터셋의 feature space가 다르지만, 동일한 참가자가 겹칠 경우 
+* Federated transfer learning(FTL): feature space도 거의 다르고, data sample도 다를 경우 
+ 
+![](./../assets/resource/survey/paper2/16.png)  
 
 ### Statistical Challenge of FL
 전통적인 분산된 ML은 center server가 모든 학습 데이터셋에 접근할 수 있었다. 
@@ -696,7 +705,73 @@ global model이 붕괴되거나 모델 학습 중 참가자들의 프라이버�
    ![](./../assets/resource/survey/paper2/19.png)  
    그러나 블록체인 기술의 활용은 블록체인 네트워크를 운영하기 위해 채굴자를 구현하고 유지하는 데 상당한 비용이 발생한다.
    또한 작업 증명과 같은 블록체인 네트워크에서 사용되는 합의 프로토콜은 정보 교환에 오랜 지연을 초래할 수 있으므로 FL 모델에서 구현하기 적합하지 않을 수 있다.
-   
-## 6. Applications of Federated Learning For Mobile Edge Computing 
 
+### Summary
+![](./../assets/resource/survey/paper2/20.png)
    
+## (Example) Federated Learning as a Service
+![](./../assets/resource/survey/paper2/21.png)  
+[Paper link](https://arxiv.org/pdf/2011.09359.pdf)
+### FlaaS의 요건
+1. 서비스 사용 및 개인 정보/권한 관리를 위한 high-level, 확장 가능한 API와 SDK 제공 
+2. 상기 API를 이용하여 개인 정보를 보호하는 방식으로 고객 간에 ML 모델을 협업 교육이 가능하도록 함 
+3. 네트워크에서 ML 모델의 계층적 구성 및 교환을 지원
+4. 다양한 유형의 장치 밒 운영 환경에서 인스턴스화 할 수 있음: 모바일 폰, 홈 디바이스, 엣지 노드 등
+
+### System Design
+#### Service Main Components
+* __Front-End__: app이나 서비스 개발자를 위한 interface 제공
+* __Controller__: front-end로부터 요청을 받고 처리. 모델 초기화와 적절한 권한을 설정. 
+  서비스가 시작하면 controller는 서비스 상태와 예산을 모니터링 하고 요청시 ML 모델링 실행을 종료.
+* __Central Server and Clients__: FL 알고리즘과 프로토콜을 실제 실행하는 역할. 
+  Central server는 관리 도메인에서 Controller와 Front-end를 호스팅. 
+  또한, 수신된 model의 aggregation을 위한 global module을 실행. 
+  각 Client는 local module을 실행.
+  FLaaS 클라이언트는 클라이언트 API를 통해 액세스 할 수있는 필수 기능을 제공하는 소프트웨어 라이브러리를 포함.
+  
+#### APIs and Software Library
+* __Front-End APIs__: FLaaS를 구성하는데 사용하는 API 
+    * *DATA APIs*: 모델학습에 사용할 input data나 추론 결과 output data 타입을 describe.
+    * *MODEL APIs*: ML 모델을 생성할 수 있고, model type과 parameter를 결정하고 모델링 방식을 결정할 수 있음 
+    * *PERMISSION APIs*: 고객이 해당 데이터에 액세스 할 수 있는 다른 고객(앱) 또는 방법을 지정 하거나 다른 고객이 어떻게 추론을 위해 모델에 액세스 하거나 새로운 ML 문제를 위한 모델을 구축할 지 결정. 
+    
+* __Client APIs__: application에 임베딩한 함수 모음. 
+    * 중앙 서버에 인증하는 API (통신)
+    * on-device training 관련 API: load model, add training samples, conduct model training, predict from test samples, save model
+    * 로컬 FL 이 진행되기 전, 장치 내에서 FLaaS 지원 앱간의 데이터 교환/공유
+    
+#### FLaaS Algorithmic Design
+* __FL modeling per application for existing ML problems__:
+![](./../assets/resource/survey/paper2/22.png)  
+  user device k, m에 FlaaS 모듈이 돌아가고 있고, 각 user 마다 application A들에 local data를 활용하여 model을 학습하고자 한다.
+  FlaaS local은 각 앱으로부터 모델을 모으고 FlaaS global에 전송한다.
+  FlaaS global은 각 앱마다 average model을 만들고 각 참가 device에 모델들을 전송한다. 그리고 FlaaS local은 각 앱에게 global model을 분배한다.
+  
+* __Jointly-trained FL modeling between group of apps for existing
+ML problem__: user의 app 들은 공통의 FL 모델을 가지고 있다. 이 모델은 모든 앱간에 공유되지만 각 애플리케이션의 로컬 데이터에 공동으로 구축됩니다. 
+  그리고 위와 동일하게 global aggregation을 수행한다. 
+  1. Sharing local data: user device 내 앱간의 데이터 공유에 대한 의지가 있을 때 사용.
+    앱간 같은 format의 데이터를 공유하고 SGD를 수행
+    2. sharing Personalized gradients: 각 학습 중 t iteration 마다 앱간에 gradient를 공유. (실 데이터가 아니므로 데이터 공유에 대한 권한 설정 필요 없음)
+    3. Sharing personalized model: 각 데이터로 학습한 후 모델을 모아서 local 에서 앱간의 federated aggregation을 수행한다. (실 데이터가 아니므로 데이터 공유에 대한 권한 설정 필요 없음)
+    
+* __Jointly-trained FL modeling between group of apps for a new
+ML problem__: 예를 들어 앱 i는 새로운 ML 문제를 풀기위한 의지가 있지만 충분한 데이터가 없고, 앱 j에 필요한 데이터가 있을 떄의 시나리오 이다.
+  joint model을 학습하기 위해, local data를 공유하거나, personalized model을 공유한다. 
+  
+### Proof of Concept 
+#### Implementation
+* FLaaS module and SDK leverage TensorFlow Lite 2.2.0 and Transfer API library from Google
+* Exchange of data between FLaaS-enabled apps and the FLaaS Local module is performed using the OS’s BroadcastReceiver
+* The Central Server is implemented using Django 3.07 with Python 3.7. Note that currently, Controller and Front-End are not implemented.
+* The FLaaS-enabled apps used for the PoC are toy apps only performing the FLaaS functionality and storing a set of data
+* The current FLaaS version is implemented in 4.6k lines of Java code (for the FL-related modules), and 2k lines of Python for server modules.
+#### Experimental
+* Metric
+  * ML Performance
+  * Execution Time
+  * Memory Consumption 
+  * CPU utilization 
+  * Power Consumption 
+    
+![](./../assets/resource/survey/paper2/23.png)  
