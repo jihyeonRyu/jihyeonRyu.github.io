@@ -188,11 +188,215 @@ c++11 (2011) 부터 완전히 새로운 c++의 표준이 개발되었습니다. 
 * C와 비슷한 쉐이딩 language로 범용 프로그래밍 목적 개발 
 * Driver, Language, tools(compiler, debugger, ...) 등을 제공하는 통합 환경 구축 
 
-# Cuda-install
-## Before Installation
-* Cuda-capable CPU
-    * NVIDIA
-* Window 10
-* Visual Studio 2017  
-* 환경이 없다면 cuda toolkit으로 에뮬레이션 
+# memcpy
+![](./../assets/resource/programming/parallel_programming/3.png)  
+* NorthBridgeChip: CPU와 메인메모리, GPU/local DRAM 등 고속이 필요한 디바이스 등을 담당  
+* SouthBridgeChip: 저속의 디바이스들을 담당
 
+## Simple CUDA Model
+* __Host__: CPU + main memory(RAM) -> CPU execution code (microsoft visual c++ compiler: MSVC)
+* __Device__: GPU + video memory(VRAM) -> GPU execution code (nvidia cuda compiler: NVCC)
+
+하나의 .exe 파일로 통합하여 저장하기 위해 source code(.cu)를 NVCC가 gpu에 사용할 수 있는 코드를 컴파일하고, 
+나머지 소스코드는 cpu 컴파일러를 사용함.
+
+cuda는 direct I/O feature가 없기 때문에 데이터는 cpu RAM -> gpu VRAM -> cpu RAM로 복사하며 실행됨. 
+이때 복사를 수행하는 gpu 메모리는 cuda global memory를 사용한다. 
+
+cpu와 gpu는 분리된 메모리 공간을 사용하고, data bus를 사용한다.
+c에서 사용하는 pointer는 cpu 인지, gpu 주소 인지 구별할 수 없음.
+
+## Example: Host-Device Mem Copy
+
+### CPU Memory Allocation
+```
+void *malloc(size_t nBytes);
+void *memset(void * pointer, int value, size_t count);
+void free(void* pointer);
+```
+### GPU Memory Allocation
+```
+cudaError_t cudaMalloc(void **pointer, size_t nBytes);
+cudaError_t cudaMemset(void * pointer, int value, size_t count, enum cudaMemcpyKind direction);
+cudaError_t cudaFree(void *pointer);
+```
+* 모든 쿠다 함수는 "cuda"로 시작
+* 모든 쿠다 함수는 cudaError_t를 리턴
+* enum cudaMemcpyKind
+    - cudaMemcpyHostToDevice
+    - cudaMemcpyDeviceToHost
+    - cudaMemcpyDeviceToDevice
+    
+### Code
+```
+# include <cstdio>
+
+int main(){
+    
+    const int SIZE=5;
+    const int a[SIZE] = {1, 2, 3, 4, 5}; // source
+    int b[SIZE] = {0, 0, 0, 0, 0}; // destination
+    
+    int * dev_a = 0; // video-side
+    int * dev_b = 0; // video-side
+    
+    cudaMalloc((void**)&dev_a, SIZE*sizeof(int));
+    cudaMalloc((void**)&dev_b, SIZE*sizeof(int));
+    
+    // a->dev_a
+    cudaMemcpy(dev_a, a, SIZE*sizeof(int), cudaMemcpyHostToDevice);
+    // dev_a->dev_b
+    cudaMemcpy(dev_b, dev_a, SIZE*sizeof(int), cudaMemcpyDeviceToDevice);
+    // dev_b->b
+    cudaMemcpy(b, deb_b, SIZE*sizeof(int), cudaMemcpyDeviceToHost);
+    
+    cudaFree(dev_a);
+    cudaFree(dev_b);
+    return 0;
+}
+
+```
+
+# Error Check
+* useful functions
+```
+const char* cudaGetErrorName(cudaError_t err);
+const char* cudaGetErrorString(cudaError_t err); 
+cudaError_t cudaGetLastError(void); // 마지막 발생 에러를 보여주고 다시 cudaSuccess로 reset
+cudaError_t cudaPeakAtLastError(void); // 마지막 발생 에러를 보여줌 
+```
+* basic framework
+```
+cudaError_t e = cudaGetLastError();
+if (e != cudaSuccess){
+    cudaGetErrorString(e);
+    exit(0);
+}
+```
+## macro 함수로 이용 
+    * do-while문을 이용해서 함수를 일반 함수처럼 호출문 끝에 ';'를 사용하여 쓸 수 있음 
+```
+# define cudaCheckError()  do{ \
+    cudaError_t e = cudaGetLastError(); \
+    if (e != cudaSuccess){ \
+        cudaGetErrorString(e); \
+        exit(0); \
+    } \
+} while(0)
+```
+
+## Release mode / debug mode
+
+```
+#if defined(NODEBUG) // releas model 
+
+# define CUDA_CHECK(x) (x) // not check error (빠르게 실행)  
+
+# else // debug mode
+
+# define CUDA_CHECK(x)  do{ \
+    cudaError_t e = x; \
+    if (e != cudaSuccess){ \
+        printf("cuda failuare %s at %s:%d\n", \
+        cudaGetErrorString(e), __FILE__, __LINE__); \
+        exit(0); \
+    } \
+} while(0)
+
+#endif
+```
+
+# CPU-kernel
+* .cu 하나의 소스 코드를 어떻게 GPU, CPU 용으로 분리가 가능할까?
+    - function 단위로 결정
+    - PREFIX 사용
+        * \_\_host__: host에서 호출, host에서 실행
+        * \_\_device__: device에서 호출, device에서 실행
+        * \_\_global__: host에서 호출, device에서 실행 (연결 통로)
+        * \_\_host__and__device__: cpu, gpu 모두에서 두번 컴파일 됨 
+    - default function: \_\_host__
+* cuda language == c/c++ 
+    * only access GPU memory
+    * No recursion
+    * No static variable
+    * No variable number of argument
+    * No dynamic polymorphism
+
+## CPU 
+* single cpu
+* for-loop
+* sequential execution
+
+## Example: Vector Addition
+```
+# include <cstdio>
+
+void addKernel(int idx, int* c, const int* a, const int* b){
+    c[idx] = a[idx] + b[idx];
+}
+
+int main(){
+    const int SIZE = 5;
+    const int a[SIZE] = {1, 2, 3, 4, 5};
+    const int b[SIZE] = {10, 20, 30, 40, 50};
+    
+    int c[SIZE] = {0};
+    
+    // single cpu does
+    for (register int i=0; i<SIZE; i++){
+        addKernel(i, c, a, b);
+    }
+}
+```
+
+# CUDA-kernel
+## GPU
+* a set of gpu cores
+* multiple threads
+* parallel execution
+
+## Example: Vector Addition
+```
+# include <cstdio>
+
+// kernel program for GPU: compiled by NVCC 
+__global__ void addKernel(int *c, const int * a, const int *b){
+    int i = threadIdx.x; // predefined own index
+    c[i] = a[i] + b[i];
+}
+
+int main(){
+    const int SIZE = 5;
+    const int a[SIZE] = {1, 2, 3, 4, 5};
+    const int b[SIZE] = {10, 20, 30, 40, 50};
+    
+    int c[SIZE] = {0};
+    
+    int * dev_a = 0;
+    int * dev_b = 0;
+    int * dev_c = 0;
+    
+    cudaMalloc((void**)&dev_a, SIZE*sizeof(int));
+    cudaMalloc((void**)&dev_b, SIZE*sizeof(int));
+    cudaMalloc((void**)&dev_c, SIZE*sizeof(int));
+    
+    cudaMemcpy(dev_a, a, SIZE*sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_b, b, SIZE*sizeof(int), cudaMemcpyHostToDevice);
+    
+    addKernel<<<1,SIZE>>>(dev_c, dev_a, dev_b); // SIZE 개 만큼의 core를 사용해서 실행 
+    
+    cudaMemcpy(c, dev_c, SIZE*sizeof(int), cudaMemcpyDeviceToHost);
+    
+    cudaFree(dev_a);
+    cudaFree(dev_b);
+    cudaFree(dev_c);
+}
+```
+
+### kernel에서 발생한 error check
+```
+addKernel<<<1,SIZE>>>(dev_c, dev_a, dev_b); // void return 
+CUDA_CHECK(cudaPeakAtLastError());
+```
+
+# kernel-launch
