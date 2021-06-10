@@ -44,6 +44,7 @@ inline  T SQUARE (T x) // 인라인 함수
     
 # 2. C언어 기반의 C++ 2
 * const의 의미
+
 ```cpp
 const int num=10; // num의 상수화
 const int * ptr1 = &val // ptr1을 이용해 val의 값을 변경할 수 없음
@@ -134,12 +135,16 @@ int **(&pref2) = ptr2;
 
 * const 참조자 
     * 상수도 참조하는 것이 가능: 임시변수를 만들어서 참조자가 이를 참조하게 함
+    
+
 ```cpp
 const int &ref = 30;
 ```
 
 * Malloc & free 을 대신하는 new & delete
     * 참조자 선언을 통해 포인터 연산 없이 힙 영역에 접근 가능
+    
+
 ```cpp
 #include <iostream>
 #include <stdlib.h>
@@ -161,6 +166,8 @@ delete []str;
 
 # 3. 클래스의 기본
 ## c++에서의 구조체
+
+
 ```c
 struct Car{
     int carSpeed;
@@ -173,6 +180,7 @@ typedef _Car2 {
 } Car2;
 
 ```
+
 * C에서 선언
 > struct Car basicCar;  
 > Car2 basicCar2;
@@ -205,6 +213,8 @@ basicCar.showCarSpeed();
     * Public: 어디서든 접근 가능
     * Protected: 상속 관계에 놓였을 때, 유도 클래스에서 접근 허용
     * Private: 클래스 내에서만 접근 허용
+    
+
 ```cpp
 class Car 
 {
@@ -219,15 +229,20 @@ inline void Car::showSpeed(){
     std::cout << speed << std::endl;
 }
 ```
+
 * 클래스 기반의 두가지 객체 생성 방법 
+
+
 ```cpp
 Car basicCar; // 일반적인 변수의 선언 방식 
 Car *basicCarPtr = new Car; // 동적 할당 방식 
 ```
+
 * 멤버 함수에 대해서 inline 함수 사용 가능 inline 함수는 클래스가 선언된 헤더파일에 함께 넣어야함
 
 # 4. 클래스의 완성
 ## 정보은닉 
+
 ```cpp
 class Point{
 public:
@@ -238,11 +253,13 @@ public:
 Point p = {10, 20}; // 멤버 변수가 public이므로 선언과 동시에 초기화 가능 .
 
 ```
+
 * const 함수
     * 이 함수 내에서는 멤버변수에 저장된 값을 변경하지 않겠다.
     * const 함수 내에서는 const 가 아닌 함수의 호출이 제한된다. 
     * const 참조자를 이용해서는 const 함수만 호출 가능하다. 
-> int func() const;
+    
+> int func() const;  
 
 ## 생성자와 소멸자
 ### 생성자 
@@ -252,6 +269,7 @@ Point p = {10, 20}; // 멤버 변수가 public이므로 선언과 동시에 초�
 * 오버로딩이 가능하다.
 * 매개변수에 디폴트 값을 설정할 수 있다.
 * 생성자는 반드시 한번 호출 된다. 
+
 ```cpp
 class SimpleClass {
 private:
@@ -270,10 +288,13 @@ SimpleClass *scPtr = new SimpleClass(10);
 // SimpleClass *scPtr = new SimpleClass(); (o)
 // SimpleClass *scPtr = new SimpleClass; (o)
 ```
+
 * 멤버 이니셜라이저를 이용한 초기화
     * 선언과 동시에 초기화가 이루어짐
     * const 변수도 초기화 가능 (const 변수는 선언과 동시에 초기화 되어야함)
     * 참조자도 초기화 가능 (참조자는 선언과 동시에 초기화 되어야함)
+    
+
 ```cpp
 class SimpleClass{
 private:
@@ -285,6 +306,7 @@ public:
     SimpleClass(int n1, int n2, int n3): num1(n1), num2(n2), num3(n3) {}
 };
 ```
+
 * 디폴트 생성자
     * 생성자를 정의 하지 않았을때만 디폴트 생성자가 생성됨 
 
@@ -310,6 +332,7 @@ public:
     }
 }
 ```
+
 ## 클래스 배열 
 ### 객체 배열
 > SimpleClass arr[100];   
@@ -319,7 +342,9 @@ public:
 * 배열이 소멸할 때, 객체 소멸자가 호출 됨
 
 ### 객체 포인터 배열
-> SimpleClass * arrPtr[100];
+> SimpleClass * arrPtr[100];  
+
+
 ```cpp
 int len = 10;
 SimpleClass * arrPtr[len];
@@ -353,3 +378,212 @@ SimpleClass sc(10);
 SimpleClass& ref = sc.returnSelf();
 
 ```
+
+# 5. 복사 생성자 
+
+```cpp
+class SimpleClass {
+private:
+    int num1;
+    int num2;
+public:
+    SimpleClass(int n1, int n2): num1(n1), num2(n2) {}
+    SimpleClass(SimpleClass& copy): num1(copy.num1), num2(copy.num2){}
+}
+SimpleClass sc1(10, 20);
+SimpleClass sc2 = s1; // 1. 묵시적 변환이 일어남 
+SimpleClass sc2(s1); // 2. 복사 생성자 호출 
+
+```
+
+* 복사 생성자를 정의하지 않으면, 맴버 대 멤버 복사를 진행하는 디폴트 복사 생성자가 자동으로 생성된다.
+* 묵시적 호출을 허용하지 않으려면 explicit 키워드를 사용한다.
+
+```cpp
+explicit SimpleClass(SimpleClass& copy): num1(copy.num1), num2(copy.num2)
+{
+    // empty
+}
+```
+
+## 깊은 복사와 얕은 복사
+* 디폴트 복사 생성자는 멤버 대 멤버의 복사를 진행 (얕은 복사)
+* 이런 경우 힙의 메모리 공간을 참조하는 경우 문제
+    * 복사된 객체도 동시에 참조하는 문제 생김
+    * 객체 소멸과정에서 문제가 생김
+    * 깊은 복사가 필요 
+    
+
+```cpp
+class SimpleClass {
+private:
+    int num;
+    char * name;
+public:
+    SimpleClass(int num, char * name){
+        this->num = num;
+        this->name = new char[strlen(name)+1];
+        strcopy(this->name, name); 
+    }
+    
+    SimpleClass(SimpleClass & copy){
+        num = copy.num;
+        name = new char[strlen(copy.name)+1]; // 깊은 복사 수행 
+        strcopy(name, copy.name);
+    }
+    
+    ~SimpleClass(){
+        delete []name;
+    }
+}
+```
+
+* 복사 생성자의 호출 시점
+    * 기존에 생성된 객체를 이용해 새로운 객체를 초기화 하는 경우
+    * Call-by-value 방식의 함수 호출 과정에서 객체를 인자로 전달하는 경우
+    * 객체를 반환하되, 참조형으로 반환하지 않는 경우  (임시객체 생성)
+    
+# 6. Friend와 Static 그리고 Const
+## const
+
+* const 객체 
+    * const 객체로 선언하면 const 멤버 함수만 호출 가능하다
+
+```
+class SimpleClass{
+private:
+    int num;
+public:
+    SimpleClass(int n):num(n){}
+    vois showNum() const {
+        std::cout << num << std::endl;
+    }
+    void getNum() {
+        return num;
+    }
+}
+
+const SimpleClass sc(10);
+// sc.getNum() (x);
+sc.showNum();
+```
+
+* const 함수 오버로딩
+> void SimpleFunc() { ... }   
+> void SimpleFunc() const { ... }  
+
+## friend
+### 클래스의 friend 선언 
+* A 클래스가 B 클래스에 대해서 friend 선언을 하면, B 클래스는 A 클래스의 private 멤버에 직접 접근이 가능하다. (반대는 성립 안됨) 
+* friend 선언은 private, public 어디에 와도 상관 없다
+
+```cpp
+class B;
+
+class A {
+private:
+    int a_num;
+    friend class B;
+    ...
+}
+
+class B{
+
+public:
+    void showFriendInfo(A &fa) {
+        std::cout << fa.num << std::endl;
+    }
+}
+```
+
+### 함수의 friend 선언
+* 전역 함수나 클래스 멤버 함수 대상으로도 friend 선언이 가능
+
+```
+class A{
+public:
+    B addB(const B&, const B&); 
+}
+
+class B{
+private:
+    int num;
+public:
+    friend B A::addB(const B&, const B&); // 멤버 함수 대상으로 friend 선언
+    friend void showB(const B&); // 전역 함수 대상으로 friend 선언 
+}
+
+B A::addB(const B& b1, const B& b2){
+    return B(b1.num + b2.num); // B 클래스의 private 변수에 접근 
+}
+
+void showB(const B& b){
+    std::endl << b.num << std::endl; // B 클래스의 private 변수에 접근 
+}
+```
+
+## static
+* 전역 변수에 선언된 static: 선언된 파일 내에서만 참조를 허용. 
+* 함수 내에 선언된 static: 한번만 초기화 되고, 지역변수와 달리 함수를 빠져나가도 소멸되지 않음.
+
+### static 멤버 번수
+```
+class SimpleClass {
+private:
+    static int num;
+}
+int SimpleClass::num = 0; // 초기화 별도 진행, 객체 생성지 동시에 생성되는 변수가 아니고 이미 메모리에 할당이 이루어진 변수 이므로,
+
+SimpleClass sc1;
+SimpleClass sc2;
+SimpleClass sc3;
+
+// sc1, sc2, sc3 모두에서 num을 공유  
+```
+* 클래스의 멤버 변수가 아님 
+* private 으로 선언되면 해당 클래스의 객체들만 접근 가능
+* public 으로 선언되면 클래스의 이름을 통해서도 접근 가능 
+
+### static 멤버 함수
+* 선언된 클래스의 모든 객체가 공유
+* public으로 선언되면, 클래스의 이름을 이용해 호출 가능 
+* 객체의 멤버로 존재하는 것이 아님
+* static 멤버 함수 내에서는 static으로 선언되지 않은 멤버 변수의 접근도, 멤버 함수의 호출도 불가능 하다
+
+```
+class SimpleClass {
+private:
+    int num1;
+    static int num2;
+public:
+    static void addN(int n){
+        num1+=n; // (x)  함수는 클래스의 멤버가 아니므로 멤버 변수에 접근 불가능 
+        num2+=n; // static 변수이므로 접근 가능 
+    }
+}
+
+int SimpleClass::num2 = 0;
+```
+
+### const static 멤버
+* 클래스 내에 선언된 const 멤버 변수의 초기화는 이니셜라이저를 통해서만 가능 
+* const static 변수는 바로 초기화 가능
+> const static int var = 10;  
+
+### mutable 키워드
+* const 함수 내에서 값의 변경을 예외적으로 허용한다.
+
+```
+class SimpleClass{
+private:
+    int num1;
+    mutable int num2;
+public:
+    void copyToNum2() const {
+        num2 = num1; // 값 변경 가능 
+    }
+}
+
+```
+
+# 7. 상속의 이해
