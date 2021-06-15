@@ -132,7 +132,6 @@ int *(&pref1) = ptr1;
 int **(&pref2) = ptr2;
 ```
 
-
 * const 참조자 
     * 상수도 참조하는 것이 가능: 임시변수를 만들어서 참조자가 이를 참조하게 함
     
@@ -167,30 +166,30 @@ delete []str;
 # 3. 클래스의 기본
 ## c++에서의 구조체
 
-
 ```c
 struct Car{
     int carSpeed;
     int fuel;
 };
 
-typedef _Car2 {
+typedef struct _Car2 {
     int carSpeed;
     int fuel;
 } Car2;
 
 ```
-
 * C에서 선언
 > struct Car basicCar;  
 > Car2 basicCar2;
+
 * C++에서의 선언 
 > Car basicCar;
+
 * 선언과 초기화
 > Car basicCar = {50, 500};
 
 * 구조체 안의 함수 선언
-    * 호출 시 .(dot) 을 통해서 함수 접근 가능
+    * 호출 시 .(dot) 을 통해서 변수, 함수 접근 가능
 
 ```cpp
 Struct Car{
@@ -213,8 +212,7 @@ basicCar.showCarSpeed();
     * Public: 어디서든 접근 가능
     * Protected: 상속 관계에 놓였을 때, 유도 클래스에서 접근 허용
     * Private: 클래스 내에서만 접근 허용
-    
-
+  
 ```cpp
 class Car 
 {
@@ -230,13 +228,12 @@ inline void Car::showSpeed(){
 }
 ```
 
-* 클래스 기반의 두가지 객체 생성 방법 
+* 클래스 기반의 두 가지 객체 생성 방법 
+1. 일반적인 변수 선언 방식
+> SimpleClass sc;
 
-
-```cpp
-Car basicCar; // 일반적인 변수의 선언 방식 
-Car *basicCarPtr = new Car; // 동적 할당 방식 
-```
+2. 동적 할당 방식
+> SimpleClass* sc = new SimpleClass;
 
 * 멤버 함수에 대해서 inline 함수 사용 가능 inline 함수는 클래스가 선언된 헤더파일에 함께 넣어야함
 
@@ -281,12 +278,12 @@ public:
 };
 
 SimpleClass sc(10);
-// SimpleClass sc(); (x)
-// SimpleClass sc; (o)
+SimpleClass sc(); // (x)
+SimpleClass sc;  // (o)
 
 SimpleClass *scPtr = new SimpleClass(10); 
-// SimpleClass *scPtr = new SimpleClass(); (o)
-// SimpleClass *scPtr = new SimpleClass; (o)
+SimpleClass *scPtr = new SimpleClass();  // (o)
+SimpleClass *scPtr = new SimpleClass;  // (o)
 ```
 
 * 멤버 이니셜라이저를 이용한 초기화
@@ -299,8 +296,8 @@ SimpleClass *scPtr = new SimpleClass(10);
 class SimpleClass{
 private:
     int num1;
-    const int num2;
-    int &num3;
+    const int num2; // const 변수
+    int &num3; // 참조자
     
 public:
     SimpleClass(int n1, int n2, int n3): num1(n1), num2(n2), num3(n3) {}
@@ -313,7 +310,7 @@ public:
 ### 소멸자
 * 객체 소멸시 반드시 호출
 * 클래스의 이름앞에 ~가 붙은 형태의 이름을 갖음
-* 반환형이 선언되지 않으ㅁ, 반환하지 않음
+* 반환형이 선언되지 않으므로, 반환하지 않음
 * 매개변수는 void 형으로 선언되어야 하므로, 오버로딩이 불가능하다.
 
 ```cpp
@@ -322,12 +319,12 @@ private:
     char* name;
 public:
 
-    SimpleClass() {}
+    SimpleClass() {} // 생성자 
 
-    SimpleClass(int len){
+    SimpleClass(int len){ // 생성자 
         name = new char[len+1];
     }
-    ~SimpleClass(){
+    ~SimpleClass(){ // 소멸자 
         delete []name;
     }
 }
@@ -335,23 +332,26 @@ public:
 
 ## 클래스 배열 
 ### 객체 배열
-> SimpleClass arr[100];   
-> SimpleClass * arrPtr = new SimpleClass[100];
+> SimpleClass arr[len];  
+> SimpleClass * arrPtr = new SimpleClass[len];
+* Simplelass 클래스가 len개 생성되어 배열을 이룸
 * 배열을 선언하는 경우에도 생성자가 호출이 됨
-* 단 인자를 전달하지 못하므로 디폴트 생성자 형태의 생성자가 정의되어 있어야 한다.
+  * 단, 인자를 전달하지 못하므로 디폴트 생성자 형태의 생성자가 정의되어 있어야 한다.
 * 배열이 소멸할 때, 객체 소멸자가 호출 됨
 
 ### 객체 포인터 배열
-> SimpleClass * arrPtr[100];  
-
+> SimpleClass * arrPtr[len];  
+* SimpleCLass 라는 클래스의 주소를 len개 담을 배열을 생성함 
+* 별도의 동적 할당을 통해서 배열에 클래스의 주소를 초기화함
+* 포인터로 객체 멤버에 접근은 -> 를 사용 
 
 ```cpp
 int len = 10;
 SimpleClass * arrPtr[len];
 
 for (int i=0; i<len; i++){
-    arrPtr[i] = new SimpleClass();
-    arrPtr[i]->printName(); // 객체 포인터에서 멤버 접근은 -> 를 사용 
+    arrPtr[i] = new SimpleClass(); // 동적 할당 
+    arrPtr[i]->printName();
 }
 ```
 
@@ -387,10 +387,10 @@ private:
     int num1;
     int num2;
 public:
-    SimpleClass(int n1, int n2): num1(n1), num2(n2) {}
-    SimpleClass(SimpleClass& copy): num1(copy.num1), num2(copy.num2){}
+    SimpleClass(int n1, int n2): num1(n1), num2(n2) {}; // 생성자 
+    SimpleClass(SimpleClass& copy): num1(copy.num1), num2(copy.num2){}; // 복사 생성자 
 }
-SimpleClass sc1(10, 20);
+SimpleClass sc1(10, 20); // 객체 생성 
 SimpleClass sc2 = s1; // 1. 묵시적 변환이 일어남 
 SimpleClass sc2(s1); // 2. 복사 생성자 호출 
 
@@ -398,22 +398,19 @@ SimpleClass sc2(s1); // 2. 복사 생성자 호출
 
 * 복사 생성자를 정의하지 않으면, 맴버 대 멤버 복사를 진행하는 디폴트 복사 생성자가 자동으로 생성된다.
 * 묵시적 호출을 허용하지 않으려면 explicit 키워드를 사용한다.
+* 매개변수에 참조자 &를 사용하지 않으면 무한루프에 빠짐. (Call by value = 복사 생성자 호출)
 
 ```cpp
-explicit SimpleClass(SimpleClass& copy): num1(copy.num1), num2(copy.num2)
-{
-    // empty
-}
+explicit SimpleClass(SimpleClass& copy): num1(copy.num1), num2(copy.num2) { };
 ```
 
 ## 깊은 복사와 얕은 복사
 * 디폴트 복사 생성자는 멤버 대 멤버의 복사를 진행 (얕은 복사)
 * 이런 경우 힙의 메모리 공간을 참조하는 경우 문제
-    * 복사된 객체도 동시에 참조하는 문제 생김
-    * 객체 소멸과정에서 문제가 생김
+    * 복사된 객체도 동시에 참조하는 문제 생김 (주소를 복사하기 때문에 같은 공간을 가리킴)
+    * 객체 소멸과정에서 문제가 생김 (하나가 소멸하면 다른 하나는 쓰레기 값을 가리키게 됨)
     * 깊은 복사가 필요 
-    
-
+  
 ```cpp
 class SimpleClass {
 private:
@@ -442,6 +439,11 @@ public:
     * 기존에 생성된 객체를 이용해 새로운 객체를 초기화 하는 경우
     * Call-by-value 방식의 함수 호출 과정에서 객체를 인자로 전달하는 경우
     * 객체를 반환하되, 참조형으로 반환하지 않는 경우  (임시객체 생성)
+      * 임시객체는 다음 행으로 넘어가면 바로 소멸
+      > get_temporary(300).ShowTemporary();
+      * 참조자에 의해 참조되는 임시 객체는 바로 소멸되지 않는다
+      > Temporary &temp = get_temporary(300);
+      
     
 # 6. Friend와 Static 그리고 Const
 ## const
@@ -449,13 +451,13 @@ public:
 * const 객체 
     * const 객체로 선언하면 const 멤버 함수만 호출 가능하다
 
-```
+```cpp
 class SimpleClass{
 private:
     int num;
 public:
     SimpleClass(int n):num(n){}
-    vois showNum() const {
+    vois showNum() const { // const 멤버 함수 
         std::cout << num << std::endl;
     }
     void getNum() {
@@ -463,9 +465,9 @@ public:
     }
 }
 
-const SimpleClass sc(10);
-// sc.getNum() (x);
-sc.showNum();
+const SimpleClass sc(10); // const 객체로 생성  
+sc.getNum(); // (x) 일반 멤버 함수 호출 불가 
+sc.showNum(); // const 멤버 함수 호출 
 ```
 
 * const 함수 오버로딩
@@ -491,7 +493,7 @@ class B{
 
 public:
     void showFriendInfo(A &fa) {
-        std::cout << fa.num << std::endl;
+        std::cout << fa.num << std::endl; // A 클래스의 private 변수에 접근 가능 
     }
 }
 ```
@@ -527,46 +529,52 @@ void showB(const B& b){
 * 함수 내에 선언된 static: 한번만 초기화 되고, 지역변수와 달리 함수를 빠져나가도 소멸되지 않음.
 
 ### static 멤버 번수
+
 ```
 class SimpleClass {
 private:
-    static int num;
+    static int num; // static 멤버 변수 
 }
-int SimpleClass::num = 0; // 초기화 별도 진행, 객체 생성지 동시에 생성되는 변수가 아니고 이미 메모리에 할당이 이루어진 변수 이므로,
+int SimpleClass::num = 0; // 별도 초기화 
 
+// sc1, sc2, sc3 모두에서 같은 num을 공유 
 SimpleClass sc1;
 SimpleClass sc2;
 SimpleClass sc3;
 
-// sc1, sc2, sc3 모두에서 num을 공유  
 ```
-* 클래스의 멤버 변수가 아님 
+
+* 클래스의 멤버 변수가 아님
+* 초기화 별도 진행 (객체 생성과 동시에 생성되는 변수가 아니고, 이미 메모리에 할당이 이루어진 변수 이므로) 
 * private 으로 선언되면 해당 클래스의 객체들만 접근 가능
 * public 으로 선언되면 클래스의 이름을 통해서도 접근 가능 
+* 선언된 클래스의 모든 객체가 동일한 static 변수 공유 
 
 ### static 멤버 함수
-* 선언된 클래스의 모든 객체가 공유
-* public으로 선언되면, 클래스의 이름을 이용해 호출 가능 
-* 객체의 멤버로 존재하는 것이 아님
-* static 멤버 함수 내에서는 static으로 선언되지 않은 멤버 변수의 접근도, 멤버 함수의 호출도 불가능 하다
 
 ```
 class SimpleClass {
 private:
     int num1;
-    static int num2;
+    static int num2; // static 멤버 변수 
 public:
-    static void addN(int n){
+    static void addN(int n){ // static 멤버 함수 
         num1+=n; // (x)  함수는 클래스의 멤버가 아니므로 멤버 변수에 접근 불가능 
         num2+=n; // static 변수이므로 접근 가능 
     }
 }
 
-int SimpleClass::num2 = 0;
+int SimpleClass::num2 = 0; // 별도 초기화 
 ```
 
+* 선언된 클래스의 모든 객체가 동일한 static 함수 공유
+* public으로 선언되면, 클래스의 이름을 이용해 호출 가능 
+* 객체의 멤버로 존재하는 것이 아님
+* static 멤버 함수 내에서는 static 으로 선언되지 않은 멤버 변수의 접근도, 멤버 함수의 호출도 불가능 하다
+
+
 ### const static 멤버
-* 클래스 내에 선언된 const 멤버 변수의 초기화는 이니셜라이저를 통해서만 가능 
+* 클래스 내에 선언된 const 멤버 변수의 초기화는 이니셜라이저를 통해서만 가능
 * const static 변수는 바로 초기화 가능
 > const static int var = 10;  
 
@@ -579,11 +587,103 @@ private:
     int num1;
     mutable int num2;
 public:
-    void copyToNum2() const {
+    SimpleClass(int n1, int n2):num1(n1), num2(n2) {}
+    void copyToNum2() const { // const 함수 내에서는 값의 변경이 불가능 하지만 예외적으로 허용 
         num2 = num1; // 값 변경 가능 
-    }
+    };
 }
+
+SimpleClass sc(20, 30);
+sc.copyToNum2();
 
 ```
 
 # 7. 상속의 이해
+
+```cpp
+class Parent{
+private:
+    int age;
+public:
+    Parent(int a, int n): age(a){}
+    int getAge() {return age;}
+};
+
+class Children: public Parent {
+private:
+    int order;
+public:
+    Children(int a, int n, int o): Parent(a, n){
+        order = o;
+    }
+    int getOrder() {return order};
+};
+```
+
+* 자식 클래스의 생성자는 부모 클래스의 멤버까지 초기화할 의무가 있다 
+* 부모 클래스의 멤버는 부모 클래스의 생성자를 호출하여 초기화 하는 것이 좋다
+* 부모 클래스의 private 멤버 변수는 public getter, setter를 통해 접근 할 수 있다
+
+## 자식 클래스의 생성 과정 
+* 부모 클래스의 생성자는 100%로 호출된다
+* 자식 클래스의 생성자에서 부모 클래스의 생성자 호출을 명시하지 않으면 부모 클래스의 default 생성자가 호출된다.
+* 즉, 자식 클래스 생성자 부모 클래스 생성자 모두 호출 된다. 
+
+## 자식 클래스의 소멸 과정
+* 자식 클래스의 소멸자가 실행되고 난 다음에 부모 클래스의 소멸자가 실행된다. 
+
+## Protected 선언
+* private와 유사하게 외부에서는 접근이 불가능 하지만 클래스 내부에서는 접근 가능 
+* 부모 클래스에서 private로 선언 했을 경우 자식 클래스에서 접근 가능 
+
+## 세 가지 형태의 상속
+```cpp
+class Parent{
+private:
+    int num1;
+protected:
+    int num2;
+public:
+    int num3;
+};
+
+```
+
+* protected 상속: protected 보다 접근 범위가 넓은 멤버는 protected로 변경시켜 상속한다
+```cpp
+class Children : protected Parent{
+private:
+    int num1;
+protected:
+    int num2;
+protected:
+    int num3;
+};
+```
+
+* private 상속: private 보다 접근 범위가 넓은 멤버는 private로 변경시켜 상속한다.
+
+```cpp
+class Children : protected Parent{
+private:
+    int num1;
+private:
+    int num2;
+private:
+    int num3;
+};
+```
+
+* public 상속: private을 제외한 나머지는 그냥 그대로 상속한다.
+
+## 상속을 위한 조건
+* Is-A 관계의 성립: 자식 클래스는 부모 클래스가 가진 모든 것을 지니고, 거기에 자식 클래스 만의 특성이 더해짐 
+  * 무선 전화기 is-a 전화기
+  * 노트북 컴퓨터 is-a 컴퓨터
+  * 고객 is-a 사람
+  * 강아지 is-a 동물
+
+* Has-A 관계는 보통 클래스의 멤버 변수로 표현 
+  * 경찰 has-a 총
+  
+# 8. 상속과 다형성
