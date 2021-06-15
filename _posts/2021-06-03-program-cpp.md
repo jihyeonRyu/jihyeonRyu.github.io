@@ -448,6 +448,7 @@ public:
       
       * 참조자에 의해 참조되는 임시 객체는 바로 소멸되지 않는다
       > Temporary &temp = get_temporary(300);  
+      
 # 6. Friend와 Static 그리고 Const
 ## const
 
