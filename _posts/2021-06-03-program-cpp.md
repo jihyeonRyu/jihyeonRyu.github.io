@@ -231,11 +231,11 @@ inline void Car::showSpeed(){
 ```
 
 * 클래스 기반의 두 가지 객체 생성 방법 
-1. 일반적인 변수 선언 방식
-> SimpleClass sc;
-
-2. 동적 할당 방식
-> SimpleClass* sc = new SimpleClass;
+  * 일반적인 변수 선언 방식
+  > SimpleClass sc;   
+  
+  * 동적 할당 방식
+  > SimpleClass* sc = new SimpleClass;   
 
 * 멤버 함수에 대해서 inline 함수 사용 가능 inline 함수는 클래스가 선언된 헤더파일에 함께 넣어야함
 
@@ -335,14 +335,16 @@ public:
 ## 클래스 배열 
 ### 객체 배열
 > SimpleClass arr[len];  
-> SimpleClass * arrPtr = new SimpleClass[len];
+> SimpleClass * arrPtr = new SimpleClass[len];  
+
 * Simplelass 클래스가 len개 생성되어 배열을 이룸
 * 배열을 선언하는 경우에도 생성자가 호출이 됨
   * 단, 인자를 전달하지 못하므로 디폴트 생성자 형태의 생성자가 정의되어 있어야 한다.
 * 배열이 소멸할 때, 객체 소멸자가 호출 됨
 
 ### 객체 포인터 배열
-> SimpleClass * arrPtr[len];  
+> SimpleClass * arrPtr[len]; 
+
 * SimpleCLass 라는 클래스의 주소를 len개 담을 배열을 생성함 
 * 별도의 동적 할당을 통해서 배열에 클래스의 주소를 초기화함
 * 포인터로 객체 멤버에 접근은 -> 를 사용 
@@ -442,11 +444,10 @@ public:
     * Call-by-value 방식의 함수 호출 과정에서 객체를 인자로 전달하는 경우
     * 객체를 반환하되, 참조형으로 반환하지 않는 경우  (임시객체 생성)
       * 임시객체는 다음 행으로 넘어가면 바로 소멸
-      > get_temporary(300).ShowTemporary();
-      * 참조자에 의해 참조되는 임시 객체는 바로 소멸되지 않는다
-      > Temporary &temp = get_temporary(300);
+      > get_temporary(300).ShowTemporary();  
       
-    
+      * 참조자에 의해 참조되는 임시 객체는 바로 소멸되지 않는다
+      > Temporary &temp = get_temporary(300);  
 # 6. Friend와 Static 그리고 Const
 ## const
 
