@@ -28,7 +28,7 @@ label noise는 세가지 subclass로 카테고리화 된다.
 * XY-dependent noise: instance feature와 class 모두에 영향을 받음 
     * p_e = p(e|x,y)
     * y-dependent 케이스에 추가적으로 다른 클래스에 있는 다른 instance의 feature와 비슷할 경우 mislabeld 될 확률이 크다.
-    * 예를 들어, 3을 쓴 특정 사람의 필기체가 5를 쓴 필기체랑 유사할 경우 잘못 인식될 확률이 크다.
+    * 예를 들어, 1을 쓴 특정 사람의 필기체가 7를 쓴 필기체랑 유사할 경우 잘못 인식될 확률이 크다. (x-dependent)  
     * 이런 노이즈 모델이 다른 두 노이즈 모델보다 더 해결하기 어렵다. 
     
 레이블 지정자의 특성도 위의 노이즈 모델로 설명이 가능하다. 
