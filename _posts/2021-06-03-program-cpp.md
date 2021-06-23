@@ -791,7 +791,287 @@ public:
 * virtual 사용시 참조자가 가리키는 객체의 멤버 함수 호출 가능 
 
 # 9. Virtual 의 원리와 다중 상속 
+
+## 멤버 함수와 가상함수의 동작 원리 
 * 객체 안에 맴버 함수가 존재 하는가?
   * 객체가 생성되면 멤버 변수는 객체 내에 존재하지만, 멤버 함수는 메모리 공간에 별도로 위치하고, 이 함수가 정의된 클래스의 모든 객체가 이를 공유하는 형태
+* 한 개 이상 가상 함수를 포함하는 클래스는 컴파일러가 Virtual Table을 만든다.  
+
+```cpp
+class AAA {
+public:
+  virtual void Func1();
+  virtual void Func2();
+}
+class BBB : public AAA {
+public:
+  virtual void Func1();
+  void Func3();
+}
+```
+
+< class AAA V-Table>
+
+| key | value |
+|---|---|
+|void AAA::Func1() | 0x1024 번지 |
+|void AAA::Func2() | 0x2048 번지 |
+
+< class BBB V-Table>
+
+| key | value |
+|---|---|
+|void BBB::Func1() | 0x3072 번지 |
+|void AAA::Func2() | 0x2048 번지 |
+|void BBB::Func3() | 0x4096 번지 |
+
+오버라이딩 된 가상함수 Func1() 에 대한 정보가 존재 하지 않는다. 그래서 포인터 변수가 가리키는 실제 객체의 함수를 호출 할 수 있다.
+
+* 가상 함수가 포함되면, 가상함수 테이블이 생성되고, 이 테이블을 참조하여 호출될 함수가 결정되기 때문에, 실행 속도가 감소하지만, 극히 미미하여 유용하게 활용된다. 
+
+## 다중 상속에 대한 이해 
+* 다중 상속의 모호성
+  * 두 기초 클래스에 동일한 이름의 멤버가 존재하는 경우 
   
 
+```cpp
+class One {
+public:
+  void func();
+};
+
+class Two {
+public:
+  void func();
+};
+
+class MultiDerived: public One, protected Two {
+public:
+  void ComplexFunc(){
+    One::func(); // 범위 지정 연산자 사용 
+    Two::func();
+  }
+};
+```
+
+* 가상 상속 
+  * 같은 클래스를 다중 상속하게 될 경우, 가상 상속 선언 시, 생성자가 한번 만 호출된다.
+  
+
+```cpp
+class Base { ... };
+
+class MiddleDerivedOne: virtual public Base { ... }; // 가상 상속
+
+class MiddleDerivedTwo: virtual public Base { ... }; // 가상 상속  
+
+class LastDerived: public MiddleDerivedOne,  public MiddleDerivedTwo { ... }; // Base 생성자가 한번만 호출 
+```
+
+# 10. 연산자 오버로딩 1
+
+* 연산자를 오버로딩 하는 두 가지 방법
+  * 멤버함수에 의한 연산자 오버로딩
+  * 전역함수에 의한 연산자 오버로딩
+  
+
+```cpp
+class Point{
+private:
+  int x;
+  int y;
+public:
+  Point(int _x, int _y): x(_x), y(_y) {}
+  
+  // 멤버 함수  pos1.operator+(pos2)
+  Point operator+(const Point& ref){
+    Point p(ref.x + x, ref.y + y);
+    return p;
+  } 
+}
+
+// 전역 함수 operator+(pos1, pos2)
+Point operator+(const Point& pos1, const Point& pos2){
+  Point p(pos1.x + pos2.x, pos1.y + pos2.y);
+  return p;
+}
+```
+
+* 멤버 함수로만 오버로딩 가능한 연산자
+> =, (), [], ->  
+
+* 연산자가 오버로딩 되어도 우선순위와 결합성은 바뀌지 않는다.
+* 연산자 오버로딩 함수는 매개 변수의 디폴트값 설정이 불가능하다. 
+* 연산자의 기본 기능을 변경하는 형태의 오버로딩은 허용되지 않는다.
+
+## 단항 연산자의 오버로딩
+* 1 증가 연산자: ++
+* 1 감소 연산자: --
+
+```cpp
+class Point{
+private:
+  int x;
+  int y;
+public:
+  Point(int _x, int _y): x(_x), y(_y) {}
+  
+  // 전위 증가 ++pos
+  Point& operator++(){ 
+    x+=1;
+    y+=1;
+    return *this;
+  }
+  // 후위 증가 pos++
+  const Point operator++(int) {
+    const Point pos(x, y); // 값의 변경을 허용하지 않겠다 
+    x+=1;
+    y+=1;
+    return pos;
+  }
+  
+  friend Point& operator++(Point &ref); // private 변수 접근을 허용하기 위한 선언 
+  friend const Point operator++(Point &ref, int);
+}
+
+// 전위 증가 ++pos
+Point& operator++(Point &ref){
+  ref.x+=1;
+  ref.y+=1;
+  return ref;
+}
+
+// 후위 증가 pos++
+const Point operator++(Point &ref, int){
+  const Point pos(ref.x, ref.y);
+  ref.x+=1;
+  ref.y+=1;
+  return pos;
+}
+
+Point pos(3, 6);
+(pos++)++;  // 컴파일 에러 (const 임시객체가 생성되고 이를 변경하려고 하기 때문에)  
+++(++pos)l // 컴파일 OK 
+
+```
+
+## 교환 법칙 문제의 해결 
+
+```cpp
+class Point{
+private:
+  int x;
+  int y;
+public:
+  Point(int _x, int _y): x(_x), y(_y) {}
+  
+  Point operator*(int times){
+    Point pos(x*times, y*times);
+    return pos;
+  }
+}
+
+Point pos(1, 2);
+Point pos2 = pos*3; // 컴파일 성공  
+Point pos3 = 3*pos; // 컴파일 에러 
+```
+
+* 교환법칙이 성립되게 구현하려면 정역함수 형태로 오버로딩 하는 수 밖에 없다
+
+```cpp
+Point operator* (int times, Point & ref){
+  return ref*times; // 멤버 함수 호출 
+}
+```
+
+# 11. 연산자 오버로딩 2
+
+## 반드시 해야하는 대입 연산자의 오버로딩
+
+* 정의 하지 않으면 디폴트 대입 연산자가 삽입된다. 
+* 다폴트 대입 연산자는 멤버 대 멤버의 복사(얕은 복사)를 진행한다.
+* 연산자 내에서 동적 할당을 한다면, 그리고 깊은 복사가 필요하다면 직접 정의해야 한다. 
+
+* 자식 클래스의 대입 연산자 정의에서 명시적으로 부모 클래스의 대입 연산자를 호출하지 않으면, 부모 클래스의 대입 연산자는 호출되지 않아서 멤버 대 멤버의 복사 대상에서 제외된다.
+
+## 배열의 인덱스 연산자 오버로딩
+
+* C, C++은 배열의 경게검사를 하지 않는다. 
+* operator[ ]
+
+```cpp
+#include <cstdlib>
+
+class BoundCheckIntArray{
+private:
+  int * arr;
+  int arrlen;
+  
+  BoundCheckIntArray(const BoundCheckIntArray& ref) { }
+  BoundCheckIntArray& operator=(const BoundCheckIntArray& arr) { } // 데이터의 유일성 보장을 위해 복사와 대입을 막음 
+  
+public:
+  BoundCheckIntArray(int len): arrlen(len) {
+    arr = new int[len];
+  }
+  
+  int& operator[] (int idx){
+    if (idx < 0 || inx >= arrlen){
+      std::cout << "Out of bound " << std::endl;
+      exit(1);
+    }
+    return arr[idx];
+  }
+  
+  // const 를 이용한 오버로딩, 오직 const 함수 내에서만 호출 가능 
+  int operator[] (int idx) const {
+      if (idx < 0 || inx >= arrlen){
+      std::cout << "Out of bound " << std::endl;
+      exit(1);
+    }
+    return arr[idx];
+  }
+  
+  ~BoundCheckIntArray() {
+    delete []arr;
+  }
+}
+```
+
+* 스마트 포인터
+  * 감싼 객체의 소멸 연산이 자동으로 이루어짐 
+  * ->, * 연산자 오버로딩으로 실제 포인터가 가리키는 객체 제어 가능 
+
+```cpp
+class Point {
+private:
+  int x;
+  int y;
+public:
+  Point(int _x, int _y): x(_x), y(_y) {}
+  void SetPos(int x, int y) {
+    this->x = x;
+    this->y = y;
+  }
+}
+
+class SmartPtr{
+private:
+  Point * ptr;
+public:
+  SmartPtr(Point * _ptr): ptr(_ptr) { }
+  Point& operator*() const { // 포인터가 가리키는 객체 접근 
+    return *ptr;
+  }
+  Point* operator->() const{ // 포인터가 가리키는 객체 멤버 접근
+    return ptr;
+  }
+  ~SmartPtr() {
+    delete ptr;
+  }
+}
+
+SmartPtr sptr(new Point(1, 2));
+sptr->SetPos(10, 20); // -> 오버로딩으로 멤버 함수에 접근 가능 
+
+```
