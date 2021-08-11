@@ -6,7 +6,7 @@ tags: [c++, cpp, programing language, computer science, basic knowledge]
 comments: true  
 ---  
 기본적으로 알고 있어야하는 __*Basic*__ 한 내용만을 다룹니다.  
-윤성우 열혈 c++ 프로그래밍을 참조하여 작성하였습니다.
+윤성우 열혈 c++과 [씹어먹는 C++](https://modoocode.com/135) 을 참조하였습니다. 
 
 # 1. C언어 기반의 C++
 * C++ 의 지역변수 선언: 함수 내의 어디든 삽입이 가능 
@@ -1075,3 +1075,221 @@ SmartPtr sptr(new Point(1, 2));
 sptr->SetPos(10, 20); // -> 오버로딩으로 멤버 함수에 접근 가능 
 
 ```
+
+# 12. String 클래스의 디자인
+* \<string\> 헤더파일 사용
+
+# 13. 템플릿(Template) 1
+
+## 템플릿에 대한 이해와 함수 템플릿
+* template은 모형자를 만들어 내는 것
+* 함수 템플릿
+
+```cpp
+template <typename T>
+T add(T num1, T num2){
+  return num1+num2;
+}
+```
+
+* typename 대신 class를 사용해도 된다 
+> template <class T> 
+
+* 컴파일 할 때 자료형 별 함수가 하나씩 만들어 진다. 
+  * 전달 되는 인자의 자료형을 참조하여 호출된 함수의 유형을 컴파일러가 결정 
+  * 이를 템플릿 함수라고 한다. 
+* 호출 시, 자료형 정보를 명시해도 되고, 생략해도 된다. 
+  
+```cpp
+int add<int> (int num1, int num2){
+  return num1+num2;
+}
+
+double add<double> (double num1, double num2){
+  return num1+num2;
+}
+
+int num1 = add(10, 20);
+double num2 = add<double>(10.2, 20.5);
+```
+
+* 둘 이상의 타입에 대해서 함수 템플릿 선언
+
+```cpp
+template <typename T1, typename T2>
+void ShowData(double num){
+  std::cout << (T1) num << (T2) num << std::endl;
+}
+```
+
+* 템플릿 한수의 특수화
+  * 직접 제시를 할테니, 해당 타입의 템플릿 함수가 필요한 경우에 별도로 만들지 말고 이것을 써라
+  
+```cpp
+#include <cstring>
+
+template <>
+char* Max(char* a, char* b){
+  return strlen(a) > strlen(b) ? a: b;
+}
+```
+
+## 클래스 템플릿 (Class Template)
+
+```cpp
+// Point.h 파일
+
+template <typename T>
+class Point{
+private:
+  T x;
+  T y;
+public:
+  Point(T _x, T_y): x(_x), y(_y) { }
+  void add(T _x, T _y) {}
+}
+
+Point<int> pos(10, 20); // 호출 시 자료형 생략 불가능  
+```
+
+* 클래스 템플릿 기반의 객체 생성에는 반드시 자료형을 명시하도록 되어 있다
+* 템플릿의 멤버 함수를 클래스 외부에서 정의하는 것이 가능하다.
+
+
+```cpp
+// Point.cpp 파일 
+
+template <typename T>
+void Point<T>::add(T _x, T _y){
+  x+=_x;
+  y+=_y;
+}
+```
+
+```cpp
+// main.cpp 파일 
+
+#include "Point.h"
+#include "Point.cpp" // 컴파일러에게 모든 정보를 알려줘야함 
+
+int main(){
+  Point<int> pos(3, 4);
+  Point<double> pos(3.4, 4.5);
+  Point<char> pos('a', 'b');
+}
+```
+
+* 컴파일은 파일단위로 이뤄진다. main.cpp 파일을 컴파일 할 때 컴파일러는 총 3개의 템플릿 클래스를 생성해야 한다.
+따라서 클래스 템플릿 Point 의 모든 것을 알아야 하기 때문에 "Point.cpp" 파일도 함께 include 해야 한다. 
+  
+## 타입이 아닌 템플릿 인자 
+
+```cpp
+template <typename T, int num>
+T add_num(T t){
+    return t+num;
+}
+
+int main(){
+    int x = 3;
+    std::count << "x: " << add_num<int, 5>(x) << std::endl; // x: 8
+}
+```
+
+* 템플릿 인자로 전달할 수 있는 타입: bool, char, int, long (double, float 제외), 포인터 타입, enum, 널포인터 
+
+### 디폴트 템플릿 인자 
+
+```cpp
+template <typename T, int num=5>
+T add_num(T t){
+    return t+num;
+}
+```
+  
+## 가변 길이 템플릿
+* 임의의 개수 인자를 받는 템플릿을 작성할 수 있다. 
+
+```cpp
+#include <iostream>
+
+template <typename T>
+void print(T arg) {
+std::cout << arg << std::endl;
+}
+
+template<typename T, typename... Types>
+void print(T arg, Types... args) {
+    std::cout << arg << ", ";
+    print(args...);
+}
+
+int sum_all() { return 0; }
+
+template <typename... Ints>
+int sum_all(int num, Ints... nums) {
+return num + sum_all(nums...);
+}
+
+```
+
+* 순서도 유의해야 한다. c++ 컴파일러는 함수를 컴파일 시, 자신의 앞에 정의되어 있는 함수들 밖에 보지 못하기 때문에 break 케이스 함수가 먼저 정의되어 있어야 한다. 
+* ... : 템플릿 파라미터 팩, 0개 이상의 템플릿 인자들을 나타냄 
+* 재귀함수 형태로 만들어야 하므로, 반드시 종료를 위한 베이스 케이스를 따로 정의해야 한다. 
+
+## Fold Expression
+
+```cpp
+template<typename... Ints>
+int sum_all(Ints... nums){
+    return (...+nums);
+}
+
+class A {
+public:
+  void do_something(int x) const {
+    std::cout << "Do something with " << x << std::endl;
+  }
+};
+
+template <typename T, typename... Ints>
+void do_many_things(const T& t, Ints... nums) {
+    // 각각의 인자들에 대해 do_something 함수들을 호출한다.
+    (t.do_something(nums), ...);
+}
+int main() {
+  A a;
+  do_many_things(a, 1, 3, 2, 4);
+}
+```
+
+* c++17에 새로 도입된 형식으로 , 재귀함수 형태처럼 베이스 케이스가 필요 없다 
+
+## 템플릿 메타 프로그래밍 (TMP)
+* 타입은 반드시 컴파일 타임에 확정되어야 하므로, 컴파일 타임에 모든 연산이 끝난다.
+* 이렇게 컴파일 타임에 생성되는 코드로 프로그래밍을 하는 것을 메타 프로그래밍이라고 한다. 
+
+```cpp
+template<int N>
+struct Factorial {
+    static const int result = N * Factorial<N-1>::result;
+};
+
+template<>
+struct Factorial<1> {
+    static const int result = 1;
+};
+
+int main() {
+    int result = Factorial<6>::result;
+}
+```
+
+* 장점: 어떠한 코드든, TMP로 변환할 수 있다. 모두 컴파일 타임에 모든 연산이 끝나기 때문에 프로그램의 실행속도를 향상시킬 수 있다. (컴파일 시간은 늘어남)
+* 단점: 버그를 찾는것이 매우 어려움, 디버깅 불가능, 오류의 길이가 매우 김 
+
+## auto
+* 컴파일 시 컴파일러에 의해 타입이 추론 됨 
+
+
+
