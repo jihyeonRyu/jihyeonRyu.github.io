@@ -45,6 +45,61 @@ constrained optimization은 backward/forward transfer를 위해 더 많은 여�
 
 **GEM(Gradient Episodic Memory)** 에서는 incremental setting에서 오직 새로운 task의 업데이트에 대해서만 constraint를 가한다.
 이는 이전 task gradient를 first order Tayer series approximation을 통해서 예측 gradient direction을 구함으로써 수행한다.
+A-GEM(Average-GEM)은 이전 task data의 버퍼에서 랜덤하게 선택한 샘플을 통해서 direction을 예측한다. 
+Aljundi et al은 task 경계가 없는 순수한 online continual learning 설정에 대한 솔루션으로, 과거 데이터의 실현 가능한 영역에 최대한 근접한 샘플 하위 집합을 선택하도록 제안한다.
+
+만약 이전의 샘플이 없다면, pseudo rehearsal 을 대체 전략으로 사용할 수 있다. 
+랜덤한 input으로부터 얻은 이전 모델의 output은 이전 task 샘플을 근사할 수 있다.
+하지만 deep network와 large input vector에서는 random input은 input space를 커버할 수 없다.
+최근, generative model은 고품질 이미지를 생성하고 이를 재 학습하는데 사용할 수 있지만 이는 오히려 더 복잡한 방법일 수 있다.
+
+### Regularization-based methods
+이 방법은 이전 task들의 데이터를 저장함으로써 얻는 프라이버시 이슈와 memory 이슈를 해결하기 위해 고안되었다.
+새로운 task에 대해서 학습할 때 이전의 지식을 고려하게끔 loss function에 regularization을 수행한다.
+
+#### Data-focused methods
+이 방법의 기본 개념은 새로운 task를 학습할 때 이전 모델로부터 knowledge distillation을 수행하는 것이다.
+Silver et al.은 새로운 task의 input에 대한 previous task model의 output을 이용한다. 
+LwF은 previous model 의 output을 soft label로 사용한다.
+하지만 이 방법은 domain shift에는 취약하다.
+이를 극복하기 위해 Triki 은 얕은 autoencoder의 점진적인 통합을 촉진하여 해당 저차원 공간에서 학습된 task feature를 제한한다.
+
+#### Prior-focused methods
+모델 파라미터의 distribution을 예측하여, 새로운 데이터를 학습할 때 prior로 활용한다.
+일반적으로 모든 신경망의 매개변수의 중요성은 타당성을 보장하기 위해 독립적이라고 가정한다.
+later task에 대해 학습 중, 중요한 매개변수에 대한 변경은 패널티를 받는다.
+
+**EWC(Elastic Weight Consolidation)** 은 가장 먼저 제안된 방법이다.
+
+
+Variational Continual Learning(VCL)도 비슷한 방법을 제안한다.
+Zenke 은 weight의 중요성을 task training중 online으로 예측하는 방법을 제안했다.
+Aljundi 은 유연성을 증가시키고, online user adaptation을 허용하는 unsupervised 방식으로 중요성을 예측하는 방법을 제안한다. 
+
+#### Parameter isolation methods
+모델 구조 사이즈에 제한이 없을 때, 새로운 task를 위해 새로운 branch를 더할 수 있을 경우 사용됨
+이떄 previous task parameter는 고정하거나 각 모델에 사본을 적용한다.
+previous task parts는 새로운 task 학습 중 masked out 한다.
+이는 멀티 헤드 설정에 구속되어 서로의 공유 헤드에 대처할 수 없다.
+이는 Expert Gate라는 방법으로 auto-encoder gate를 통해서 문제를 회피할 수 있다.
+
+
+### Compared Methods
+#### 1. Replay Methods
+##### iCaRL 
+class incremental 방법에 집중한 방식이다
+각 클래스에 대한 feature mean과 가까운 샘플들을 선택하고 저장한다.
+학습 중, 이전 모델 예측과 이전에 학습된 클래스에 대한 현재 모델 예측에서 얻은 대상 간의 distillation loss와 함께 새 클래스에 대한 추정 손실이 최소화 된다.
+![](./../assets/resource/survey/paper4/10.png)  
+
+##### GEM
+현재 task gradient를 previous task gradient의 feasible area에 projecting 함으로써 최적화 문제에 제한을 가한다.
+작가는 관측된 증가된 backward transfer를 gradient projection으로 대체한다.
+
+이 방법의 주요 단점은 클래스 수에 대한 확장성이 제한되어 raw input 샘플의 추가 계산 및 저장 등 추가 작업이 필요하다는 것이다.
+하지만 고정 메모리는 메모리 소비를 제한하며, 원래 분포를 나타내는 표본 집합의 기능을 저하시킨다.
+또한 raw sample의 저장은 개인정보 문제로 이어질 수 있다.
+
 ![](./../assets/resource/survey/paper4/0.png)  
 * M: Memory 
 * T: Task
@@ -54,7 +109,7 @@ constrained optimization은 backward/forward transfer를 위해 더 많은 여�
   ![](./../assets/resource/survey/paper4/1.png)  
   * G = −(g1, . . . , gt−1)
   * g˜ = Gv + g
-
+  
 #### GEM 구현 예시
 기존 class의 순서가 유지 되면서 새로운 class가 추가되는 시나리오에 한함
 
@@ -260,31 +315,33 @@ class Net(nn.Module):
         return loss, correct_classified, batch_stats
 ```
 
-A-GEM(Average-GEM)은 이전 task data의 버퍼에서 랜덤하게 선택한 샘플을 통해서 direction을 예측한다. 
-Aljundi et al은 task 경계가 없는 순수한 online continual learning 설정에 대한 솔루션으로, 과거 데이터의 실현 가능한 영역에 최대한 근접한 샘플 하위 집합을 선택하도록 제안한다.
 
-만약 이전의 샘플이 없다면, pseudo rehearsal 을 대체 전략으로 사용할 수 있다. 
-랜덤한 input으로부터 얻은 이전 모델의 output은 이전 task 샘플을 근사할 수 있다.
-하지만 deep network와 large input vector에서는 random input은 input space를 커버할 수 없다.
-최근, generative model은 고품질 이미지를 생성하고 이를 재 학습하는데 사용할 수 있지만 이는 오히려 더 복잡한 방법일 수 있다.
+#### 2. Regularization-based methods
+##### Learning without Forgetting (LwF)
+새로운 task에 대해서 학습 전에, 새로운 task data에 대한 network의 output을 저장한다.
+그리고 이는 prior task의 지식으로 학습에 사용한다.
+하지만, 새로운 task의 데이터가 이전 task와 얼마나 관련있나에 많은 영향을 받는다.
+데이터 분포의 shift는 점진적인 에러를 형성해낸다.
+이런 에러는 class-incremental setup 에서도 생길 수 있다.
+또다른 단점은 새로은 task data를 미리 모두 forward하고 저장함으로써 computational cost, memory cost가 추가적으로 필요하다는 것이다.
 
-### Regularization-based methods
-이 방법은 이전 task들의 데이터를 저장함으로써 얻는 프라이버시 이슈와 memory 이슈를 해결하기 위해 고안되었다.
-새로운 task에 대해서 학습할 때 이전의 지식을 고려하게끔 loss function에 regularization을 수행한다.
+##### Encoder Based Lifelong Learning (EBLL)
+LwF를 확장한 방법으로 previous task의 low dimensional feature representation의 중요성을 보존한다.
+각 task를 위해서 under-complete autoencoder가 end-to-end로 최적화되고, lower dimensional manifold로 projecting 한다.
+학습 과정에서, 추가적인 regularization term은 현재 예측이 이전 task의 최적 예측에서 벗어나는 것을 방지한다.
+필요한 메모리는 작업수에 따라 선형적으로 증가하지만, auto-encoder의 크기는 backbone 네트워크의 작은 부분에 불과하다.
+주요 계산 오버헤드는 auto-encoder 훈련에서 발생하고 최적화 샘플에 대한 기능 예측을 수집한다.   
+![](./../assets/resource/survey/paper4/4.png)  
 
-#### Data-focused methods
-이 방법의 기본 개념은 새로운 task를 학습할 때 이전 모델로부터 knowledge distillation을 수행하는 것이다.
-Silver et al.은 새로운 task의 input에 대한 previous task model의 output을 이용한다. 
-LwF은 previous model 의 output을 soft label로 사용한다.
-하지만 이 방법은 domain shift에는 취약하다.
-이를 극복하기 위해 Triki 은 얕은 autoencoder의 점진적인 통합을 촉진하여 해당 저차원 공간에서 학습된 task feature를 제한한다.
-
-#### Prior-focused methods
-모델 파라미터의 distribution을 예측하여, 새로운 데이터를 학습할 때 prior로 활용한다.
-일반적으로 모든 신경망의 매개변수의 중요성은 타당성을 보장하기 위해 독립적이라고 가정한다.
-later task에 대해 학습 중, 중요한 매개변수에 대한 변경은 패널티를 받는다.
-
-**EWC(Elastic Weight Consolidation)** 은 가장 먼저 제안된 방법이다.
+##### Elastic Weight Consolidation (EWC)
+베이지안 프레임워크에서 파라미터의 불확실성을 소개한다.
+순차적 베이지안 추정에 따르면, previous task에 대한 사후 확률은 새로운 task의 사전확률을 구성하며, 이전 작업의 중요도 가중치를 전파하는 매커니즘을 구축한다.
+실제 사후확률은 다루기 힘드므로, Fisher Information Matrix를 통한 Laplace 근사를 사용하여 추정한다.
+최소 근처에서 FIM은 손실의 양의 준정부호 2차 도함수와 동등함을 보여주며, 실제로 추가 backward pass를 피하기 위해 경험적 FIM에 의해 근사화 된다.  
+![](./../assets/resource/survey/paper4/5.png)  
+여기서 오메가는 task 학습 이후 weight의 중요성을 나타낸다. 
+FIM은 최적화 작업 후 근사되어 0에 가까운 기울기를 유도하므로 정규화 강도가 처음에는 매우 높고 나중에는 정규화가 거의 없어진다.
+이런 문제를 해결하기 위해 EWC의 변형이 제안된다. 
 ![](./../assets/resource/survey/paper4/3.png)  
 * F: Fisher information matrix
 
@@ -492,61 +549,6 @@ class Weight_Regularized_SGD(optim.SGD):
                 index += 1
         return loss
 ```
-
-
-Variational Continual Learning(VCL)도 비슷한 방법을 제안한다.
-Zenke 은 weight의 중요성을 task training중 online으로 예측하는 방법을 제안했다.
-Aljundi 은 유연성을 증가시키고, online user adaptation을 허용하는 unsupervised 방식으로 중요성을 예측하는 방법을 제안한다. 
-
-#### Parameter isolation methods
-모델 구조 사이즈에 제한이 없을 때, 새로운 task를 위해 새로운 branch를 더할 수 있을 경우 사용됨
-이떄 previous task parameter는 고정하거나 각 모델에 사본을 적용한다.
-previous task parts는 새로운 task 학습 중 masked out 한다.
-이는 멀티 헤드 설정에 구속되어 서로의 공유 헤드에 대처할 수 없다.
-이는 Expert Gate라는 방법으로 auto-encoder gate를 통해서 문제를 회피할 수 있다.
-
-
-### Compared Methods
-#### 1. Replay Methods
-##### iCaRL 
-class incremental 방법에 집중한 방식이다
-각 클래스에 대한 feature mean과 가까운 샘플들을 선택하고 저장한다.
-학습 중, 이전 모델 예측과 이전에 학습된 클래스에 대한 현재 모델 예측에서 얻은 대상 간의 distillation loss와 함께 새 클래스에 대한 추정 손실이 최소화 된다.
-
-##### GEM
-현재 task gradient를 previous task gradient의 feasible area에 projecting 함으로써 최적화 문제에 제한을 가한다.
-작가는 관측된 증가된 backward transfer를 gradient projection으로 대체한다.
-
-이 방법의 주요 단점은 클래스 수에 대한 확장성이 제한되어 raw input 샘플의 추가 계산 및 저장 등 추가 작업이 필요하다는 것이다.
-하지만 고정 메모리는 메모리 소비를 제한하며, 원래 분포를 나타내는 표본 집합의 기능을 저하시킨다.
-또한 raw sample의 저장은 개인정보 문제로 이어질 수 있다.
-
-#### 2. Regularization-based methods
-##### Learning without Forgetting (LwF)
-새로운 task에 대해서 학습 전에, 새로운 task data에 대한 network의 output을 저장한다.
-그리고 이는 prior task의 지식으로 학습에 사용한다.
-하지만, 새로운 task의 데이터가 이전 task와 얼마나 관련있나에 많은 영향을 받는다.
-데이터 분포의 shift는 점진적인 에러를 형성해낸다.
-이런 에러는 class-incremental setup 에서도 생길 수 있다.
-또다른 단점은 새로은 task data를 미리 모두 forward하고 저장함으로써 computational cost, memory cost가 추가적으로 필요하다는 것이다.
-
-##### Encoder Based Lifelong Learning (EBLL)
-LwF를 확장한 방법으로 previous task의 low dimensional feature representation의 중요성을 보존한다.
-각 task를 위해서 under-complete autoencoder가 end-to-end로 최적화되고, lower dimensional manifold로 projecting 한다.
-학습 과정에서, 추가적인 regularization term은 현재 예측이 이전 task의 최적 예측에서 벗어나는 것을 방지한다.
-필요한 메모리는 작업수에 따라 선형적으로 증가하지만, auto-encoder의 크기는 backbone 네트워크의 작은 부분에 불과하다.
-주요 계산 오버헤드는 auto-encoder 훈련에서 발생하고 최적화 샘플에 대한 기능 예측을 수집한다.   
-![](./../assets/resource/survey/paper4/4.png)  
-
-##### Elastic Weight Consolidation (EWC)
-베이지안 프레임워크에서 파라미터의 불확실성을 소개한다.
-순차적 베이지안 추정에 따르면, previous task에 대한 사후 확률은 새로운 task의 사전확률을 구성하며, 이전 작업의 중요도 가중치를 전파하는 매커니즘을 구축한다.
-실제 사후확률은 다루기 힘드므로, Fisher Information Matrix를 통한 Laplace 근사를 사용하여 추정한다.
-최소 근처에서 FIM은 손실의 양의 준정부호 2차 도함수와 동등함을 보여주며, 실제로 추가 backward pass를 피하기 위해 경험적 FIM에 의해 근사화 된다.  
-![](./../assets/resource/survey/paper4/5.png)  
-여기서 오메가는 task 학습 이후 weight의 중요성을 나타낸다. 
-FIM은 최적화 작업 후 근사되어 0에 가까운 기울기를 유도하므로 정규화 강도가 처음에는 매우 높고 나중에는 정규화가 거의 없어진다.
-이런 문제를 해결하기 위해 EWC의 변형이 제안된다. 
 
 ##### Synaptic Intelligence (SI)
 EWC가 새로운 task의 importance weights를 학습 이후에 분리되어 구하는 반면, 학습 과정에서 online으로 추정한다.  
