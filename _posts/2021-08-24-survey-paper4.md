@@ -542,14 +542,21 @@ LwF를 확장한 방법으로 previous task의 low dimensional feature represent
 베이지안 프레임워크에서 파라미터의 불확실성을 소개한다.
 순차적 베이지안 추정에 따르면, previous task에 대한 사후 확률은 새로운 task의 사전확률을 구성하며, 이전 작업의 중요도 가중치를 전파하는 매커니즘을 구축한다.
 실제 사후확률은 다루기 힘드므로, Fisher Information Matrix를 통한 Laplace 근사를 사용하여 추정한다.
+최소 근처에서 FIM은 손실의 양의 준정부호 2차 도함수와 동등함을 보여주며, 실제로 추가 backward pass를 피하기 위해 경험적 FIM에 의해 근사화 된다.  
+![](./../assets/resource/survey/paper4/5.png)  
+여기서 오메가는 task 학습 이후 weight의 중요성을 나타낸다. 
 FIM은 최적화 작업 후 근사되어 0에 가까운 기울기를 유도하므로 정규화 강도가 처음에는 매우 높고 나중에는 정규화가 거의 없어진다.
 이런 문제를 해결하기 위해 EWC의 변형이 제안된다. 
 
 ##### Synaptic Intelligence (SI)
-EWC가 새로운 task의 importance weights를 학습 이후에 분리되어 구하는 반면, 학습 과정에서 online으로 초정한다.
-
+EWC가 새로운 task의 importance weights를 학습 이후에 분리되어 구하는 반면, 학습 과정에서 online으로 추정한다.  
+![](./../assets/resource/survey/paper4/6.png)  
+누적된 중요도 가중치는 EWC와 같이 task T 의 학습 이후에 여전히 업데이트 된다.
+확률적 경사 하강법은 훈련중 근사 경사에서 노이즈를 발생시키므로 저자는 중요도 가중치가 과대평가되는 경향이 있다고 말한다.
+또한 importance weight이 재현되지 않으므로 pretrained network에 대해서 catastrophic forgetting이 필연적이다.
 
 ##### Memory Aware Synapses (MAS)
+
 
 ##### Incremental Moment Matching (IMM)
 
