@@ -324,6 +324,7 @@ class Net(nn.Module):
 데이터 분포의 shift는 점진적인 에러를 형성해낸다.
 이런 에러는 class-incremental setup 에서도 생길 수 있다.
 또다른 단점은 새로은 task data를 미리 모두 forward하고 저장함으로써 computational cost, memory cost가 추가적으로 필요하다는 것이다.
+![](./../assets/resource/survey/paper4/11.png)  
 
 ##### Encoder Based Lifelong Learning (EBLL)
 LwF를 확장한 방법으로 previous task의 low dimensional feature representation의 중요성을 보존한다.
@@ -578,7 +579,9 @@ merge step으로 두가지 방법을 제안한다
 그래서 IMM은 세개의 transfer 기술을 제안한다. 
 1. Weight-Transfer: previous task parameter로 새 task를 초기화한다.
 2. Drop-Transfer: 이전 task의 파라미터를 0 point로 하는 dropout의 변형
+   ![](../assets/resource/survey/paper4/13.png)  
 3. L2-transfer: 이전 task의 파라미터를 0 point로 재정의 하는 L2-regularization의 변형
+  ![](./../assets/resource/survey/paper4/12.png)
 
 #### 3. Parameter isolation methods
 특정 task에 대한 매개변수를 분리하고, 이전 task의 파라미터 하위 집합을 수정하여 최대 안정성을 보장할 수 있다.
