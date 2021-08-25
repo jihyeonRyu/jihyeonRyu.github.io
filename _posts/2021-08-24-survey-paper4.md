@@ -556,11 +556,45 @@ EWC가 새로운 task의 importance weights를 학습 이후에 분리되어 구
 또한 importance weight이 재현되지 않으므로 pretrained network에 대해서 catastrophic forgetting이 필연적이다.
 
 ##### Memory Aware Synapses (MAS)
-
+unsupervised setting으로 파라미터의 중요도를 측정한다.
+Loss function의 gradient를 계산하는 대신, 저자는 학습된 네트워크의 output function f에 대한 L2-norm의 gradient를 이용한다.  
+![](./../assets/resource/survey/paper4/7.png)  
+이전에 논의했던 방법들은 loss 기반으로 weight의 중요도를 예측하기 위해서는 supervised data를 필요로 했다. 이와 반대로 MAS는 중요도를 unsupervised 방식으로 예측하기 때문에, user-specific data adaptation을 수행할 수 있다.
 
 ##### Incremental Moment Matching (IMM)
+task parameter를 위해 가우시안 사후 확률을 예측하며, EWC와 같은 줄기를 따른다. 
+그러나 본질적으로 모델 병합의 사용이 다르다. 
+Merging step에서 the mixture of Gaussian posteriors는 병합된 새로운 파라미터 집합과 이에 대한 covariance의 Single Gaussian 확률로부터 근사된다.
+비록 merging 전략이 배포를 위해 단일 merged model에 적용되지만, 학습과정에서는 각 학습 task에 대해서 model들을 저장해야한다. 
+merge step으로 두가지 방법을 제안한다
+* mean-IMM  
+  ![](./../assets/resource/survey/paper4/8.png)  
+* mode-IMM
+  ![](./../assets/resource/survey/paper4/9.png)  
+  
+두 모델이 서로 독립적으로 initialize를 하기 때문에 서로 다른 local minimum에 수렴하게 될때, 간단하게 두 모델을 평균화한다고 해서 flat, convex loss surface에 놓일 것이라는 보증이 없다.
+그래서 IMM은 세개의 transfer 기술을 제안한다. 
+1. Weight-Transfer: previous task parameter로 새 task를 초기화한다.
+2. Drop-Transfer: 이전 task의 파라미터를 0 point로 하는 dropout의 변형
+3. L2-transfer: 이전 task의 파라미터를 0 point로 재정의 하는 L2-regularization의 변형
 
 #### 3. Parameter isolation methods
-##### PackNet
+특정 task에 대한 매개변수를 분리하고, 이전 task의 파라미터 하위 집합을 수정하여 최대 안정성을 보장할 수 있다.
+
+##### PackNet 
+연이은 task에 binary mask를 구성하면서 파라미터 하위 집합을 배정한다.
+이 목적을 위해 새로운 task는 두 training phase를 설립한다.
+1. 네트워크는 이전 task parameter와 교체 없이 학습된다. 이어서 가장 중요하지 않은 free parameter는 가지치기 된다. 
+2. 남은 중요한 subset 파라미터를 다시 재학습한다.
+
+가지치기 마스크는 향후 task의 성능을 위해 고정된다.
+PackNet은 task당 네트워크 용량을 명시적으로 할당할 수 있으므로, 본질적으로 task의 총 수를 제한한다.
 
 ##### HAT
+오직 하나의 training phase만을 가진다.
+attention mask를 위한 task-specific embedding을 통합한다.
+per-layer embedding 은 Sigmoid를 통과하여 unit-based attention mask를 생성한다.
+Sigmoid 기울기는 각 학습 epoch 마다 수정하고, 처음에 마스크 수정을 허용하고 마지막엔 거의 바이너리 마스크로 수렴한다.
+향후 task에 대한 수용력을 용이하게 하기 위해, regularization term은 새로운 task attention mask에 희소성을 부과한다.
+이 방법의 핵심은 attention mask를 기반으로 이전 task에 중요하다고 간주 되는 두 단위 간의 parameter 업데이트를 제한하는 것이다.
+정규화 강도와 S자형 기울기는 모두 H에서 고려된다.
