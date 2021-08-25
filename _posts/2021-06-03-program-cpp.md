@@ -1270,23 +1270,33 @@ int main() {
 * 이렇게 컴파일 타임에 생성되는 코드로 프로그래밍을 하는 것을 메타 프로그래밍이라고 한다. 
 
 ```cpp
-template<int N>
-struct Factorial {
-    static const int result = N * Factorial<N-1>::result;
-};
-
 template<>
 struct Factorial<1> {
     static const int result = 1;
 };
 
+template<int N>
+struct Factorial {
+    static const int result = N * Factorial<N-1>::result;
+};
+
 int main() {
     int result = Factorial<6>::result;
+    std::cout << result << std::endl;
 }
 ```
 
+* 컴파일 시간에 미리 계산이 수행되고 실행 시에는 결과를 출력하기만 한다. 
 * 장점: 어떠한 코드든, TMP로 변환할 수 있다. 모두 컴파일 타임에 모든 연산이 끝나기 때문에 프로그램의 실행속도를 향상시킬 수 있다. (컴파일 시간은 늘어남)
 * 단점: 버그를 찾는것이 매우 어려움, 디버깅 불가능, 오류의 길이가 매우 김 
+
+### 단위(Unit) 라이브러리
+
+* 수치 계산에서 단위가 서로 달라서 버그를 유발할 수 있음
+* 이상적인 상황은 컴파일 과정에서 단위 버그를 발견 하는 것, 그래서 TMP을 사용하는 게 좋음 
+
+```cpp
+```
 
 ## auto
 * 컴파일 시 컴파일러에 의해 타입이 추론 됨 

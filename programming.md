@@ -1,7 +1,7 @@
 ---
 layout: post    
 title: Programming  
-tags: [programming, language, c, c++]      
+tags: [programming, computer architecture, parallel programming, c++, docker]       
 comments: false  
 --- 
 
