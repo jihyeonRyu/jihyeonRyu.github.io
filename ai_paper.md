@@ -8,6 +8,7 @@ comments: false
 # GAN
 ### [(PiiGAN) Generative Adversarial Networks for Pluralistic Image Inpainting](https://jihyeonryu.github.io/2021-03-02-ai-pr-paper7/)
 ### [Recurrent Feature Reasoning for Image Inpainting](https://jihyeonryu.github.io/2021-03-03-ai-pr-paper8/)
+### [Spatially-invariant Style-codes Controlled Makeup Transfer](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper10/)
 
 # Segmentation
 ### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
