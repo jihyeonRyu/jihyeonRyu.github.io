@@ -3,13 +3,22 @@ layout: page
 title: About me  
 subtitle: 공부하는 개발자  
 ---
-### 경력
-* 2020.05 - 현재: Line plus AI Engineer  
-* 2017.07 - 2020.05: Hyundai Autoever Vision AI 책임 연구원  
-* 2017.01 - 2017.06: 알티캐스트 AI TF 인턴  
-* 2015.07 - 2015.12: 인코어드테크놀로지스 콘텐츠플랫폼 인턴  
-* 2015.01 - 2015.06: 버즈니 마케팅, 서비스 기획 인턴  
 
-### 학력
-* 2012.03 - 2017.02: 포항공과대학교 산업경영공학과   
+## 경력
+
+-----------
+### 2020.05 - Present: LINEPLUS, Camera AI, Developer   
+### 2017.07 - 2020.05: Hyundai Autoever, Vision AI, Researcher
+### 2017.01 - 2017.06: Alticast, AI TF, Internship  
+### 2015.07 - 2015.12: Encored Technologies, ContentsPlatform, Internship  
+### 2015.01 - 2015.06: BUZZNI, Marketing and Planning, Internship
+
+-----------
+
+## 학력
+
+-----------
+### 2012.03 - 2017.02: 포항공과대학교(POSTECH) 산업경영공학과(IME) 졸업 
+
+-----------
   
