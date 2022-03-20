@@ -18,7 +18,7 @@ Ales Leonardis, Gregory Slabaugh, Tinne Tuytelaars
 ```
 
 [Paper Link](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9349197)  
-[Source Code](https://github.com/MATTDL/CLSURVEY)
+[Code Link](https://github.com/MATTDL/CLSURVEY)
 
 ## Introduction
 * Continual Learning: 끝없는 데이터 stream 에서 지식을 점진적으로 확장해 나가고, 이를 미래의 learning에 사용 할 수 있는 방법이다.

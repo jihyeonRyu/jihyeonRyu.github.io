@@ -120,7 +120,7 @@ initialization에서 FL 참가자들은 그들의 __data distribution__ 을 서�
 일반적으로 사용해오던 loss를 그대로 사용하는 것이 아니라 task 간의 관계를 고려하여 loss function을 수정한다.
 
 * __MOCHA__ :    
-MOCHA(Matroid Optimization: Combinatorial Heuristics and Algorithms, [Source Link](https://github.com/coin-or/MOCHA)) 
+MOCHA(Matroid Optimization: Combinatorial Heuristics and Algorithms, [Code Link](https://github.com/coin-or/MOCHA)) 
 알고리즘은 최소화 문제를 approximate 문제로 푸는 대체 최적화 알고리즘으로 제안되었다. 
 흥미롭게 MOCHA는 참가자들의 리소스 제한에 맞게 조정되게끔 설계되었다.
 예를들어 approximate 정도는 __네트워크 컨디션__ 과 디바이스의 __cpu 상태__ 에 맞게 adaptively 하게 조정된다. 

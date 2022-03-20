@@ -1,7 +1,7 @@
 ---
 layout: post    
 title: Artificial Intelligence Paper Review     
-tags: [ai, ml, paper review, segmentation]    
+tags: [ai, ml, paper review, segmentation, GAN, Fundamental]    
 comments: false  
 --- 
 
@@ -21,6 +21,9 @@ comments: false
 ### [Real-time Hair Segmentation and Recoloring on Mobile GPUs](https://jihyeonryu.github.io/2021-02-19-ai-pr-paper4/)
 ### [TTVOS: Lightweight Video Object Segmentation with Adaptive Template Attention Module and Temporal Consistency Loss](https://jihyeonryu.github.io/2021-02-22-ai-pr-paper5/)
 ### [SINet: Extreme Lightweight Portrait Segmentation Networks with Spatial Squeeze Modules and Information Blocking Decoder](https://jihyeonryu.github.io/2021-02-26-ai-pr-paper6/)
+
+# Object Detection
+### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
 
 # Fundamental
 ### [Maximum-Entropy Adversarial Data Augmentation for Improved Generalization and Robustness](https://jihyeonryu.github.io/2021-02-17-ai-pr-paper2/)
