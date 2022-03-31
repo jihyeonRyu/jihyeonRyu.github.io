@@ -13,7 +13,8 @@ comments: false
 ### [TOWARDS FASTER AND STABILIZED GAN TRAINING FOR HIGH-FIDELITY FEW-SHOT IMAGE SYNTHESIS](https://jihyeonryu.github.io/2021-09-27-ai-pr-paper12/)
 ### [PIRenderer: Controllable Portrait Image Generation via Semantic Neural Rendering](https://jihyeonryu.github.io/2021-10-07-ai-pr-paper14/)  
 ### [(MakeItTalk) Speaker-Aware Talking-Head Animation](https://jihyeonryu.github.io/2021-10-26-ai-pr-paper15/)  
-### [First Order Motion Model for Image Animation](https://jihyeonryu.github.io/2021-10-26-ai-pr-paper16/)  
+### [First Order Motion Model for Image Animation](https://jihyeonryu.github.io/2022-02-16-ai-pr-paper16/)  
+### [(SimSwap) An Efficient Framework For High Fidelity Face Swapping](https://jihyeonryu.github.io/2022-03-31-ai-pr-paper18/)  
 
 # Segmentation
 ### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
