@@ -26,6 +26,9 @@ comments: false
 # Object Detection
 ### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
 
+# Image Classification
+### [(Background Splitting) Finding Rare Classes in a Sea of Background](https://jihyeonryu.github.io/2022-04-05-ai-pr-paper19/)
+
 # Fundamental
 ### [Maximum-Entropy Adversarial Data Augmentation for Improved Generalization and Robustness](https://jihyeonryu.github.io/2021-02-17-ai-pr-paper2/)
 ### [Searching for MobileNetV3](https://jihyeonryu.github.io/2021-04-14-ai-pr-paper9/)

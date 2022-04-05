@@ -2,9 +2,9 @@ import imutils
 import os
 import cv2
 
-image_path = "../assets/resource/ai_paper/paper18"
+image_path = "./assets/resource/ai_paper/paper19"
 
-WIDTH = 500
+WIDTH = 800
 filenames = os.listdir(image_path)
 
 for file in filenames:
