@@ -22,6 +22,7 @@ comments: false
 ### [Real-time Hair Segmentation and Recoloring on Mobile GPUs](https://jihyeonryu.github.io/2021-02-19-ai-pr-paper4/)
 ### [TTVOS: Lightweight Video Object Segmentation with Adaptive Template Attention Module and Temporal Consistency Loss](https://jihyeonryu.github.io/2021-02-22-ai-pr-paper5/)
 ### [SINet: Extreme Lightweight Portrait Segmentation Networks with Spatial Squeeze Modules and Information Blocking Decoder](https://jihyeonryu.github.io/2021-02-26-ai-pr-paper6/)
+### [(PP-LiteSeg) A Superior Real-Time Semantic Segmentation Model](https://jihyeonryu.github.io/2022-04-11-ai-pr-paper20/)
 
 # Object Detection
 ### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
