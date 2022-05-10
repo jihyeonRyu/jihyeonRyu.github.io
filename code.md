@@ -5,4 +5,4 @@ tags: [bug fix, code utility]
 comments: false  
 --- 
 
-#### [Pytorch To Onnx Convert Error (torch.inverse can't export onnx)](https://jihyeonryu.github.io/2022-05-10-code1/)  
+#### [Pytorch To Onnx Convert Error (torch.inverse can't export onnx)](https://jihyeonryu.github.io/2022-05-10-code-util1/)  
