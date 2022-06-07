@@ -16,6 +16,7 @@ comments: false
 #### [First Order Motion Model for Image Animation](https://jihyeonryu.github.io/2022-02-16-ai-pr-paper16/)  
 #### [(SimSwap) An Efficient Framework For High Fidelity Face Swapping](https://jihyeonryu.github.io/2022-03-31-ai-pr-paper18/)  
 #### [(DaGAN) Depth-Aware Generative Adversarial Network for Talking Head Video Generation](https://jihyeonryu.github.io/2022-04-26-ai-pr-paper21/)  
+#### [(GAN Compression) Efficient Architectures for Interactive Conditional GANs](https://jihyeonryu.github.io/2022-06-07-ai-pr-paper22/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
