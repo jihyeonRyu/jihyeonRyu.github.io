@@ -19,6 +19,7 @@ comments: false
 #### [(GAN Compression) Efficient Architectures for Interactive Conditional GANs](https://jihyeonryu.github.io/2022-06-07-ai-pr-paper22/)  
 #### [(MobileFaceSwap) A Lightweight Framework for Video Face Swapping](https://jihyeonryu.github.io/2022-06-13-ai-pr-paper23/)  
 #### [(MobileFSGAN) MIGRATING FACE SWAP TO MOBILE DEVICES: A LIGHTWEIGHT FRAMEWORK AND A SUPERVISED TRAINING SOLUTION](https://jihyeonryu.github.io/2022-06-28-ai-pr-paper24/)  
+#### [(Arbitrary Facial Attribute Editing) Only Change What You Want](https://jihyeonryu.github.io/2022-07-05-ai-pr-paper25/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
