@@ -21,6 +21,7 @@ comments: false
 #### [(MobileFSGAN) MIGRATING FACE SWAP TO MOBILE DEVICES: A LIGHTWEIGHT FRAMEWORK AND A SUPERVISED TRAINING SOLUTION](https://jihyeonryu.github.io/2022-06-28-ai-pr-paper24/)  
 #### [(Arbitrary Facial Attribute Editing) Only Change What You Want](https://jihyeonryu.github.io/2022-07-05-ai-pr-paper25/)  
 #### [(A new face swap method for image and video domains) a technical report](https://jihyeonryu.github.io/2022-07-20-ai-pr-paper26/)  
+#### [(Smooth-Swap) A Simple Enhancement for Face-Swapping with Smoothness ](https://jihyeonryu.github.io/2022-07-25-ai-pr-paper27/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
@@ -39,4 +40,4 @@ comments: false
 # Fundamental
 #### [Maximum-Entropy Adversarial Data Augmentation for Improved Generalization and Robustness](https://jihyeonryu.github.io/2021-02-17-ai-pr-paper2/)
 #### [Searching for MobileNetV3](https://jihyeonryu.github.io/2021-04-14-ai-pr-paper9/)
-
+#### [Supervised Contrastive Learning  ](https://jihyeonryu.github.io/2021-07-25-ai-pr-paper28/)
