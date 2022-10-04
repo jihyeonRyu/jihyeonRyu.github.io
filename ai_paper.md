@@ -23,6 +23,7 @@ comments: false
 #### [(A new face swap method for image and video domains) a technical report](https://jihyeonryu.github.io/2022-07-20-ai-pr-paper26/)  
 #### [(Smooth-Swap) A Simple Enhancement for Face-Swapping with Smoothness ](https://jihyeonryu.github.io/2022-07-25-ai-pr-paper27/)  
 #### [GHOST — A New Face Swap Approach for Image and Video Domains](https://jihyeonryu.github.io/2022-09-20-ai-pr-paper29/)  
+#### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
