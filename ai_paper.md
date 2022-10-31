@@ -43,4 +43,5 @@ comments: false
 # Fundamental
 #### [Maximum-Entropy Adversarial Data Augmentation for Improved Generalization and Robustness](https://jihyeonryu.github.io/2021-02-17-ai-pr-paper2/)
 #### [Searching for MobileNetV3](https://jihyeonryu.github.io/2021-04-14-ai-pr-paper9/)
-#### [Supervised Contrastive Learning  ](https://jihyeonryu.github.io/2021-07-25-ai-pr-paper28/)
+#### [Supervised Contrastive Learning](https://jihyeonryu.github.io/2021-07-25-ai-pr-paper28/)
+#### [(Wavelet Knowledge Distillation) Towards Efficient Image-to-Image Translation](https://jihyeonryu.github.io/2022-10-31-ai-pr-paper32/)
