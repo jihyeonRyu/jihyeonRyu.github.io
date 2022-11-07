@@ -45,3 +45,4 @@ comments: false
 #### [Searching for MobileNetV3](https://jihyeonryu.github.io/2021-04-14-ai-pr-paper9/)
 #### [Supervised Contrastive Learning](https://jihyeonryu.github.io/2021-07-25-ai-pr-paper28/)
 #### [(Wavelet Knowledge Distillation) Towards Efficient Image-to-Image Translation](https://jihyeonryu.github.io/2022-10-31-ai-pr-paper32/)
+#### [(Teachers Do More Than Teach) Compressing Image-to-Image Models](https://jihyeonryu.github.io/2022-11-04-ai-pr-paper33/)
