@@ -14,3 +14,6 @@ comments: false
 # Advanced
 #### [(Federated Learning in Mobile Edge Networks) A Comprehensive Survey](https://jihyeonryu.github.io/2021-04-21-survey-paper2/)
 #### [(A Continual Learning Survey) Defying forgetting in classification tasks](https://jihyeonryu.github.io/2021-08-24-survey-paper4/)   
+
+# Evaluation
+#### [(Pros and Cons of GAN Evaluation Measures) New Developments](https://jihyeonryu.github.io/2022-11-18-survey-paper5/)   
