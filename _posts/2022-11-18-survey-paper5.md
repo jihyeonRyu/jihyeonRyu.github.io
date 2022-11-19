@@ -73,3 +73,5 @@ FID를 계산할때 일반적인 pool3 inception feature 뿐만 아니라 중간
 이러한 이유로 중간의 mixed 6/conv 를 함께 사용하면 spatial distributional similarity도 함께 측정할 수 있다고 본다. 
 
 #### Class-aware FID (CAFD) and Conditional FID
+(하는 중 ...)
+
