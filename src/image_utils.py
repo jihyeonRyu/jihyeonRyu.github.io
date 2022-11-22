@@ -5,7 +5,7 @@ import cv2
 image_path = "assets/resource/ai_paper/paper33"
 
 WIDTH = 500
-filenames = os.listdir(image_path)
+은 으,ㄴfilenames = os.listdir(image_path)
 
 for file in filenames:
     try:
