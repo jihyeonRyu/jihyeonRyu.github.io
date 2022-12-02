@@ -187,7 +187,7 @@ StyleGAN3 에 처음 도입된 방법으로 PPL은 generator의 latent space가 
 
 ![](./../assets/resource/survey/paper5/9.png)   
 
-
+(하는 중...)
 
 
 

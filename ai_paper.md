@@ -25,6 +25,7 @@ comments: false
 #### [GHOST — A New Face Swap Approach for Image and Video Domains](https://jihyeonryu.github.io/2022-09-20-ai-pr-paper29/)  
 #### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)  
 #### [Thin-Plate Spline Motion Model for Image Animation](https://jihyeonryu.github.io/2022-10-26-ai-pr-paper31/)  
+#### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
