@@ -47,3 +47,4 @@ comments: false
 #### [Supervised Contrastive Learning](https://jihyeonryu.github.io/2021-07-25-ai-pr-paper28/)
 #### [(Wavelet Knowledge Distillation) Towards Efficient Image-to-Image Translation](https://jihyeonryu.github.io/2022-10-31-ai-pr-paper32/)
 #### [(Teachers Do More Than Teach) Compressing Image-to-Image Models](https://jihyeonryu.github.io/2022-11-04-ai-pr-paper33/)
+#### [Coordinate Attention for Efficient Mobile Network Design](https://jihyeonryu.github.io/2022-12-05-ai-pr-paper35/)
