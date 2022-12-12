@@ -26,9 +26,9 @@ IS는 생성된 이미지에 대해 Conditional class 분포와 marginal class �
 * y: predicted label
 
 여기서 중요하게 보는 metric은 Sharpness와 diversity 이다. 
-* Sharpness: classifier가 확신을 가지고 prediction을 한다는 것이고, 이는 conditional distribution p(y|x) 가 low Entropy를 가진다는 뜻이다. 
-  * H(Y|X) = p(y|x) log (1/p(y|x)) 가 작은 값을 가져야 한다. 
-* Diversity: 샘플의 결과가 다양하게 나오려면 marginal distribution p(y) = sum_i (p(y|x_i)) 가 High Entropy를 가진다는 뜻이다. 
+* Sharpness: classifier가 확신을 가지고 prediction을 한다는 것이고, 이는 conditional distribution p(y\|x) 가 low Entropy를 가진다는 뜻이다. 
+  * H(Y\|X) = p(y\|x) log (1/p(y\|x)) 가 작은 값을 가져야 한다. 
+* Diversity: 샘플의 결과가 다양하게 나오려면 marginal distribution p(y) = sum_i (p(y\|x_i)) 가 High Entropy를 가진다는 뜻이다. 
 
 하지만 IS는 클래스 내의 다양성을 포착하지 않으며, label에 대한 사전확률 p(x)에 민감하지 않다.
 (ImageNet Dataset과 Inception Model에 편향됨)  
