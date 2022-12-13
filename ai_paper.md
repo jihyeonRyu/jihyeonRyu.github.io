@@ -49,3 +49,4 @@ comments: false
 #### [(Teachers Do More Than Teach) Compressing Image-to-Image Models](https://jihyeonryu.github.io/2022-11-04-ai-pr-paper33/)
 #### [Coordinate Attention for Efficient Mobile Network Design](https://jihyeonryu.github.io/2022-12-05-ai-pr-paper35/)
 #### [Image Augmentations for GAN Training](https://jihyeonryu.github.io/2022-12-12-ai-pr-paper36/)
+#### [Improved Consistency Regularization for GANs](https://jihyeonryu.github.io/2022-12-13-ai-pr-paper37/)
