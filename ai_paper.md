@@ -50,3 +50,4 @@ comments: false
 #### [Coordinate Attention for Efficient Mobile Network Design](https://jihyeonryu.github.io/2022-12-05-ai-pr-paper35/)
 #### [Image Augmentations for GAN Training](https://jihyeonryu.github.io/2022-12-12-ai-pr-paper36/)
 #### [Improved Consistency Regularization for GANs](https://jihyeonryu.github.io/2022-12-13-ai-pr-paper37/)
+#### [(GraN-GAN) Piecewise Gradient Normalization for Generative Adversarial Networks](https://jihyeonryu.github.io/2022-12-23-ai-pr-paper38/)
