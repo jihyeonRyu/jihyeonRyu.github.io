@@ -27,6 +27,7 @@ comments: false
 #### [Thin-Plate Spline Motion Model for Image Animation](https://jihyeonryu.github.io/2022-10-26-ai-pr-paper31/)  
 #### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)  
 #### [Region-Aware Face Swapping](https://jihyeonryu.github.io/2022-12-26-ai-pr-paper39/)  
+#### [(InstructPix2Pix) Learning to Follow Image Editing Instructions](https://jihyeonryu.github.io/2023-01-30-ai-pr-paper40/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
