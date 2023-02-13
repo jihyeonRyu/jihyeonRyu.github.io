@@ -2,7 +2,7 @@ import imutils
 import os
 import cv2
 
-image_path = "./../assets/resource/ai_paper/paper41"
+image_path = "./../assets/resource/ai_paper/paper40"
 
 WIDTH = 500
 filenames = os.listdir(image_path)
@@ -25,3 +25,4 @@ for file in filenames:
     except Exception:
         continue
 
+y
