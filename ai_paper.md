@@ -30,6 +30,7 @@ comments: false
 #### [(InstructPix2Pix) Learning to Follow Image Editing Instructions](https://jihyeonryu.github.io/2023-01-30-ai-pr-paper40/)   
 #### [High-Resolution Image Synthesis with Latent Diffusion Models](https://jihyeonryu.github.io/2023-02-03-ai-pr-paper41/)  
 #### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-02-22-ai-pr-paper42/)  
+#### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-04-21-ai-pr-paper43/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
