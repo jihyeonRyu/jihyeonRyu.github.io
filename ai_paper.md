@@ -5,7 +5,7 @@ tags: [ai, ml, paper review, Segmentation, GAN, Object Detection, Image Classifi
 comments: false  
 --- 
 
-# GAN
+# Image Generation
 #### [(PiiGAN) Generative Adversarial Networks for Pluralistic Image Inpainting](https://jihyeonryu.github.io/2021-03-02-ai-pr-paper7/)
 #### [Recurrent Feature Reasoning for Image Inpainting](https://jihyeonryu.github.io/2021-03-03-ai-pr-paper8/)
 #### [Spatially-invariant Style-codes Controlled Makeup Transfer](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper10/)
@@ -30,7 +30,11 @@ comments: false
 #### [(InstructPix2Pix) Learning to Follow Image Editing Instructions](https://jihyeonryu.github.io/2023-01-30-ai-pr-paper40/)   
 #### [High-Resolution Image Synthesis with Latent Diffusion Models](https://jihyeonryu.github.io/2023-02-03-ai-pr-paper41/)  
 #### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-02-22-ai-pr-paper42/)  
-#### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-04-21-ai-pr-paper43/)  
+
+
+# Text-to-Speech 
+#### [(YourTTS) Towards Zero-Shot Multi-Speaker TTS and Zero-Shot Voice Conversion for everyone](https://jihyeonryu.github.io/2023-04-21-ai-pr-paper43/)  
+#### [(VITS) Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech](https://jihyeonryu.github.io/2023-05-02-ai-pr-paper44/)  
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
