@@ -32,11 +32,13 @@ comments: false
 #### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-02-22-ai-pr-paper42/)  
 
 
-# Text-to-Speech 
+# Speech Synthesis 
 #### [(YourTTS) Towards Zero-Shot Multi-Speaker TTS and Zero-Shot Voice Conversion for everyone](https://jihyeonryu.github.io/2023-04-21-ai-pr-paper43/)  
 #### [(VITS) Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech](https://jihyeonryu.github.io/2023-05-02-ai-pr-paper44/)  
 #### [(Natural Speech 2) Latent Diffusion Models are Natural and Zero-Shot Speech and Singing Synthesizers](https://jihyeonryu.github.io/2023-05-12-ai-pr-paper45/)  
 #### [(NaturalSpeech) End-to-End Text to Speech Synthesis with Human-Level Quality](https://jihyeonryu.github.io/2023-05-19-ai-pr-paper46/)  
+#### [Voice Conversion With Just Nearest Neighbors](https://jihyeonryu.github.io/2023-06-14-ai-pr-paper47/)  
+
 
 # Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
