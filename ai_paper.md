@@ -31,6 +31,10 @@ comments: false
 #### [High-Resolution Image Synthesis with Latent Diffusion Models](https://jihyeonryu.github.io/2023-02-03-ai-pr-paper41/)  
 #### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-02-22-ai-pr-paper42/)  
 
+# 3D deep learning
+#### [(NeRF) Representing Scenes as Neural Radiance Fields for View Synthesis](https://jihyeonryu.github.io/2023-06-27-ai-pr-paper48/)  
+#### [(R2L) Distilling Neural Radiance Field to Neural Light Field for Efficient Novel View Synthesis](https://jihyeonryu.github.io/2023-06-29-ai-pr-paper49/)  
+
 
 # Speech Synthesis 
 #### [(YourTTS) Towards Zero-Shot Multi-Speaker TTS and Zero-Shot Voice Conversion for everyone](https://jihyeonryu.github.io/2023-04-21-ai-pr-paper43/)  
