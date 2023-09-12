@@ -39,7 +39,7 @@ comments: false
 #### [(NeRF) Representing Scenes as Neural Radiance Fields for View Synthesis](https://jihyeonryu.github.io/2023-06-27-ai-pr-paper48/)  
 #### [(R2L) Distilling Neural Radiance Field to Neural Light Field for Efficient Novel View Synthesis](https://jihyeonryu.github.io/2023-06-29-ai-pr-paper49/)  
 #### [Real-Time Neural Light Field on Mobile Devices](https://jihyeonryu.github.io/2023-06-30-ai-pr-paper50/)  
-#### [(Local Light Field Fusion) Practical View Synthesis with Prescriptive Sampling Guidelines](https://jihyeonryu.github.io/2023-07-11-ai-pr-paper51/)  
+#### [(Instant-NGP) Instant Neural Graphics Primitives with a Multiresolution Hash Encoding](https://jihyeonryu.github.io/2023-07-11-ai-pr-paper51/)  
 
 ## Segmentation
 #### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
