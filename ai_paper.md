@@ -70,6 +70,7 @@ comments: false
 
 ## speech-to-text
 #### [(Whisper) Robust Speech Recognition via Large-Scale Weak Supervision](https://jihyeonryu.github.io/2023-09-10-ai-pr-paper52/)
+#### [(WhisperX) Time-Accurate Speech Transcription of Long-Form Audio](https://jihyeonryu.github.io/2023-09-13-ai-pr-paper53/)
 
 --------------
 
