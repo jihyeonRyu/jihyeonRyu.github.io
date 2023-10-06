@@ -6,10 +6,23 @@ comments: false
 --- 
 
 -------------
-
 # Computer Vision
 
-## Image Generation
+## Segmentation
+#### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
+#### [PortraitNet: Real-time Portrait Segmentation Network for Mobile Device](https://jihyeonryu.github.io/2021-02-18-ai-pr-paper3/)
+#### [Real-time Hair Segmentation and Recoloring on Mobile GPUs](https://jihyeonryu.github.io/2021-02-19-ai-pr-paper4/)
+#### [TTVOS: Lightweight Video Object Segmentation with Adaptive Template Attention Module and Temporal Consistency Loss](https://jihyeonryu.github.io/2021-02-22-ai-pr-paper5/)
+#### [SINet: Extreme Lightweight Portrait Segmentation Networks with Spatial Squeeze Modules and Information Blocking Decoder](https://jihyeonryu.github.io/2021-02-26-ai-pr-paper6/)
+#### [(PP-LiteSeg) A Superior Real-Time Semantic Segmentation Model](https://jihyeonryu.github.io/2022-04-11-ai-pr-paper20/)
+
+## Object Detection
+#### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
+
+## Image Classification
+#### [(Background Splitting) Finding Rare Classes in a Sea of Background](https://jihyeonryu.github.io/2022-04-05-ai-pr-paper19/)
+
+## GAN
 #### [(PiiGAN) Generative Adversarial Networks for Pluralistic Image Inpainting](https://jihyeonryu.github.io/2021-03-02-ai-pr-paper7/)
 #### [Recurrent Feature Reasoning for Image Inpainting](https://jihyeonryu.github.io/2021-03-03-ai-pr-paper8/)
 #### [Spatially-invariant Style-codes Controlled Makeup Transfer](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper10/)
@@ -30,30 +43,19 @@ comments: false
 #### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)  
 #### [Thin-Plate Spline Motion Model for Image Animation](https://jihyeonryu.github.io/2022-10-26-ai-pr-paper31/)  
 #### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)  
-#### [Region-Aware Face Swapping](https://jihyeonryu.github.io/2022-12-26-ai-pr-paper39/)  
+#### [Region-Aware Face Swapping](https://jihyeonryu.github.io/2022-12-26-ai-pr-paper39/)
+
+## Diffusion Model 
 #### [(InstructPix2Pix) Learning to Follow Image Editing Instructions](https://jihyeonryu.github.io/2023-01-30-ai-pr-paper40/)   
 #### [High-Resolution Image Synthesis with Latent Diffusion Models](https://jihyeonryu.github.io/2023-02-03-ai-pr-paper41/)  
 #### [Null-text Inversion for Editing Real Images using Guided Diffusion Models](https://jihyeonryu.github.io/2023-02-22-ai-pr-paper42/)  
 
-## 3D Volume Rendering
+## Volume Rendering
 #### [(NeRF) Representing Scenes as Neural Radiance Fields for View Synthesis](https://jihyeonryu.github.io/2023-06-27-ai-pr-paper48/)  
 #### [(R2L) Distilling Neural Radiance Field to Neural Light Field for Efficient Novel View Synthesis](https://jihyeonryu.github.io/2023-06-29-ai-pr-paper49/)  
 #### [Real-Time Neural Light Field on Mobile Devices](https://jihyeonryu.github.io/2023-06-30-ai-pr-paper50/)  
 #### [(Instant-NGP) Instant Neural Graphics Primitives with a Multiresolution Hash Encoding](https://jihyeonryu.github.io/2023-07-11-ai-pr-paper51/)  
-
-## Segmentation
-#### [Video Object Segmentation with Adaptive Feature Bank and Uncertain-Region Refinement](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
-#### [PortraitNet: Real-time Portrait Segmentation Network for Mobile Device](https://jihyeonryu.github.io/2021-02-18-ai-pr-paper3/)
-#### [Real-time Hair Segmentation and Recoloring on Mobile GPUs](https://jihyeonryu.github.io/2021-02-19-ai-pr-paper4/)
-#### [TTVOS: Lightweight Video Object Segmentation with Adaptive Template Attention Module and Temporal Consistency Loss](https://jihyeonryu.github.io/2021-02-22-ai-pr-paper5/)
-#### [SINet: Extreme Lightweight Portrait Segmentation Networks with Spatial Squeeze Modules and Information Blocking Decoder](https://jihyeonryu.github.io/2021-02-26-ai-pr-paper6/)
-#### [(PP-LiteSeg) A Superior Real-Time Semantic Segmentation Model](https://jihyeonryu.github.io/2022-04-11-ai-pr-paper20/)
-
-## Object Detection
-#### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
-
-## Image Classification
-#### [(Background Splitting) Finding Rare Classes in a Sea of Background](https://jihyeonryu.github.io/2022-04-05-ai-pr-paper19/)
+#### [(MobileNeRF) Exploiting the Polygon Rasterization Pipeline for Efficient Neural Field Rendering on Mobile Architectures](https://jihyeonryu.github.io/2023-09-14-ai-pr-paper54/)  
 
 --------------
 
@@ -75,7 +77,6 @@ comments: false
 --------------
 
 # Fundamental
-
 #### [Maximum-Entropy Adversarial Data Augmentation for Improved Generalization and Robustness](https://jihyeonryu.github.io/2021-02-17-ai-pr-paper2/)
 #### [Searching for MobileNetV3](https://jihyeonryu.github.io/2021-04-14-ai-pr-paper9/)
 #### [Supervised Contrastive Learning](https://jihyeonryu.github.io/2021-07-25-ai-pr-paper28/)
