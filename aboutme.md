@@ -3,6 +3,8 @@ layout: page
 title: About Me  
 subtitle: AI Researcher & Developer
 ---
+## RYU JI HYEON
+
 ### Career
 
 ---
