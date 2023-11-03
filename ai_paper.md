@@ -28,22 +28,27 @@ comments: false
 #### [Spatially-invariant Style-codes Controlled Makeup Transfer](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper10/)
 #### [Adaptive semantic attribute decoupling for precise face image editing](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper11/)
 #### [TOWARDS FASTER AND STABILIZED GAN TRAINING FOR HIGH-FIDELITY FEW-SHOT IMAGE SYNTHESIS](https://jihyeonryu.github.io/2021-09-27-ai-pr-paper12/)
-#### [PIRenderer: Controllable Portrait Image Generation via Semantic Neural Rendering](https://jihyeonryu.github.io/2021-10-07-ai-pr-paper14/)  
-#### [(MakeItTalk) Speaker-Aware Talking-Head Animation](https://jihyeonryu.github.io/2021-10-26-ai-pr-paper15/)  
-#### [First Order Motion Model for Image Animation](https://jihyeonryu.github.io/2022-02-16-ai-pr-paper16/)  
-#### [(SimSwap) An Efficient Framework For High Fidelity Face Swapping](https://jihyeonryu.github.io/2022-03-31-ai-pr-paper18/)  
-#### [(DaGAN) Depth-Aware Generative Adversarial Network for Talking Head Video Generation](https://jihyeonryu.github.io/2022-04-26-ai-pr-paper21/)  
-#### [(GAN Compression) Efficient Architectures for Interactive Conditional GANs](https://jihyeonryu.github.io/2022-06-07-ai-pr-paper22/)  
+#### [PIRenderer: Controllable Portrait Image Generation via Semantic Neural Rendering](https://jihyeonryu.github.io/2021-10-07-ai-pr-paper14/)
+#### [(GAN Compression) Efficient Architectures for Interactive Conditional GANs](https://jihyeonryu.github.io/2022-06-07-ai-pr-paper22/)
+#### [(Arbitrary Facial Attribute Editing) Only Change What You Want](https://jihyeonryu.github.io/2022-07-05-ai-pr-paper25/)
+#### [GHOST — A New Face Swap Approach for Image and Video Domains](https://jihyeonryu.github.io/2022-09-20-ai-pr-paper29/)  
+#### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)
+#### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)  
+
+## Face Swap
+#### [(SimSwap) An Efficient Framework For High Fidelity Face Swapping](https://jihyeonryu.github.io/2022-03-31-ai-pr-paper18/)
 #### [(MobileFaceSwap) A Lightweight Framework for Video Face Swapping](https://jihyeonryu.github.io/2022-06-13-ai-pr-paper23/)  
 #### [(MobileFSGAN) MIGRATING FACE SWAP TO MOBILE DEVICES: A LIGHTWEIGHT FRAMEWORK AND A SUPERVISED TRAINING SOLUTION](https://jihyeonryu.github.io/2022-06-28-ai-pr-paper24/)  
-#### [(Arbitrary Facial Attribute Editing) Only Change What You Want](https://jihyeonryu.github.io/2022-07-05-ai-pr-paper25/)  
 #### [(A new face swap method for image and video domains) a technical report](https://jihyeonryu.github.io/2022-07-20-ai-pr-paper26/)  
 #### [(Smooth-Swap) A Simple Enhancement for Face-Swapping with Smoothness ](https://jihyeonryu.github.io/2022-07-25-ai-pr-paper27/)  
-#### [GHOST — A New Face Swap Approach for Image and Video Domains](https://jihyeonryu.github.io/2022-09-20-ai-pr-paper29/)  
-#### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)  
-#### [Thin-Plate Spline Motion Model for Image Animation](https://jihyeonryu.github.io/2022-10-26-ai-pr-paper31/)  
-#### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)  
 #### [Region-Aware Face Swapping](https://jihyeonryu.github.io/2022-12-26-ai-pr-paper39/)
+
+## Video Generation
+#### [(MakeItTalk) Speaker-Aware Talking-Head Animation](https://jihyeonryu.github.io/2021-10-26-ai-pr-paper15/)  
+#### [First Order Motion Model for Image Animation](https://jihyeonryu.github.io/2022-02-16-ai-pr-paper16/)  
+#### [(DaGAN) Depth-Aware Generative Adversarial Network for Talking Head Video Generation](https://jihyeonryu.github.io/2022-04-26-ai-pr-paper21/)  
+#### [Thin-Plate Spline Motion Model for Image Animation](https://jihyeonryu.github.io/2022-10-26-ai-pr-paper31/)  
+#### [(SadTalker) Learning Realistic 3D Motion Coefficients for Stylized Audio-Driven Single Image Talking Face Animation](https://jihyeonryu.github.io/2023-10-31-ai-pr-paper55/)  
 
 ## Diffusion Model 
 #### [(InstructPix2Pix) Learning to Follow Image Editing Instructions](https://jihyeonryu.github.io/2023-01-30-ai-pr-paper40/)   
