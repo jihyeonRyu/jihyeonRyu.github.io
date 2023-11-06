@@ -74,6 +74,7 @@ comments: false
 
 ## voice conversion
 #### [Voice Conversion With Just Nearest Neighbors](https://jihyeonryu.github.io/2023-06-14-ai-pr-paper47/)  
+#### [LOW-LATENCY REAL-TIME VOICE CONVERSION ON CPU](https://jihyeonryu.github.io/2023-11-06-ai-pr-paper56/)  
 
 ## speech-to-text
 #### [(Whisper) Robust Speech Recognition via Large-Scale Weak Supervision](https://jihyeonryu.github.io/2023-09-10-ai-pr-paper52/)
