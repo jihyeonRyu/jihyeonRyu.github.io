@@ -61,6 +61,7 @@ comments: false
 #### [Real-Time Neural Light Field on Mobile Devices](https://jihyeonryu.github.io/2023-06-30-ai-pr-paper50/)  
 #### [(Instant-NGP) Instant Neural Graphics Primitives with a Multiresolution Hash Encoding](https://jihyeonryu.github.io/2023-07-11-ai-pr-paper51/)  
 #### [(MobileNeRF) Exploiting the Polygon Rasterization Pipeline for Efficient Neural Field Rendering on Mobile Architectures](https://jihyeonryu.github.io/2023-09-14-ai-pr-paper54/)  
+#### [(Re-ReND) Real-time Rendering of NeRFs across Devices](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper58/)  
 
 --------------
 
