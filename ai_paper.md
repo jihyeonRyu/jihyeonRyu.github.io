@@ -1,9 +1,9 @@
----
-layout: post  
-title: Artificial Intelligence Paper Review   
-tags: [ai, ml, paper review, Segmentation, GAN, Object Detection, Image Classification, Fundamental]  
+layout: post
+title: Artificial Intelligence Paper Review
+tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts, speech recognition, Object Detection, Fundamental]
 comments: false
----
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 ---
 
 # Computer Vision
@@ -30,29 +30,19 @@ comments: false
 
 #### [(Background Splitting) Finding Rare Classes in a Sea of Background](https://jihyeonryu.github.io/2022-04-05-ai-pr-paper19/)
 
-## GAN
+## Image Inpainting
 
 #### [(PiiGAN) Generative Adversarial Networks for Pluralistic Image Inpainting](https://jihyeonryu.github.io/2021-03-02-ai-pr-paper7/)
 
 #### [Recurrent Feature Reasoning for Image Inpainting](https://jihyeonryu.github.io/2021-03-03-ai-pr-paper8/)
 
+## Image Editing
+
 #### [Spatially-invariant Style-codes Controlled Makeup Transfer](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper10/)
 
 #### [Adaptive semantic attribute decoupling for precise face image editing](https://jihyeonryu.github.io/2021-09-06-ai-pr-paper11/)
 
-#### [TOWARDS FASTER AND STABILIZED GAN TRAINING FOR HIGH-FIDELITY FEW-SHOT IMAGE SYNTHESIS](https://jihyeonryu.github.io/2021-09-27-ai-pr-paper12/)
-
-#### [PIRenderer: Controllable Portrait Image Generation via Semantic Neural Rendering](https://jihyeonryu.github.io/2021-10-07-ai-pr-paper14/)
-
-#### [(GAN Compression) Efficient Architectures for Interactive Conditional GANs](https://jihyeonryu.github.io/2022-06-07-ai-pr-paper22/)
-
 #### [(Arbitrary Facial Attribute Editing) Only Change What You Want](https://jihyeonryu.github.io/2022-07-05-ai-pr-paper25/)
-
-#### [GHOST — A New Face Swap Approach for Image and Video Domains](https://jihyeonryu.github.io/2022-09-20-ai-pr-paper29/)
-
-#### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)
-
-#### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)
 
 ## Face Swap
 
@@ -68,7 +58,11 @@ comments: false
 
 #### [Region-Aware Face Swapping](https://jihyeonryu.github.io/2022-12-26-ai-pr-paper39/)
 
+#### [GHOST — A New Face Swap Approach for Image and Video Domains](https://jihyeonryu.github.io/2022-09-20-ai-pr-paper29/)
+
 ## Video Generation
+
+#### [PIRenderer: Controllable Portrait Image Generation via Semantic Neural Rendering](https://jihyeonryu.github.io/2021-10-07-ai-pr-paper14/)
 
 #### [(MakeItTalk) Speaker-Aware Talking-Head Animation](https://jihyeonryu.github.io/2021-10-26-ai-pr-paper15/)
 
@@ -102,17 +96,15 @@ comments: false
 
 #### [(Re-ReND) Real-time Rendering of NeRFs across Devices](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper58/)
 
-
 ## Virtual Try On
 
 #### [(ARShoe) Real-Time Augmented Reality Shoe Try-on System on Smartphones](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper59/)
-
 
 ---
 
 # Natural Language
 
-## text-to-speech
+## Text-to-Speech
 
 #### [(YourTTS) Towards Zero-Shot Multi-Speaker TTS and Zero-Shot Voice Conversion for everyone](https://jihyeonryu.github.io/2023-04-21-ai-pr-paper43/)
 
@@ -122,7 +114,7 @@ comments: false
 
 #### [(NaturalSpeech) End-to-End Text to Speech Synthesis with Human-Level Quality](https://jihyeonryu.github.io/2023-05-19-ai-pr-paper46/)
 
-## voice conversion
+## Voice Conversion
 
 #### [Voice Conversion With Just Nearest Neighbors](https://jihyeonryu.github.io/2023-06-14-ai-pr-paper47/)
 
@@ -130,7 +122,7 @@ comments: false
 
 #### [(QuickVC) Any-To-Many Voice Conversion Using Inverse Short-Time Fourier Transform for Faster Conversion](https://jihyeonryu.github.io/2023-11-07-ai-pr-paper57/)
 
-## speech-to-text
+## Speech Recognition
 
 #### [(Whisper) Robust Speech Recognition via Large-Scale Weak Supervision](https://jihyeonryu.github.io/2023-09-10-ai-pr-paper52/)
 
@@ -157,3 +149,11 @@ comments: false
 #### [Improved Consistency Regularization for GANs](https://jihyeonryu.github.io/2022-12-13-ai-pr-paper37/)
 
 #### [(GraN-GAN) Piecewise Gradient Normalization for Generative Adversarial Networks](https://jihyeonryu.github.io/2022-12-23-ai-pr-paper38/)
+
+#### [TOWARDS FASTER AND STABILIZED GAN TRAINING FOR HIGH-FIDELITY FEW-SHOT IMAGE SYNTHESIS](https://jihyeonryu.github.io/2021-09-27-ai-pr-paper12/)
+
+#### [(GAN Compression) Efficient Architectures for Interactive Conditional GANs](https://jihyeonryu.github.io/2022-06-07-ai-pr-paper22/)
+
+#### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)
+
+#### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)
