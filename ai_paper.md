@@ -1,9 +1,8 @@
+---
 layout: post
 title: Artificial Intelligence Paper Review
-tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts, speech recognition, Object Detection, Fundamental]
+tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts, speech recognition, Object Detection, Fundamental]   
 comments: false
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 ---
 
 # Computer Vision
@@ -25,6 +24,10 @@ comments: false
 ## Object Detection
 
 #### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
+
+## Pose Estimation
+
+#### [(OpenPose) Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields](https://jihyeonryu.github.io/2023-12-12-ai-pr-paper60/)
 
 ## Image Classification
 
