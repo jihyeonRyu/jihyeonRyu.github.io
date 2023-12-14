@@ -14,11 +14,11 @@ GPT-3 및 PaLM과 같은 언어 모델(LMs)은 자연어 처리(NLP) 작업의 �
 
 ## Preliminaries
 
-### Language Model
+### 1. Language Model
 
 ![](./../assets/resource/survey/paper6/1.png)
 
-### What is Retrival-based Language Model
+### 2. What is Retrival-based Language Model
 
 RLM은 test time에 외부의 datastore을 함께 사용하는 Language Model입니다.
 
@@ -40,7 +40,7 @@ RLM의 모델 구조 발전 과정은 다음과 같은 로드맵으로 요약할
 
 ![](./../assets/resource/survey/paper6/4.png)
 
-### REALM (2020)
+### 1. REALM
 
 REALM은 mask languaged 모델로 처음으로 retrieval을 Language model과 함께 사용한 모델입니다.
 
@@ -56,7 +56,7 @@ retrieve stage에 대해 조금더 자세히 설명해보겠습니다. datastore
 
 이 단계가 끝나면 이제 read stage에서 이를 통합하는 작업이 필요합니다. 이를 위해서 각 chunks들을 원래의 input에 concat 하고 language model에 입력합니다. 그러고 나면 우리는 alpha-distribution을 얻을 수 있고, weighted average를 통해서 이 결과를 통합합니다.
 
-### REALM and Subsequent work
+### 2. REALM and Subsequent work
 
 - REALM
 - DPR
@@ -67,7 +67,7 @@ retrieve stage에 대해 조금더 자세히 설명해보겠습니다. datastore
 
 하지만 앞으로 나올 모델들은 더 LM Perplexity (더 복잡하고 혼란스러운 상황)에 더 포커스를 맞추고 있습니다.
 
-### Retrieval-in-context LM
+### 3. Retrieval-in-context LM
 
 ![](./../assets/resource/survey/paper6/7.png)
 
@@ -79,7 +79,7 @@ input x가 다음과 같이 주어지고 다음에 올 문장을 생성해야할
 
 실제로 여러번 retrieve 할수록 성능이 좋다는 것이 밝혀졌습니다. 하지만 inference time cost가 늘어나기 때문에 주의해야합니다. 그래서 각 token 별로 retrieve 하여 query가 더욱 정확한 정보를 가져올 수 있도록 하였습니다.
 
-### RETRO
+### 4. RETRO
 
 이 모델은 retrival의 결과를 input layer 대신에 intermediate layer의 입력으로 사용하였습니다. 그리고 많은 chunks들이 더 자주 효율적으로 처리될 수 있게 디자인하였습니다. 그리고 datastore을 1.8 Tokens로 확장하였습니다.
 
@@ -100,7 +100,7 @@ input을 여러개로 쪼갠 뒤 Encoder를 통해 Dense space로 projection시�
 
 이 방법은 매우 효율적이지만 complexity가 증가했고 transformer의 architecture가 변했기 때문에 학습 없이 사용할 수는 없습니다.
 
-### kNN-LM
+### 5. kNN-LM
 
 ![](./../assets/resource/survey/paper6/11.png)
 
@@ -118,17 +118,17 @@ datastore의 key를 vocabuary로 구성하는 게 아니라 prefix로 구성하�
 
 하지만 공간효율이 좋지 않습니다. 왜냐하면 text chunks에 비해 token의 갯수가 훨씬 많기 때문입니다. 또한 input과 retrival result가 덜 상호작용하기 때문에 표현력이 조금 떨어질 수 있습니다.
 
-### Adaptive Retrieval of Chunks
+### 6. Adaptive Retrieval of Chunks
 
 retrival을 항상 사용해야 할까요? 상황에 따라 쉬운 task의 경우는 필요없는 경우도 있을 것입니다. 그래서 이런 상황은 retrival을 skip 한다면 inference speed를 향상시키는 데 도움을 줄것입니다.
 
-#### FLARE
+#### 6-1. FLARE
 
 이는 text chunks 단위로 retrieval 하는 모델로 Sentence level에서 retrieval을 할지 말지를 결정합니다. 먼저 retrieval 없이 LM으로 문장을 생성합니다. 생성한 모델이 해당 문장이 확실하다고 판단되면, 다음 문장을 생성합니다. 만약 다음 문장이 불확실하다고 판단되면, 그 문장을 retrieval system의 입력으로 넣고 top-1 text chunk를 받아 LM의 입력으로 사용하여 문장을 다시 생성합니다.
 
 이 과정은 모든 문장을 생성할때 까지 반복적으로 수행됩니다.
 
-### Adaptive Retrieval of tokens
+### 7. Adaptive Retrieval of tokens
 
 retrieval을 token 단위로 수행할 때도 adaptive하게 skip 할 수 있습니다. 위의 kNN-LM 의 식에서 lambda가 특정 값보다 작다면 lambda=0으로 만들어 오직 Langage Model의 결과만을 사용하여 결과를 생성하게 할 수 있습니다.
 
@@ -138,7 +138,7 @@ retrieval을 token 단위로 수행할 때도 adaptive하게 skip 할 수 있습
 
 이런 방식으로 speed를 향상시킬 수 있지만 retrieval을 skip 할지 말지 결정하는 것이 optimal이 아닐 수 있는 단점이 있습니다.
 
-### Entities as Experts
+### 8. Entities as Experts
 
 그렇다면 retrieval을 text나 token말고 다른 것으로는 할 수 없을까 의문이 생깁니다. 하나의 아이디어는 entity을 사용하는 것입니다. 여기서 entity는 무엇일까요? real world에는 고유의 이름을 가지고 있는 object들이 있습니다. (예를들어 나라, 장소, 사람, 책 등). entity는 서로 구별되는 하나하나의 대상을 의합니다. 이런 entity들은 dense vector space에서 표현될 수 있습니다. 이러한 vector들은 entity 들에 대한 background information을 가지고 있을 것입니다. 그래서 이런 entity를 전문가로서 LM과 함께 사용할 수 있습니다.
 
@@ -148,7 +148,7 @@ retrieval을 token 단위로 수행할 때도 adaptive하게 skip 할 수 있습
 
 entity별로 하나의 vector를 가지고 있는 entity memory가 있을 때, memory에서 input에 해당하는 단어 vector를 찾아 transformer의 중간 계층에 함께 사용할 수 있습니다. 이방법을 사용하면 datastore를 훨씬 더 공간을 효율적으로 사용할 수 있습니다. 예를 들어 chunks나 token을 저장하는 것에 비해서 매우 작은 용량만을 사용하기 때문입니다. 하지만 이방법을 사용하려먼 조금 복잡합니다. entity를 따로 학습해야하고, text와 entity를 연결짓는 entity detector가 필요하기 때문입니다.
 
-### Mention Memory
+### 9. Mention Memory
 
 ![](./../assets/resource/survey/paper6/14.png)
 
@@ -156,24 +156,99 @@ entity별로 하나의 vector를 가지고 있는 entity memory가 있을 때, m
 
 이방법은 token 별로 하나의 vector를 가지는 kNN-LM과 유사합니다. 하지만 여전히 kNN-LM 보다 공간 효율이 좋습니다. 왜냐하면 entity mention의 수가 token의 수보다 여전히 작기 때문입니다. (150M vs 4B in wikipedia)
 
-### Retrieval for long-range LM
+### 10. Retrieval for long-range LM
 
 지금까지 external한 data storage를 retrieval 하는 방식을 살펴봤지만, own input text를 data storage에 저장하여 long-range sequence를 처리하는 데도 이 방법을 사용할 수 있습니다.
 
-#### Memorizing Transformer
+#### 10-1. Memorizing Transformer
 
 예를들어 전채 책 한권을 요약하는 task가 있다고 합시다. 일반적인 transformer는 입력 길이 제한이 있기 때문에 전체 input을 한번에 처리할 수 없습니다. 이를 해결하기 위해 책 내용 input을 기반으로 하는 data store를 생성하고, 이를 input으로 사용하면서, 현재의 token과 가장 관련있는 parts들을 retrieve하고 intermediate attention layer에 사용하는 방법이 있습니다. 이렇게 함으로써 전체 input을 처리하는 대신 오직 관련 있는 부분만을 처리 함으로써 효율성을 극대화 할 수 있습니다.
 
-#### Unlimiformer
+#### 10-2. Unlimiformer
 
 ![](./../assets/resource/survey/paper6/15.png)
 
 위의 방법보다 더 진보한 구조가 있습니다. transformer의 intermediate layer에 chunked cross attention을 사용하는 것입니다. 이렇게 함으로써 더 많은 blocks들을 더 빈번하게 많이 처리할 수 있습니다.
 
-먼저 datastore를 구성하기 위해 input text들을 chunk로 분리합니다. 그리고 각 chuncks들을 현재의 chunk와 비교하여 simlilarity score를 구합니다. 그리고 top-K nearest neighbor search를 수행하여 가장 관련있는 part를 찾고, Cross Attention Layer의 input으로 함께 사용합니다. 
+먼저 datastore를 구성하기 위해 input text들을 chunk로 분리합니다. 그리고 각 chuncks들을 현재의 chunk와 비교하여 simlilarity score를 구합니다. 그리고 top-K nearest neighbor search를 수행하여 가장 관련있는 part를 찾고, Cross Attention Layer의 input으로 함께 사용합니다.
 
 ## Training
 
+![](./../assets/resource/survey/paper6/16.png)
+
+Retrieval Based 모델을 학습시키는 것은 매우 도전적인 과제입니다. 수십억개의 파라미터가 있는 Large Language Model을 학습시키는 것은 매우 expensive 합니다. 또한 학습과정에서 index를 업데이트 시키는 것 또한 매우 expensive 합니다. 이 과제들을 해결하기 위한 4가지 접근 방식에 대해 설명하겠습니다.
+
+### 1. Independent Training
+
+이 방법은 language model과 retrieval model을 독립적으로 학습시키는 것입니다.
+
+독립적으로 학습하면 off-the-shelf model들과 사용하기 좋으며, LM과 retrieval model 각각을 독립적으로 개선시킬 수도 있습니다. 하지만 LM이 retrieval을 leverage하게 학습되진 않습니다. 또한 retrieval model이 LM의 테스크나 도메인에 최적화 되지 않는다는 단점이 있습니다.
+
+large language model을 처음부터 학습시키는 것보다 이미 학습된 다른 모델들을 사용하는 것도 좋은 방법입니다. (GPT, PaLM, LLaMA, GPT-J, ...)
+
+Retrieval model을 학습시키는 것은 사실 NLP나 information retrieval 분야에서 매우 기본적인 문제입니다. 그래서 사람들은 많은 세월동안 다양한 방법들을 제안해왔습니다. 그래서 여기서는 가장 널리 쓰이는 몇가지 시나리오를 사용할 것입니다.
+
+#### 1-1. Sparse retrieval models: TF-IDF / BM25
+
+text chunks들을 sparse vector representation으로 맵핑합니다. sparse vector는 많은 차원을 가지고 있기 때문에 매우 큽니다. 하지만 대부분의 차원 값은 0일 것입니다. 그다음은 text chunks 간의 어원의 overlap을 측정하기 위해서 similarity function을 정의합니다. 여기서 similarity function은 사람이 휴리스틱하게 결정하기 때문에 따로 학습할 필요가 없습니다.
+
+#### 1-2. Dense retrieval models: DPR
+
+![](./../assets/resource/survey/paper6/17.png)
+
+최근에는 사람들은 dense retrieval model을 사용합니다. 작은 사이즈의 encoder를 사용하여 text를 dense vector 표현으로 맵핍합니다. 두 벡터간의 similarity는 벡터의 내적으로 계산할 수 있습니다.
+
+DPR을 학습시키는 방법은 무엇일까요? 우리는 contrastive learning 방식으로 학습시킬 수 있습니다. query와 각 text chunks에 대한 관계가 관련 있는 경우는 거리가 가깝게, 관련이 없는 경우는 거리가 멀게 만드는 식으로 학습하는 것입니다. 하지만 모든 negative passage들에 대해서 학습시키는 것은 매우 expensive 합니다. 그래서 여기서 사용할 수 있는 테크닉은 "in-batch" negative 입니다. 모든 corpus에서 오는 negative를 사용하는 대신 오직 현재의 training batch에 있는 negative 만을 고려하는 것입니다. 여기서 우리가 가정하는 것은 모든 학습 query들은 anntated 되어 있다는 것입니다.
+
+#### 1-3. Contriever
+
+![](./../assets/resource/survey/paper6/18.png)
+
+하지만 최근 연구에서는 unsupervised 한 방식으로 학습시키는 시도가 있습니다. 방법은 매우 간단합니다. 한 document가 있다면 해당 document에 대해서 두번 랜덤 크롭핑을 수행합니다. 그리고 이 두 pieces들을 positive 하다고 가정하는 것입니다.
+
+#### 1-4. Retrieval-in-Context in LM
+
+Indepentently 하게 학습시키는 대표적인 모델 중 하나입니다. 독립적으로 학습시켰기 때문에 우리는 Retrieval Model과 LM 모두 아무 조합으로 변경하여 사용할 수 있습니다. 또한 각 component의 개선도 독립적으로 수행될 수 있습니다.
+
+#### 1-5. kNN-LM
+
+![](./../assets/resource/survey/paper6/19.png)
+
+kNN-LM의 경우 여시서 사용된 dense retrieval model은 language model과 같은 것입니다. 그래서 따로 학습할 필요 없이 language model만 학습하면 됩니다.
+
+### 2. Sequential Training
+
+먼저 하나의 component를 독립적으로 학습시킨 뒤 고정을 시키고, 다른 component를 먼저 학습된 component에 맞게 학습시키는 것입니다.
+
+- Retriever -> LM
+- LM -> Retrieval
+
+이를 통해 off-the-shelf componets를 사용할 수 있고, LM은 retrieval의 결과를 leverage 하여 효율적으로 학습될 수 있으며, Retrieval은 LM 모델애 도움이 되게끔 학습될 수 있습니다. 하지만 여전이 하나의 component는 fix되어 학습되지 않는다는 문제가 있습니다. 
+
+#### 2-1. RETRO
+
+![](./../assets/resource/survey/paper6/20.png)
+
+RETRO는 Transformer 의 구조를 변경했기 때문에 Language Model을 다시 학습시켜야 합니다. 그런데 retriever model의 index를 다시 학습시키는 것은 매우 값비싼 작업이기 때문에 retrieval encoder을 fix하고 오직 그 index 값만 사용하여 LM을 학습시킵니다.
+
+#### 2-2. REPLUG
+
+![](./../assets/resource/survey/paper6/21.png)
+
+많은 LM들은 우리가 직접 학습할 수 없을 정도로 매우 큽니다. 이 말은 결국 LM은 업데이트 하기 위해 접근할 수 없는 black-box입니다. 그래서 REPLUG는 black-box LM을 이용하여 Retrieval 모델을 최적화하는 방법을 고안하였습니다. 먼저 text x에 대해서 document retriever을 통해서 관련있는 text chuncks를 얻습니다. 그리고 prediction을 refine 하기 위해 각 retrieved text에 대해서 LM의 input과 concat하고 ensemble prediction을 수행합니다.
+이 방법은 어떠한 Retrieval Model, LM과도 함께 적용될 수 있습니다.
+
+##### 2-2-1. REPLUG LSR (LM-Supervised Retrieval)
+
+![](./../assets/resource/survey/paper6/22.png)
+
+이 논문에서 제안한 또다른 중요한 접근 방식이 있습니다. 우리는 REPLUG 방식으로 어떠한 text chunk가 final prediction에 가장 기여했는 지 알 수 있습니다. 그래서 우리는 이 정보를 가지고 KL Divergence를 사용하여 Retriever을 학습시킬 수 있습니다.
+
+이 방법은 LM을 supervision으로 사용하여 retrieval을 업데이트하는 것입니다. 하지만 여기서 문제는 index는 다루기 매우 크기 때문에 어떻게 다룰지가 관건입니다. 이 논문에서는 asynchronize update 테크닉을 사용하였습니다. 이는 뒤에서 자세히 다루겠습니다.
+
+### Joint Training with asynchronous index update
+
+### Joint Training with in-batch approximation
 
 ## Application
 
