@@ -223,7 +223,7 @@ kNN-LM의 경우 여시서 사용된 dense retrieval model은 language model과 
 - Retriever -> LM
 - LM -> Retrieval
 
-이를 통해 off-the-shelf componets를 사용할 수 있고, LM은 retrieval의 결과를 leverage 하여 효율적으로 학습될 수 있으며, Retrieval은 LM 모델애 도움이 되게끔 학습될 수 있습니다. 하지만 여전이 하나의 component는 fix되어 학습되지 않는다는 문제가 있습니다. 
+이를 통해 off-the-shelf componets를 사용할 수 있고, LM은 retrieval의 결과를 leverage 하여 효율적으로 학습될 수 있으며, Retrieval은 LM 모델애 도움이 되게끔 학습될 수 있습니다. 하지만 여전이 하나의 component는 fix되어 학습되지 않는다는 문제가 있습니다.
 
 #### 2-1. RETRO
 
@@ -248,9 +248,128 @@ RETRO는 Transformer 의 구조를 변경했기 때문에 Language Model을 다�
 
 ### Joint Training with asynchronous index update
 
+![](./../assets/resource/survey/paper6/23.png)
+
+Retrieval 모델을 학습하기 위해서는 Encoder를 학습시켜야 하는데, 그렇게 되면 데이터의 index가 다시 모두 바뀌기 때문에 다시 모든 text에 대해서 re-encode를 해야하는 문제가 생깁니다.
+
+이를 해결하기 위한 아이디어는 다음과 같습니다. 우선 학습 중에 Encoder는 계속해서 업데이트 되지만 index는 업데이트 하지 않고 그대로 사용하는 것을 허용합니다. 그리고 매 T step 마다 업데이트 된 Encoder로 다시 index를 rebuild 하는 것입니다.
+
+#### 1. REALM
+
+REALM이 이 방식을 사용하여 학습하는 모델입니다. 여기서 얼마나 retrieval index를 자주 업데이트 시킬 것인지는 중요한 디자인 요소입니다. REALM에서는 500 step 마다 업데이트를 수행하였습니다.
+
+#### 2. Atlas
+
+![](./../assets/resource/survey/paper6/24.png)
+
+Atlas는 pretrained language model로 다양한 downstrem task를 적용할 수 있습니다. 이는 다음 Application 섹션에서 다루도록 하겠습니다.
+
+![](./../assets/resource/survey/paper6/25.png)
+
+REALM의 Retrieval model은 encoder로만 이루어져있습니다. 이와 다르게 Atlas의 Retrieval model은 Encoder-Decoder 구조로 이루어져 있습니다. Atlas는 "Fusion-in-Decoder" 방식을 사용하는데, 이는 여러개의 input을 Encoder에서 동시에 처리하고나서, 이 정보들을 Decoder에서 joint prediction 하여 합산하는 방식입니다.
+
+![](./../assets/resource/survey/paper6/26.png)
+
+Atlas는 Language model을 retrieval model의 학습 가이드로 삼습니다. 먼저, 각 text chunk들이 retrieval 모델에 의해서 검색될 확률과 얼마나 각 text chunk들이 language model의 perplexity를 개선시킬지를 같은 선상에 놓습니다. 직관적으로 retrieved text는 LM의 encoder의 perplexity 개선에 도움을 줍니다. KL divergence를 사용하여 이 둘 사이의 거리를 좁히는 것이 학습의 objective입니다. 이때 index를 매번 업데이트 하는 것은 매우 비용이 많이 들기 때문에, 매 T step에서만 index를 업데이트 하는 방식을 사용하였습니다. 그럼에도 불구하고 여전히 wikipedia 데이터셋에서 30%의 학습 오버헤드가 있었습니다. 만약 더 큰 데이터셋으로 학습시킨다면, 이 오버헤드는 더욱 클 것입니다.
+
 ### Joint Training with in-batch approximation
 
-## Application
+모든 index (>100M)를 training 과정에서 업데이트 한다는 것은 매우 어렵습니다. 이를 해결하기 위한 아이디어는 모든 index 대신 현재 학습 배치의 index (~10k)만을 업데이트 하는 것입니다.
+
+#### 1. TRIME: Training with in-batch memory
+
+![](./../assets/resource/survey/paper6/27.png)
+
+TRIME는 kNN-LM 모델 구조를 사용하는데, 다른 점은 학습 중 kNN retrieve를 전체 데이터에서 수행하는 것이 아니라 batch 내에서만 수행하여 loss를 계산한다는 것입니다. 수 step, epoch 동안 결국 전체 data store의 representation에 backpropagation을 수행할 수 있습니다.
+
+하지만 우리는 in-batching 방식이 full index를 approximate 할 수 있다고 보장할 수 있을까요? 다른말로, 어떻게 in-batch 데이터를 샘플링해야 좋은 temporal index를 생성할 수 있을까요?
+
+이를 위한 아이디어는 아래와 같습니다. text chunk들에 대해서 random batching을 수행하는 것이 아니라 비슷한 text chunks들이 포함되게 하는 것입니다. BM25 score를 사용하여 비슷한 text chunk들을 찾습니다. 비슷한 말뭉치들의 다음에 오는 text 들은 높은 확률로 겹칠 것입니다. 이 말은 결국 우리는 학습 중 많은 positive pair을 갖게 될것이고 더 높은 training signal을 만들 수 있습니다.
+
+* BM25 Score: Bag-of-words 개념을 사용하여 쿼리에 있는 용어가 각각의 문서에 얼마나 자주 등장하는지를 평가.
+
+#### 2. NPM: Nonparametric masked LMs
+
+NPM은 TRIME과 다르게 masked language 모델 기반으로 더 많은 데이터에 의해 학습되었습니다. 또한, [MASK]는 token이 아니라 구 (phrase: 주어 또는 동사를 가지고 있지 않은 단어들의 집합)로 구성됩니다. 그리고 inference는 오직 순수한 retrieval result로만 구성됩니다.
+
+학습 중 In-batch approximation을 수행하기 위해 NPM은 same-doc batching 방식을 사용합니다. 매우 큰 말뭉치에서 BM25 score을 계산하는 것은 매우 비 효율적입니다. 그래서 단순히 sampe document에서 샘플링을 수행하고, 공통적으로 등장하는 spans가  있으면 이를 positive라고 나머지 부분은 negative라고 처리합니다.
+
+하지만 lexical (어휘) 말고 positive/negative를 정의할 다른 단서는 없을까요?
+
+#### 3. RPT: Retrieval-pretrained transformer
+
+![](./../assets/resource/survey/paper6/28.png)
+
+이 모델에서는 reference chunk를 가지고 next prediction을 만들기 위해 input에 join 했을 때 그 reference chunk가 prediction에 얼마나 기여했는지를 나타내는 score를 사용합니다.
+만약에 다른 chunk가 prediction에 더 좋은 기여를 했을 경우 그 chunk를 positive라고, 반대는 negative라고 정의합니다.
+
+#### Joint Training
+
+Joint Training을 수행하면 end-to-end train으로 각 component가 최적화 될 수 있고 더 좋은 성능을 낼 수 있습니다.
+하지만 여전히 학습은 복잡하고, 학습 과정에서 approximation을 수행하기 때문에 여전히 train-text discrepency가 존재합니다.
+
+## Application (Downstream adaptation)
+
+### 1. The range of tasks
+
+![](./../assets/resource/survey/paper6/29.png)
+
+### 2. How to Adapt?
+
+- Fine-tuning: LM과 Retriever를 task-data에 finetune
+- Reinforcement learning
+- Prompting: LM과 Retriever 모델을 frozen시키고 LM에 prompt만 task에 맞게 사용
+
+### 3. Fine-tuning
+
+#### 3-1. ATLAS
+
+![](./../assets/resource/survey/paper6/30.png)
+
+이 모델은 few-shot task data에 효율적으로 finetune하기 위해 Query Encoder를 사용하였습니다. 단지 query encoder와 LM의 모델만을 업데이트하며 학습하면 Retriever index는 변하지 않기 때문에 학습 비용을 크게 낮출 수 있습니다.
+
+Finetune은 일반적으로 많은 데이터가 있을 수록 효과적이지만, 실험을 통해서 knowledge-inteisve task에서 query-side finetune이 few-shot 일지라도 좋은 성능을 보여줌을 확인하였습니다.
+
+- knowledge-intensive task: 사람조차도 외부지식 (ex. 위키피디아 검색) 없이 해결하기 어려운 문제를 일컫습니다.
+
+### 4. Reinforcement Learning
+
+#### 4-1. GopherCite
+
+![](./../assets/resource/survey/paper6/31.png) 
+
+Atlas와 다르게 GopherCite는 Google의 search system을 datastore로 삼습니다. 그래서 retreival component를 찾기 위한 노력이 필요없습니다(freeze index).
+
+우리는 일반적으로 답변이 포함된 large 학습데이터가 없기 때문에 large language model에 prompting 하고, 사람이 직접 필터링 함으로써 training dataset를 생성합니다. 그리고 이 학습데이터를 가지고 supervised 방식으로 Language Model 만을 finetune 합니다. 그리고 같은 input x에 대해 두 개의 서로 다른 답변에 대한 human preference data를 가지고 Reward Model을 학습시킵니다. 그리고 이 모델을 사용하여 reinforcement learning 에 사용합니다.
+
+그럼 human preference data는 어떻게 만들어야 할까요?
+
+InstructGPT나 일반적인 NLP모델 학습에서 사람에게 어떤 답변이 더 좋나고 묻습니다. GopherCite에서 두가지 측면을 물어봤는데, 하나는 그럴싸함 (Plausible) 이고, 다른 하나는 동반된 증거로 뒷받침 되는 지 입니다. 이런 기준을 가지고 30k의 데이터를 수집하였습니다.
+
+Finetune과 Reinforcement learning을 함께 사용하는 것이 더 좋은 성능을 보여줄 수 있습니다. 하지만 추가적인 학습 데이터 수집이 필요하다는 단점이 있습니다.
+
+하지만 만약 우리가 Large 모델을 학습시킬 만한 여력이 없다면 어떻게 해야 할까요?
+
+### 5. Prompting
+
+prompting 은 어떠한 학습도 필요 없는 방식입니다.
+
+앞에서 살펴 보았듯이 LM이 있으면 retrival 결과를 우리는 input space에 섞을 수도 있고, output space에 섞을 수도 있습니다.
+
+#### 5-1. kNN-Prompt
+
+우리는 여기서 kNN-LM 처럼 output space에서 섞는 시나리오를 보겠습니다.
+
+![](./../assets/resource/survey/paper6/32.png)
+
+kNN classification을 수행한 뒤 output token의 분포는 매우 sparse 하기 때문에, 잘못된 답변을 내놓을 수 있습니다. 예를들어 위와 같이 great, good는 positive한 사실상 같은 의미로 negative 의미인 terrible 과 같이 다시 평가 되어야 하지만 확률이 분산되어 있어 무시될 수 있습니다. 이런 문제를 해결하기 위해 Fuzzy berbalizer를 사용하여 similar token을 찾아 같은 클래스로 맵핑하는 calibration 수행합니다. 이러한 방식으로 kNN-prompt는 kNN-LM 보다 더 월등한 성능을 보여주었습니다.
+
+#### 5.2 REPLUG
+
+input space에서 섞는 시나리오를 보겠습니다. 그 한 예시가 REPLUG 입니다. 위에서 살펴보았듯이 REPLUG는 먼저 text x에 대해서 document retriever을 통해서 관련있는 text chuncks를 얻습니다. 그리고 prediction을 refine 하기 위해 각 retrieved text에 대해서 LM의 input과 concat하고 ensemble prediction을 수행합니다.
+
+이러한 방식은 데이터셋도 없고, 자원도 없을 경우 매우 쉽게 적용가능하지만, 하지만 여전히 FT 한 모델보다 성능이 좋지는 못합니다.
+
 
 ## Definition
 
