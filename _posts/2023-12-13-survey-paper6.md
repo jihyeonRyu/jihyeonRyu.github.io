@@ -336,7 +336,7 @@ Finetune은 일반적으로 많은 데이터가 있을 수록 효과적이지만
 
 #### 4-1. GopherCite
 
-![](./../assets/resource/survey/paper6/31.png) 
+![](./../assets/resource/survey/paper6/31.png)
 
 Atlas와 다르게 GopherCite는 Google의 search system을 datastore로 삼습니다. 그래서 retreival component를 찾기 위한 노력이 필요없습니다(freeze index).
 
@@ -362,13 +362,46 @@ prompting 은 어떠한 학습도 필요 없는 방식입니다.
 
 ![](./../assets/resource/survey/paper6/32.png)
 
-kNN classification을 수행한 뒤 output token의 분포는 매우 sparse 하기 때문에, 잘못된 답변을 내놓을 수 있습니다. 예를들어 위와 같이 great, good는 positive한 사실상 같은 의미로 negative 의미인 terrible 과 같이 다시 평가 되어야 하지만 확률이 분산되어 있어 무시될 수 있습니다. 이런 문제를 해결하기 위해 Fuzzy berbalizer를 사용하여 similar token을 찾아 같은 클래스로 맵핑하는 calibration 수행합니다. 이러한 방식으로 kNN-prompt는 kNN-LM 보다 더 월등한 성능을 보여주었습니다.
+kNN classification을 수행한 뒤 output token의 분포는 매우 sparse 하기 때문에, 잘못된 답변을 내놓을 수 있습니다. 예를들어 위와 같이 great, good는 positive한 사실상 같은 의미로 negative 의미인 terrible 과 같이 다시 평가 되어야 하지만 확률이 분산되어 있어 무시될 수 있습니다. 이런 문제를 해결하기 위해 Fuzzy berbalizer를 사용하여 similar token을 찾아 같은 클래스로 맵핑하는 calibration 수행합니다.
+
+이러한 방식으로 kNN-prompt는 zero-shot classification task에서 vanilla LM 보다 더 월등한 성능을 보여주었습니다.
 
 #### 5.2 REPLUG
 
-input space에서 섞는 시나리오를 보겠습니다. 그 한 예시가 REPLUG 입니다. 위에서 살펴보았듯이 REPLUG는 먼저 text x에 대해서 document retriever을 통해서 관련있는 text chuncks를 얻습니다. 그리고 prediction을 refine 하기 위해 각 retrieved text에 대해서 LM의 input과 concat하고 ensemble prediction을 수행합니다.
+이제 input space에서 섞는 시나리오를 보겠습니다. 그 한 예시가 REPLUG 입니다. 위에서 살펴보았듯이 REPLUG는 먼저 text x에 대해서 document retriever을 통해서 관련있는 text chuncks를 얻습니다. 그리고 prediction을 refine 하기 위해 각 retrieved text에 대해서 LM의 input과 concat하고 ensemble prediction을 수행합니다.
 
-이러한 방식은 데이터셋도 없고, 자원도 없을 경우 매우 쉽게 적용가능하지만, 하지만 여전히 FT 한 모델보다 성능이 좋지는 못합니다.
+이러한 방식으로 REPLUG는 baseLM에 비해서 더 놓은 성능을 보여주었습니다. 또한 few-shot train을 한 ATALS에 비해서 더 좋은 성능을 보였지만, Full/transfer 학습을 수행한 ATLAS에 비해서는 더 좋은 성능을 보이진 않았습니다.
+
+이러한 방식은 데이터셋도 없고, 자원도 없을 경우 매우 쉽게 적용가능하지만, 컨트롤 하기 쉽지 않고, full-Finetune 한 모델에 비해서 성능이 좋진 못합니다.
+
+### 6. When to use a retrieval-based LM?
+
+- Long-tail Case: 사용 빈도는 작을 수 있지만, 사용자의 의도를 구체적으로 표현해 줘야 하는 경우 효과적입니다.
+- Update: 일반적인 LLM은 evolving knowledge에 adapt 시키기 위한 학습이 필요합니다. 하지만 retrieval-based LM 은 단순히 knowledge 를 swap 해주기만 하면 됩니다.
+- Parameter-efficiency: 일반적인 LM에 비해 훨씬 적은 수의 파라미터로 outperform 할 수 있습니다.
+- Verifiability: 생성 결과에 대한 출처를 보여 줄 수 있어서 사실 여부를 확인할 수 있습니다.
+
+## Extension: Multilingual & Multimodal
+
+### 1. Multilingual Retrieval-based LM
+
+특정 언어로 구성된 datastore에서만 retrieval을 수행하면, 더 많은 정보를 찾을 수 있는 기회를 잃을 것입니다. 그래서 multilingual retrieval 모델을 사용하는 것이 더욱 도움이 될것입니다.
+
+![](./../assets/resource/survey/paper6/33.png)
+
+여기서 문제점은 text 에 대한 representation space가 language에 따라서 bias가 생길 수있다는 점입니다. 위의 예시처럼, 다른 언어의 두 document는 완전히 같은 topic에 대해서 말하고 있음에도 불구하고, 서로 먼 거리에 embedding이 위치하게 됩니다.
+
+#### 1-1. CORA: Interatively training multilingual LM & Retrieval
+
+![](./../assets/resource/survey/paper6/34.png)
+
+이 모델은 먼저 retrieval model과 LM을 task 데이터에 학습 시킨 후에, language link를 사용해서 다른 language의 positive paragraph를 retrieve 함으로써 학습데이터를 점차 확장해 나가는 방식을 사용합니다. 그 다음에는 이렇게 pretrained한 LM을 사용하여 새로운 positive/negative paragraph를 만들어 학습시킵니다. 위 방식을 반복하여 학습데이터를 반복적으로 확장시키며 학습을 진행합니다.
+
+이 방식을 통해서 language biases를 극복할 수 있고, outperformance를 보여주었습니다. 실제 영어에 비해 다른 언어의 retrieval data는 충분하지 않는 경우가 많아서 이러한 multilingual 방식은 매우 도움이 될것입니다.
+
+### 2. Multi-modal Retrieval-based LM
+
+multi-modal은 input이 text 외에도 어떠한 형식으로 들어올 수 있고, retrieval query와 LM의 output 형식 또한 어떠한 형식이 될 수 있습니다.
 
 
 ## Definition
