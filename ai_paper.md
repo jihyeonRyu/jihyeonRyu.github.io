@@ -99,6 +99,8 @@ comments: false
 
 #### [(Re-ReND) Real-time Rendering of NeRFs across Devices](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper58/)
 
+#### [(BakedSDF) Meshing Neural SDFs for Real-Time View Synthesis](https://jihyeonryu.github.io/2023-12-18-ai-pr-paper61/)
+
 ## Virtual Try On
 
 #### [(ARShoe) Real-Time Augmented Reality Shoe Try-on System on Smartphones](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper59/)
