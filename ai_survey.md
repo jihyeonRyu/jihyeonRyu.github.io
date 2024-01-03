@@ -16,3 +16,5 @@ comments: false
 #### [(Pros and Cons of GAN Evaluation Measures) New Developments](https://jihyeonryu.github.io/2022-11-18-survey-paper5/)
 
 #### [Retrieval-based Language Models and Applications](https://jihyeonryu.github.io/2023-12-13-survey-paper6/)
+
+#### [LLM Prompt Engineering](https://jihyeonryu.github.io/2024-01-03-survey-paper7/)
