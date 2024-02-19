@@ -133,6 +133,11 @@ comments: false
 
 #### [(WhisperX) Time-Accurate Speech Transcription of Long-Form Audio](https://jihyeonryu.github.io/2023-09-13-ai-pr-paper53/)
 
+## Music Fingerprinting
+
+#### [(SpectroMap) Peak detection algorithm for audio fingerprinting](https://jihyeonryu.github.io/2024-02-19-ai-pr-paper62/)
+#### [MUSIC AUGMENTATION AND DENOISING FOR PEAK-BASED AUDIO FINGERPRINTING](https://jihyeonryu.github.io/2024-02-19-ai-pr-paper63/)
+
 ---
 
 # Fundamental
