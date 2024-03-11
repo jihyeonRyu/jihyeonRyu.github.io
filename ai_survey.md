@@ -18,3 +18,5 @@ comments: false
 #### [Retrieval-based Language Models and Applications](https://jihyeonryu.github.io/2023-12-13-survey-paper6/)
 
 #### [LLM Prompt Engineering](https://jihyeonryu.github.io/2024-01-03-survey-paper7/)
+
+#### [A Survey on Large Language Models for Recommendation](https://jihyeonryu.github.io/2024-03-07-survey-paper8/)
