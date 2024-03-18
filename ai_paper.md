@@ -107,6 +107,10 @@ comments: false
 
 ---
 
+# Large Language Model
+
+#### [(Video-LLaVA) Learning United Visual Representation by Alignment Before Projection](https://jihyeonryu.github.io/2024-03-18-ai-pr-paper64/)
+
 # Natural Language
 
 ## Text-to-Speech
