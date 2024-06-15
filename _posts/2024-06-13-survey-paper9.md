@@ -1,4 +1,4 @@
-**---
+---
 layout: post   
 title: An Introduction to Vision-Language Modeling     
 subtitle: AI Survey     
