@@ -137,22 +137,24 @@ VLM을 비디오 데이터로 확장하는 방법을 논의합니다. 비디오�
       - 각 패치는 독립적으로 처리, 텍스트에서 사용되는 토큰과 유사하게 다루어짐
     - Patch Embedding
       - 각 패치를 1차원 임베딩 벡터로 변환
-  ```python
-  class PatchEmbedding(nn.Module):
-    def __init__(self, img_size, patch_size, in_channel, emb_dim):
-        super(PatchEmbedding, self).__init__()
-        self.patch_size = patch_size
-        self.grid_size = img_size // patch_size
-        self.num_patches = self.grid_size * self.grid_size
-        self.projection = nn.Conv(in_channel, emb_dim, kernel_size=patch_size, stride=patch_size)
-    
-    def forward(self, x):
-      x = self.projection(x) # [B, emb_dim, H/patch_size, W/patch_size]
-      x = x.flatten(2) # [B, emb_dim, num_patches]
-      x = x.transpose(0, 2, 1) # [B, num_patches, emb_dim]
-      
-      return x
-  ```
+
+    ```python
+      class PatchEmbedding(nn.Module):
+        def __init__(self, img_size, patch_size, in_channel, emb_dim):
+            super(PatchEmbedding, self).__init__()
+            self.patch_size = patch_size
+            self.grid_size = img_size // patch_size
+            self.num_patches = self.grid_size * self.grid_size
+            self.projection = nn.Conv(in_channel, emb_dim, kernel_size=patch_size, stride=patch_size)
+        
+        def forward(self, x):
+          x = self.projection(x) # [B, emb_dim, H/patch_size, W/patch_size]
+          x = x.flatten(2) # [B, emb_dim, num_patches]
+          x = x.transpose(0, 2, 1) # [B, num_patches, emb_dim]
+          
+          return x
+    ```
+
     - Positional Embedding
       - 각 패치의 정보를 보전하기 위해 위치 정보를 추가
       - 트랜스포머와 유사하게 패치의 순서를 인코딩하여 모델에 제공
