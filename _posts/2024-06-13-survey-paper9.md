@@ -194,7 +194,7 @@ VLM을 비디오 데이터로 확장하는 방법을 논의합니다. 비디오�
 텍스트와 이미지를 생성하는 능력을 학습하는 모델들입니다. 이러한 모델들은 이미지나 텍스트를 입력 받아, 이를 바탕으로 새로운 텍스트를 생성하거나, 반대로 텍스트를 입력받아 이미지를 생성할 수 있습니다.
 
 - 주요 모델
-  - CoCa(Contrastive Captioner), CM3leon, Stable Diffusion, Imagen, Parti
+  - CoCa(Contrastive Captioner), CM3leon, Diffusion-based 모델과 LLM의 협업  
 - CoCa
   - 이미지 캡셔닝 
   - 주요 특징
@@ -208,14 +208,9 @@ VLM을 비디오 데이터로 확장하는 방법을 논의합니다. 비디오�
     - 디코더 전용 트랜스포머 모델: 토크나이즈된 이미지와 텍스트를 입력으로 받아 다음 토큰을 예측
     - 모달리티 통합: 이미지와 텍스트를 동일한 토큰 기반 표현으로 변환하여 통합된 트랜스포머 아키텍처로 처리.
     - 초기 통합 전략: 모든 모달리티를 공유된 표현 공간으로 매핑하여 다양한 모달리티 간의 원활한 추론 및 생성 가능.
-- Text-Image 생성 모델을 이용한 Downstream 비전-언어 작업
+- Diffusion-based 모델과 LLM의 협업
   - 생성 모델: Stable Diffusion, Imagen, Parti
   - 초점: 텍스트 조건부 이미지 생성
-
----
-#### 참조 
-- Stable Diffusion
-  - 텍스트에서 이미지를 생성하는 모델
   - 모델 구조
     - Text Encoder: BERT, CLIP 같은 사전 훈련된 언어 모델을 사용
     - Image Denoiser: 
@@ -365,7 +360,7 @@ VLM을 비디오 데이터로 확장하는 방법을 논의합니다. 비디오�
   print("Training completed.")
 
   ```
----
+
   
 ### 5. VLMs from Pretrained Backbones
 Pretrained Backbone을 활용하여 텍스트와 이미지를 함께 처리하는 멀티모달 모델을 구축하는 접근 방식 입니다.
