@@ -22,3 +22,5 @@ comments: false
 #### [A Survey on Large Language Models for Recommendation](https://jihyeonryu.github.io/2024-03-07-survey-paper8/)
 
 #### [An Introduction to Vision-Language Modeling](https://jihyeonryu.github.io/2024-06-13-survey-paper9/)
+
+#### [A Survey of Resource-Efficient LLM and Multimodal Foundation Models](https://jihyeonryu.github.io/2024-06-17-survey-paper10/)
