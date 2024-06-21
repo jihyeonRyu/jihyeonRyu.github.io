@@ -709,14 +709,34 @@ KV 캐시를 활성화로 간주하고, 양자화 기술을 적용합니다.
 Transformer는 긴 시퀀스를 효과적으로 처리하고 장거리 정보를 캡처하기 위해 위치 인코딩을 조정해야 합니다. 
 주의 메커니즘과 관련된 2차 계산 비용을 해결하기 위해 다양한 최적화가 제안되었습니다.
 
-[TODO]
 ##### 1. Recurrent structure
+- Transformer-XL
+  - 입력 시퀀스를 세그먼트로 나누고, 각 세그먼트 끝에서 나온 hidden state를 다음 state 의 초기 상태로 사용하여 긴 컨텍스트의 정보를 유지합니다.
+  - 이러한 메커니즘을 통해, 시간적 일관성을 유지하면서, 입력 텍스트가 길어짐에 따라 발생하는 정보 손실을 최소화합니다. 
+- Recurrent Memory Transformer
+  - 입력 또는 출력 시퀀스에 메모리 토큰을 추가하여, 시퀀스 간의 정보를 저장하고 통합하여 긴 컨텍스트 정보를 효율적으로 관리
+  - RMT 메모리 토큰은 반복적인 갱신과정을 거칩니다. 각 시퀀스의 출력 단계에서 메모리 토큰은 최신 정보를 반영하도록 갱신되며, 이 갱신된 정보는 다음 시퀀스의 입력 단계에 다시 사용됩니다. 
 
 ##### 2. Attention optimizations
+- StreamingLLM
+  - 유한한 길이의 Attention 창을 사용하여 무한 스트림 디코딩으로 일반화 합니다.
+  - 각 창의 끝에서 나온 hidden state와 attention 출력을 다음 창의 초기 상태로 하여, 연속적인 정보 흐름을 유지합니다. 
+- PCW (Position-Aware Chunked Windows)
+  - 긴 컨텍스트를 여러 청크 또는 윈도우로 나누어 처리합니다. 각 윈도우 내에서만 Attention 윈도우가 작동하도록 제한하여, 계산 복잡도를 줄이고 효율성을 높입니다. 
+  - 각 윈도우간 위치 임베딩을 재사용하여 위치 정보를 효율적으로 유지하고 계산 자원을 절약
+- LongNet
+  - Dilated Attention을 사용
+  - 거리가 멀어질수록, attention 필드를 기하급수적으로 확장
+- SLED (Sliding-Encoder Decoder)
+  - 슬라이딩 윈도우 접근법을 사용하여, 짧은 텍스트에 대해 사전 훈련된 언어 모델을 사용하여 긴 텍스트를 슬라이딩 윈도우 방식으로 처리합니다. 
 
 ### 4. Model Compression
 
 #### Pruning
+- Structured Pruning
+  - 전체 구조적 구성요소 (채널, 가중치 블록 등)을 제거하여 모델을 압축 
+  - LLM-Pruner
+
 
 #### Knowledge Distillation
 
