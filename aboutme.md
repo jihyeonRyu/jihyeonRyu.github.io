@@ -10,7 +10,7 @@ subtitle: AI Engineer
 
 ---
 
-* **2020.05 - Present**: LINEPLUS, VOOM AI LAB, **AI Engineer**
+* **2020.05 - Present**: LINEPLUS, AI LAB, **AI Engineer**
 * **2017.07 - 2020.05**: Hyundai Autoever, Vision AI, **AI Engineer**
 * **2017.01 - 2017.06**: Alticast, AI TF, Internship
 * **2015.07 - 2015.12**: Encored Technologies, ContentsPlatform, Internship
