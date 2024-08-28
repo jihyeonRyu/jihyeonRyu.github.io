@@ -5,4 +5,4 @@ tags: [ai, ml, deep learning, utility, code]
 comments: false
 ---
 
-#### [TensorRT using Dynamic Batch Size](https://jihyeonryu.github.io/2021-02-16-ai-pr-paper1/)
+#### [TensorRT using Dynamic Batch Size](https://jihyeonryu.github.io/2024-08-27-ai-utility1/)
