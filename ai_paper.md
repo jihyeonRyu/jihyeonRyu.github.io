@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Artificial Intelligence Paper Review
-tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts, speech recognition, Object Detection, Fundamental]   
+tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts,  Large Language Model, speech recognition, Object Detection, Fundamental]   
 comments: false
 ---
 
@@ -111,6 +111,8 @@ comments: false
 
 #### [(Video-LLaVA) Learning United Visual Representation by Alignment Before Projection](https://jihyeonryu.github.io/2024-03-18-ai-pr-paper64/)
 
+#### [(ChipNeMo) Domain-Adapted LLMs for Chip DesignBefore Projection](https://jihyeonryu.github.io/2024-11-24-ai-pr-paper65/)
+
 # Natural Language
 
 ## Text-to-Speech
@@ -171,3 +173,4 @@ comments: false
 #### [Improving GANs with A Dynamic Discriminator](https://jihyeonryu.github.io/2022-10-04-ai-pr-paper30/)
 
 #### [Systematic Analysis and Removal of Circular Artifacts for StyleGAN](https://jihyeonryu.github.io/2022-12-02-ai-pr-paper34/)
+
