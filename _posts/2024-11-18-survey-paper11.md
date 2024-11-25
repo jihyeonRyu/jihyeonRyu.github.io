@@ -458,5 +458,64 @@ greedy search와 다르게 다음 N개의 가장 probable token을 고려합니�
 - 정보의 최신성 부족: 최신 정보나 현재 시점의 데이터를 자체적으로 접근할 수 없습니다.
 - 모댈 크기와 비용: 매우 크기때문에 학습과 서비스 제공에 많은 GPU 자원이 필요합니다. 
 - 환각(Hallucination): 진실애 대한 개념이 없으며 신뢰할 수 없는 정보를 생성할 수 있습니다. LLM에서 환각은 아래와 같은 두가지 카테고리로 분류 될 수 있습니다
-    - Intrinsic Hallucination
-    - Extrinsic Hallucination
+    - Intrinsic Hallucination: 소스 자료와 직접적으로 충돌합니다. 사실과 다른 정보나 논리적 모순을 포함합니다. (ex: 주어진 텍스트의 내용을 잘못 인용)
+    - Extrinsic Hallucination: 소스와 충돌하지 않지만 검증 불가능한 정보입니다. 추측성 정보나 확인할 수 없는 요소를 포함합니다. (ex: 소스 자료에 기반이 없는 정보를 제시하는 경우)
+
+    - 여기서 Source의 의미는
+        - 대화형 작업에서는 일반적인 사실의 이해, 일반적 지식
+        - 텍스트 요약 작업에서는 입력된 텍스트 자체
+
+    - 환각의 허용 여부는 맥락에 따라 달라집니다. 창의적인 작업에서는 오히려 긍정적인 요소가 될 수 있지만 사실 기반 작업에서는 매우 심각한 문제로 간주됩니다.
+
+    - LLM이 환각을 일으키는 이유는, 방대한 데이터셋을 기반으로 학습되며 확률 모델을 통해 텍스트를 생성하지만, 진실이나 거짓에 대한 본질적인 이해가 없습니다. 
+        - Veractivity prior(진실성 편향): 모델이 진실 여부를 평가하는 기본적 편향
+        - Relative Frequency Heurastic: 데이터에서 자주 나타나는 정보가 사실로 간주되는 경향 
+
+    - 최근에는 Instruction Tuning, RLHF 과 같은 방법을 통해 LLM이 더 사실적인 출력을 하도록 유도하고 있습니다. 그러나 본질적인 확률 기반 특성과 한계는 여전히 남아 있습니다. 
+
+
+LLM의 환각 현상을 효과적으로 측정하려면 통계적 지표와 모델 기반 지표를 결합하여야 합니다.
+- Statiscal Metrics
+    - ROUGE, BLEU: 텍스트 유사성을 평가하는 일반적인 지표로, intrinsic 환각 측정에 초점. 생성된 텍스트와 소스 자료 간의 단어와 비교하여 평가
+        - ROGUE (Recall-oriented understudy for Gisting Evaluation)
+            - (# of n-gram match with model & reference) / (# of n-gram in reference)
+            - Longest Common Sequence (LCS) 기반 유사성 평가도 포함 
+        - BLEU (Bilingual Evaluation Understudy)
+            - (# of n-gram match with model & reference) / (# of n-gram in model)
+            - 전테 텍스트 길이를 고려하여 지나치게 짧거나 긴 텍스트에 패널티 부여 
+    - PARENT, PARENT-T, Knowledge F1: 구조화된 지식 소스가 있는 경우 사용. 보다 구체적인 평가가 가능하지만, 문법적/의미론적 미묘한 차이를 잡아내는 데 한계가 있음. 
+        - PARENT (Precision and Recall of Entailed N-grams): 참조 텍스트 뿐만 아니라 입력 데이터와의 일치도 고려합니다. 
+            - precision = (생성된 텍스트가 입력데이터와 매치되는 n-그램 수) / (생성된 텍스트의 전체 n-그램 수)
+            - recall = (참조 텍스트가 입력 데이터와 매치돠는 n-그램 수) / (참조 텍스트의 전체 n-그램 수)
+            - F1 score 계산 
+        - Knowledge F1: 지식 그래프를 기반으로 정보의 정확성과 맥락적 일치를 평가 
+
+
+- Model-based Metrics
+    - IE-Based Metrics (정보 추출 기반)
+        - 생성된 텍스트와 소스 텍스트에서 관계형 정보를 추출하여 비교.
+        - 예: “책 Harry Potter를 쓴 사람은 J.K. Rowling이다” → (주어, 관계, 객체) 튜플로 변환.
+        - 활용: 문장 간의 사실적 일치를 확인하며, 논문 생성, 보고서 작성 등에 유용.
+    - QA-Based Metrics  (질문-응답 기반)
+        - 생성된 텍스트에서 특정 질문을 생성하고, 이에 대한 답변을 소스 텍스트와 비교.
+        - 예: 소스: “파리는 프랑스의 수도다” → 질문: “프랑스의 수도는 무엇인가?” → 생성 텍스트에서 답변 확인.
+        - 활용: 소스 자료의 주요 정보를 정확히 반영하는지 확인.
+    - NLI-Based Metrics (자연어 추론 기반)
+        - 생성된 텍스트(가설)가 소스 텍스트(전제)에 기반한 진술인지 평가.
+        - 세 가지 관계 평가:
+        •	Entailment (포함): 가설이 전제를 포함.
+        •	Neutral (중립): 전제와 가설 간 명확한 관계 없음.
+        •	Contradiction (모순): 가설이 전제를 반박.
+        •	활용: 생성된 텍스트의 사실성 및 논리적 타당성 평가.
+    - Faithfulness Classification Metrics (진실성 분류 지표)
+        •	특정 작업이나 응용 프로그램에 맞춘 커스텀 데이터셋을 생성.
+        •	진실성과 비진실성을 분류하여 텍스트의 정확성과 신뢰성을 정밀하게 평가.
+        •	활용: 의료, 금융, 법률 등 고정밀 데이터가 중요한 도메인에서 사용.
+
+이러한 자동화된 평가 지표의 발전에도 불고하고, 인간의 평가는 여전히 중요한 부분으로 남아있습니다. 
+- Scoring: 인간 평가자가 환각의 정도에 대해서 미리 정의된 스케일로 점수를 주는 방식
+- Comparative Analysis: 인간 평가자가 베이스 라인이다. GT reference 컨텐츠간의 비교를 통해서 주관적 평가계층을 추가하는 것.
+
+FacScore는 인간 및 모델 기반 평가 모두에서 사용할 수 있는 최신 매트릭입니다. 
+
+(진행 중...)
