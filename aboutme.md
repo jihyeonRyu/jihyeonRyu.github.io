@@ -1,8 +1,7 @@
 ---
 layout: page  
 title: About Me  
-subtitle: AI Engineer
----
+subtitle: AI Engineer / SA
 
 ## JIHYEON RYU
 
@@ -10,7 +9,8 @@ subtitle: AI Engineer
 
 ---
 
-* **2020.05 - Present**: LINEPLUS, AI LAB, **AI Engineer**
+* **2024.11 - Present**: NVIDIA, WWFO, **Cloud AI Solutions Architect**
+* **2020.05 - 2024.11**: LINEPLUS, AI LAB, **AI Engineer**
 * **2017.07 - 2020.05**: Hyundai Autoever, Vision AI, **AI Engineer**
 * **2017.01 - 2017.06**: Alticast, AI TF, Internship
 * **2015.07 - 2015.12**: Encored Technologies, ContentsPlatform, Internship
