@@ -711,3 +711,61 @@ LLM 평가를 위한 벤치마크와 데이터셋은 아래와 같습니다.
 
 #### 1. Popular Metrics for Evaluating LLMs
 
+생성형 언어 모델의 성능평가는 모델이 사용될 task의 유형에 따라 달라집니다.
+- 분류 문제: 주어진 선택지 중 하나를 선택하는 작업은 분류 문제로 간주될 수 있습니다.  예를들어 다중 선택형 질문에서 답변은 항상 참또는 거짓입니다. 선택지에 없는 답변도 거짓으로 처리됩니다.
+- 평가 메트릭: 
+    - accuracy: (TP+TN)/(TP+TN+FP+FN)
+    - precision: (TP)/(TP+FP)
+    - recall: (TP)/(TP+FN)
+    - F1 score: 2*precision*recall/(precision+recall)
+
+- 개방형 텍스트 생성과제: 분류 작업과 다르며, 다른 평가 지표가 필요합니다. 코드 생성과 같은 과제는 정확한 평가를 위해 독특한 접근이 필요 
+    - 코드 생성 과제: 생성된 코드가 주어진 테스트를 통과해야합니다. 모델이 다양한 솔루션을 생성할 수 있는 능력과 올바른 솔루션을 선택할 확률도 중요합니다. 
+    - 평가 메트릭
+        - Pass@k: 특정 문제에 대해 여러개의 코드 솔루션을 생성, 각 솔루션을 다양한 기능 테스트를 통해 올바른지 평가. 평가시 선택하는 솔루션 수 (k), 생성된 전체 솔루션 수(n)과 올바른 솔르션 수 (c)를 바탕으로 계산.
+            - 즉 이는 주어진 k개의 시도 중 하나라도 올바른 답을 포함하는 지 평가 
+            ![](./../assets/resource/survey/paper11/16.png)
+
+        - EM (ExactMatch): 예측된 답변이 사전 정의된 정답 중 하나와 토큰 단위로 정확히 일치하면 정답으로 간주 
+            - M은 정확히 일치한 답변 수, N은 전체 질문 수
+            ![](./../assets/resource/survey/paper11/17.png)
+            - 단순하고 명확한 지표
+
+        - Human Equivalence Score(HEQ): F1 점수에 대한 대안적인 평가 메트릭으로 모델의 성능을 인간의 평균 성능과 비교 
+            - HEQ-Q (Question level): 개별 질문의 정밀도를 평가하여 모델의 F1 점수가 평균적 인간의 F1 점수를 초과할 경우 올바르다고 간주
+            - HEQ-D (Dialog level): 대화 내 모든 질문의 F1 점수가 평균 인간 F1 점수를 초과해야 대화 전체를 올바르다고 간주 
+
+- 기존 평가 메트릭 (ROGUE, BLEU)
+    - 생성된 텍스트와 참조 텍스트 간의 유사성을 n-gram 기반으로 계산하는 방식으로 참조 텍스트 (GT)가 존재할때 효과적입니다. n-gram 수준의 단순 유사성을 측정하므로 의미론적인 유사성을 반영하지는 못합니다.
+
+- BERT score: 사전 학습된 언어모델을 사용하여 생성 텍스트와 참조 텍스트 간의 의미론적인 유사성을 평가합니다. 단 다른 모델에 평가를 의존하므로 오류 가능성이 있습니다. 
+
+- Generative Evaluation Metrics: 다른 LLM을 사용하여 생성된 답변을 평가하는 방법입니다. RAGAS는 생성형 평가 메트릭의 좋은 사례로 프롬프트를 활용하여 평가를 수행합니다. 단 여전히 순수 생성된 컨텐츠를 평가하는 것은 어렵습니다. 
+
+- 다양한 테스크와 데이터셋 비교: 다양한 LLM 의 성능을 비교하기 위해 벤치마크와 리더보드가 제안되었습니다. 그러나 어떠한 모델이 더 좋은가에 대한 간단한 대답은 없습니다. 각 테스크 관련 데이터셋을 범주별로 분류하고 비교결과를 제공합니다. 각 테스크별 성능 메트릭을 집계하여 전체적인 성능 개요를 제공하는 방법입니다. 
+
+LLM의 평가와 비교는 아래 그림과 같이 다양한 범주로 나누어 이루어질 수 있습니다. 
+
+![](./../assets/resource/survey/paper11/18.png)
+
+###  VII. Chalanged and future directions
+
+- smaller and more efficient language model
+    - "더 크면 더 좋다"라는 트랜드에서 초대형 언어모델은 높은 정확도와 성과를 보여왔지만, 학습과 추론 비용이 매우 높고, 높은 latency와 자원소비로 실용성이 떨어지는 문제가 있습니다. 그래서 그 대안어로 작은 언어모델이 제시되고 있습니다. 이를 위한 여러 연구가 진행되고 있으며, 주요 기술은 다음과 같습니다.
+    - Parameter-Efficient Fine-tuning: 모델의 전체를 학습하지 않고 일부 파라미터만 미세 조정하여 효율적으로 튜닝
+    - Teacher / Student 모델로 knowledge distillation
+
+- New Post-attention Architecture Paradigms
+    - 어텐션 메커니즘은 긴 문맥 처리의 효율성과 같은 한계가 존재합니다. 
+    - State Space Models (SSM)은 언어 모델에서 새로운 구조적 상태 모델 (Structured State Space for Sequence Modeling, S4)로 불리며 긴문맥 처리를 위해 설계되었습니다.
+        - 대표 모델: Mamba, Hyena, Striped Hyena
+        - 긴 문맥창(context window)를 효율적으로 처리
+        - RAG에서 더 유용
+    - Monarch Mixer: Monarch 행렬을 사용하여 GPU에서 고효용성을 제공하는 아키텍처 
+    - Mixture of Experts (MoE): 여러 전문가로 구성된 구조로 모델 추론 시 Gating 함수에 따라 특정 전문가만 활성화하여 동작. 이는 SSM 기반 모델에도 적용 가능
+
+- Multi-modal Models
+    - 미래의 대형 언어 모델(LLM)은 텍스트, 이미지, 비디오, 오디오 등 다양한 데이터 유형을 통합적으로 처리하는 멀티모달 기능을 갖출 것으로 예상됩니다. 이러한 발전은 질의응답, 콘텐츠 생성, 창작 예술, 의료, 로봇공학 등 다양한 분야에서 새로운 응용 가능성을 열어줍니다.
+
+- Improved LLM Usage and Augmentation techniques
+
