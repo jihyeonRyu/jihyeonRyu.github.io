@@ -113,6 +113,8 @@ comments: false
 
 #### [(ChipNeMo) Domain-Adapted LLMs for Chip DesignBefore Projection](https://jihyeonryu.github.io/2024-11-24-ai-pr-paper65/)
 
+#### [CONTINUAL PRE-TRAINING OF LANGUAGE MODELS](https://jihyeonryu.github.io/2024-11-30-ai-pr-paper67/)
+
 # Natural Language
 
 ## Text-to-Speech
