@@ -115,6 +115,8 @@ comments: false
 
 #### [CONTINUAL PRE-TRAINING OF LANGUAGE MODELS](https://jihyeonryu.github.io/2024-11-30-ai-pr-paper67/)
 
+#### [(Reuse, Don’t Retrain) A Recipe for Continued Pretraining of Language Models ](https://jihyeonryu.github.io/2024-12-02-ai-pr-paper68/)
+
 # Natural Language
 
 ## Text-to-Speech
