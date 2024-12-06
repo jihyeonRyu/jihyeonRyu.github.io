@@ -7,8 +7,6 @@ comments: false
 
 # Large Language Model
 
-#### [(Video-LLaVA) Learning United Visual Representation by Alignment Before Projection](https://jihyeonryu.github.io/2024-03-18-ai-pr-paper64/)
-
 #### [(ChipNeMo) Domain-Adapted LLMs for Chip DesignBefore Projection](https://jihyeonryu.github.io/2024-11-24-ai-pr-paper65/)
 
 #### [CONTINUAL PRE-TRAINING OF LANGUAGE MODELS](https://jihyeonryu.github.io/2024-11-30-ai-pr-paper67/)
@@ -18,7 +16,16 @@ comments: false
 ---
 
 # Visual Language Model
+
+#### [(Video-LLaVA) Learning United Visual Representation by Alignment Before Projection](https://jihyeonryu.github.io/2024-03-18-ai-pr-paper64/)
+
 #### [(VILA) On Pre-training for Visual Language Models](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper69/)
+
+---
+
+# Large Model Optimization
+
+#### [(AWQ) ACTIVATION-AWARE WEIGHT QUANTIZATION FOR ON-DEVICE LLM COMPRESSION AND ACCELERATION](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper70/)
 
 ---
 
