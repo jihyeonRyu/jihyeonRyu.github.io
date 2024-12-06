@@ -11,8 +11,12 @@ comments: false
 
 #### [(ChipNeMo) Domain-Adapted LLMs for Chip DesignBefore Projection](https://jihyeonryu.github.io/2024-11-24-ai-pr-paper65/)
 
+#### [CONTINUAL PRE-TRAINING OF LANGUAGE MODELS](https://jihyeonryu.github.io/2024-11-30-ai-pr-paper67/)
+
+#### [(Reuse, Don’t Retrain) A Recipe for Continued Pretraining of Language Models ](https://jihyeonryu.github.io/2024-12-02-ai-pr-paper68/)
+
 # Visual Language Model
-#### [(VILA) On Pre-training for Visual Language Models](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper67/)
+#### [(VILA) On Pre-training for Visual Language Models](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper69/)
 
 # Computer Vision
 
@@ -115,6 +119,10 @@ comments: false
 #### [(ARShoe) Real-Time Augmented Reality Shoe Try-on System on Smartphones](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper59/)
 
 ---
+
+#### [CONTINUAL PRE-TRAINING OF LANGUAGE MODELS](https://jihyeonryu.github.io/2024-11-30-ai-pr-paper67/)
+
+#### [(Reuse, Don’t Retrain) A Recipe for Continued Pretraining of Language Models ](https://jihyeonryu.github.io/2024-12-02-ai-pr-paper68/)
 
 # Natural Language
 
