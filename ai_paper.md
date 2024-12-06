@@ -5,6 +5,15 @@ tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Edi
 comments: false
 ---
 
+# Large Language Model
+
+#### [(Video-LLaVA) Learning United Visual Representation by Alignment Before Projection](https://jihyeonryu.github.io/2024-03-18-ai-pr-paper64/)
+
+#### [(ChipNeMo) Domain-Adapted LLMs for Chip DesignBefore Projection](https://jihyeonryu.github.io/2024-11-24-ai-pr-paper65/)
+
+# Visual Language Model
+#### [(VILA) On Pre-training for Visual Language Models](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper67/)
+
 # Computer Vision
 
 ## Segmentation
@@ -106,12 +115,6 @@ comments: false
 #### [(ARShoe) Real-Time Augmented Reality Shoe Try-on System on Smartphones](https://jihyeonryu.github.io/2023-11-22-ai-pr-paper59/)
 
 ---
-
-# Large Language Model
-
-#### [(Video-LLaVA) Learning United Visual Representation by Alignment Before Projection](https://jihyeonryu.github.io/2024-03-18-ai-pr-paper64/)
-
-#### [(ChipNeMo) Domain-Adapted LLMs for Chip DesignBefore Projection](https://jihyeonryu.github.io/2024-11-24-ai-pr-paper65/)
 
 # Natural Language
 
