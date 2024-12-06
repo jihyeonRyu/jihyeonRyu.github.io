@@ -15,8 +15,12 @@ comments: false
 
 #### [(Reuse, Don’t Retrain) A Recipe for Continued Pretraining of Language Models ](https://jihyeonryu.github.io/2024-12-02-ai-pr-paper68/)
 
+---
+
 # Visual Language Model
 #### [(VILA) On Pre-training for Visual Language Models](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper69/)
+
+---
 
 # Computer Vision
 
