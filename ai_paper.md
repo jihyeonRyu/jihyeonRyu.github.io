@@ -21,6 +21,8 @@ comments: false
 
 #### [(VILA) On Pre-training for Visual Language Models](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper69/)
 
+#### [Sigmoid Loss for Language Image Pre-Training](https://jihyeonryu.github.io/2024-12-09-ai-pr-paper71/)
+
 ---
 
 # Large Model Optimization
