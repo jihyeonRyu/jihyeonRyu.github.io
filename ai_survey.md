@@ -26,3 +26,5 @@ comments: false
 #### [A Survey of Resource-Efficient LLM and Multimodal Foundation Models](https://jihyeonryu.github.io/2024-06-17-survey-paper10/)
 
 #### [(Large Language Models) A Survey Models](https://jihyeonryu.github.io/2024-11-18-survey-paper11/)
+
+#### [(Continual Learning of Large Language Models) A Comprehensive Survey](https://jihyeonryu.github.io/2024-12-03-survey-paper12/)
