@@ -13,6 +13,9 @@ comments: false
 
 #### [(Reuse, Don’t Retrain) A Recipe for Continued Pretraining of Language Models ](https://jihyeonryu.github.io/2024-12-02-ai-pr-paper68/)
 
+#### [(SteerLM) Attribute Conditioned SFT as an (User-Steerable) Alternative to RLHF ](https://jihyeonryu.github.io/2024-12-10-ai-pr-paper72/)
+
+
 ---
 
 # Visual Language Model
