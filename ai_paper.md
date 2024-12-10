@@ -26,6 +26,7 @@ comments: false
 
 #### [Sigmoid Loss for Language Image Pre-Training](https://jihyeonryu.github.io/2024-12-09-ai-pr-paper71/)
 
+#### [(NVILA) Efficient Frontier Visual Language Models](https://jihyeonryu.github.io/2024-12-10-ai-pr-paper73/)
 ---
 
 # Large Model Optimization
