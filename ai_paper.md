@@ -51,6 +51,8 @@ comments: false
 
 #### [(PP-LiteSeg) A Superior Real-Time Semantic Segmentation Model](https://jihyeonryu.github.io/2022-04-11-ai-pr-paper20/)
 
+#### [(SemPLeS) Semantic Prompt Learning for Weakly-Supervised Semantic Segmentation](https://jihyeonryu.github.io/2024-12-13-ai-pr-paper74/)
+
 ## Object Detection
 
 #### [Scaled-YOLOv4: Scaling Cross Stage Partial Network](https://jihyeonryu.github.io/2022-03-18-ai-pr-paper17/)
