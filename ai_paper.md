@@ -15,7 +15,7 @@ comments: false
 
 #### [(SteerLM) Attribute Conditioned SFT as an (User-Steerable) Alternative to RLHF ](https://jihyeonryu.github.io/2024-12-10-ai-pr-paper72/)
 
-
+#### [Text Embeddings by Weakly-Supervised Contrastive Pre-training](https://jihyeonryu.github.io/2024-12-15-ai-pr-paper76/)
 ---
 
 # Visual Language Model
