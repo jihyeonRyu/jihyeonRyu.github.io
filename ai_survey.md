@@ -30,3 +30,5 @@ comments: false
 #### [(Continual Learning of Large Language Models) A Comprehensive Survey](https://jihyeonryu.github.io/2024-12-03-survey-paper12/)
 
 #### [(Retrieval Augmented Generation (RAG) and Beyond) A Comprehensive Survey on How to Make your LLMs use External Data More Wisely](https://jihyeonryu.github.io/2024-12-16-survey-paper13/)
+
+#### [(Retrieval-Augmented Generation for Natural Language Processing) A Survey](https://jihyeonryu.github.io/2024-12-23-survey-paper14/)
