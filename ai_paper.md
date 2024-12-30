@@ -34,6 +34,8 @@ comments: false
 
 #### [(DEPLOT) One-shot visual language reasoning by plot-to-table translation](https://jihyeonryu.github.io/2024-12-30-ai-pr-paper78/)
 
+#### [(MATCHA) Enhancing Visual Language Pretraining with Math Reasoning and Chart Derendering](https://jihyeonryu.github.io/2024-12-30-ai-pr-paper79/)
+
 ---
 
 # Large Model Optimization
