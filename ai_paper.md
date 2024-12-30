@@ -32,6 +32,8 @@ comments: false
 
 #### [(Template Matters) Understanding the Role of Instruction Templatesin Multimodal Language Model Evaluation and Training](https://jihyeonryu.github.io/2024-12-13-ai-pr-paper75/)
 
+#### [(DEPLOT) One-shot visual language reasoning by plot-to-table translation](https://jihyeonryu.github.io/2024-12-30-ai-pr-paper78/)
+
 ---
 
 # Large Model Optimization
