@@ -36,6 +36,7 @@ comments: false
 
 #### [(MATCHA) Enhancing Visual Language Pretraining with Math Reasoning and Chart Derendering](https://jihyeonryu.github.io/2024-12-30-ai-pr-paper79/)
 
+#### [(Pix2Struct) Screenshot Parsing as Pretraining for Visual Language Understanding](https://jihyeonryu.github.io/2025-01-02-ai-pr-paper80/)
 ---
 
 # Large Model Optimization
