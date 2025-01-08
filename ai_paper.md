@@ -18,6 +18,9 @@ comments: false
 #### [Text Embeddings by Weakly-Supervised Contrastive Pre-training](https://jihyeonryu.github.io/2024-12-15-ai-pr-paper76/)
 
 #### [(DRAGIN) Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models](https://jihyeonryu.github.io/2024-12-22-ai-pr-paper77/)
+
+#### [Nemotron-4 340B Technical Report](https://jihyeonryu.github.io/2025-01-08-ai-pr-paper81/)
+
 ---
 
 # Visual Language Model
