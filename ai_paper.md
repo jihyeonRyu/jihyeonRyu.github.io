@@ -22,6 +22,9 @@ comments: false
 #### [Nemotron-4 340B Technical Report](https://jihyeonryu.github.io/2025-01-08-ai-pr-paper81/)
 
 #### [(LogParser-LLM) Advancing Efficient Log Parsing with Large Language Models](https://jihyeonryu.github.io/2025-01-13-ai-pr-paper82/)
+
+#### [Harnessing LLMs for High-level Reasoning Over Spatiotemporal Sensor Traces](https://jihyeonryu.github.io/2025-01-14-ai-pr-paper83/)
+
 ---
 
 # Visual Language Model
