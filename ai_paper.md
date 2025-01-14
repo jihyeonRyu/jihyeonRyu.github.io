@@ -25,6 +25,10 @@ comments: false
 
 #### [Harnessing LLMs for High-level Reasoning Over Spatiotemporal Sensor Traces](https://jihyeonryu.github.io/2025-01-14-ai-pr-paper83/)
 
+#### [(Penetrative AI) Making LLMs Comprehend the Physical World](https://jihyeonryu.github.io/2025-01-14-ai-pr-paper84/)
+
+#### [Interpretable Online Log Analysis Using Large Language Models with Prompt Strategies](https://jihyeonryu.github.io/2025-01-14-ai-pr-paper85/)
+
 ---
 
 # Visual Language Model
