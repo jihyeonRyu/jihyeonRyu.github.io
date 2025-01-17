@@ -54,6 +54,7 @@ comments: false
 
 #### [(AWQ) ACTIVATION-AWARE WEIGHT QUANTIZATION FOR ON-DEVICE LLM COMPRESSION AND ACCELERATION](https://jihyeonryu.github.io/2024-12-06-ai-pr-paper70/)
 
+#### [Speculative Decoding](https://jihyeonryu.github.io/2025-01-16-ai-pr-paper86/)
 ---
 
 # Computer Vision
