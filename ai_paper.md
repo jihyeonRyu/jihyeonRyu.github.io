@@ -29,6 +29,8 @@ comments: false
 
 #### [Interpretable Online Log Analysis Using Large Language Models with Prompt Strategies](https://jihyeonryu.github.io/2025-01-14-ai-pr-paper85/)
 
+#### [DeepSeek-V3 Technical Report](https://jihyeonryu.github.io/2025-01-17-ai-pr-paper87/)
+
 ---
 
 # Visual Language Model
