@@ -31,6 +31,7 @@ comments: false
 
 #### [DeepSeek-V3 Technical Report](https://jihyeonryu.github.io/2025-01-17-ai-pr-paper87/)
 
+#### [(DeepSeek-R1) Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://jihyeonryu.github.io/2025-02-02-ai-pr-paper88/)
 ---
 
 # Visual Language Model
