@@ -32,3 +32,5 @@ comments: false
 #### [(Retrieval Augmented Generation (RAG) and Beyond) A Comprehensive Survey on How to Make your LLMs use External Data More Wisely](https://jihyeonryu.github.io/2024-12-16-survey-paper13/)
 
 #### [(Retrieval-Augmented Generation for Natural Language Processing) A Survey](https://jihyeonryu.github.io/2024-12-23-survey-paper14/)
+
+#### [(Towards Large Reasoning Models) A Survey of Reinforced Reasoning with Large Language Models](https://jihyeonryu.github.io/2025-02-10-survey-paper15/)
