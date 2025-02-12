@@ -1,9 +1,17 @@
 ---
 layout: post
 title: Artificial Intelligence Paper Review
-tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts,  Large Language Model, speech recognition, Object Detection, Fundamental]   
+tags: [ai, ml, paper review, Segmentation, Classification, Inpainting, Image Editing, Face Swap, Video Generation, Diffusion Model, Volume Rendering, Virtual Try On, Voice Conversion, tts,  Large Language Model, speech recognition, Object Detection, Fundamental, RAG]   
 comments: false
 ---
+
+# Retrieval-Augmented Generation 
+
+#### [Text Embeddings by Weakly-Supervised Contrastive Pre-training](https://jihyeonryu.github.io/2024-12-15-ai-pr-paper76/)
+
+#### [(DRAGIN) Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models](https://jihyeonryu.github.io/2024-12-22-ai-pr-paper77/)
+
+#### [(DeepRAG) Thinking to Retrieval Step by Step for Large Language Models](https://jihyeonryu.github.io/2025-02-12-ai-pr-paper89/)
 
 # Large Language Model
 
@@ -14,10 +22,6 @@ comments: false
 #### [(Reuse, Don’t Retrain) A Recipe for Continued Pretraining of Language Models ](https://jihyeonryu.github.io/2024-12-02-ai-pr-paper68/)
 
 #### [(SteerLM) Attribute Conditioned SFT as an (User-Steerable) Alternative to RLHF ](https://jihyeonryu.github.io/2024-12-10-ai-pr-paper72/)
-
-#### [Text Embeddings by Weakly-Supervised Contrastive Pre-training](https://jihyeonryu.github.io/2024-12-15-ai-pr-paper76/)
-
-#### [(DRAGIN) Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models](https://jihyeonryu.github.io/2024-12-22-ai-pr-paper77/)
 
 #### [Nemotron-4 340B Technical Report](https://jihyeonryu.github.io/2025-01-08-ai-pr-paper81/)
 
