@@ -36,6 +36,10 @@ comments: false
 #### [DeepSeek-V3 Technical Report](https://jihyeonryu.github.io/2025-01-17-ai-pr-paper87/)
 
 #### [(DeepSeek-R1) Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://jihyeonryu.github.io/2025-02-02-ai-pr-paper88/)
+
+
+#### [(ChipAlign) Instruction Alignment in Large Language Models for Chip Design via Geodesic Interpolation](https://jihyeonryu.github.io/2025-02-20-ai-pr-paper90/)
+
 ---
 
 # Visual Language Model
